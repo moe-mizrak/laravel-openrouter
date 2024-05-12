@@ -3,10 +3,19 @@
 namespace MoeMizrak\LaravelOpenrouter;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleRetry\GuzzleRetryMiddleware;
 use Illuminate\Support\ServiceProvider;
 
 class OpenRouterServiceProvider extends ServiceProvider
 {
+    /**
+     * The default timeout for the Guzzle client.
+     *
+     * @var int
+     */
+    const DEFAULT_TIMEOUT = 20;
+
     /**
      * Bootstrap any application services.
      *
@@ -76,12 +85,32 @@ class OpenRouterServiceProvider extends ServiceProvider
      */
     private function configureClient(): Client
     {
-        // todo open router client configuration options will be added here based on the documentation
+        // Set the default configuration for retrying requests
+        $retryOptions = [
+            'max_retry_attempts' => 5,
+            'retry_on_status'    => [429, 500, 502, 503, 504],
+            'retry_on_timeout'   => true,
+        ];
+
+        // Create a handler stack with the retry middleware.
+        $handlerStack = HandlerStack::create();
+
+        // Add the retry middleware to the handler stack.
+        $handlerStack->push(GuzzleRetryMiddleware::factory($retryOptions));
+
+        /*
+         * Create and return a Guzzle client with the base_uri, timeout, headers and handler stack request options.
+         * For more info: https://openrouter.ai/docs
+         */
         return new Client([
             'base_uri' => config('laravel-openrouter.api_endpoint'),
+            'timeout'  => self::DEFAULT_TIMEOUT,
+            'handler'  => $handlerStack,
             'headers'  => [
                 'Authorization' => 'Bearer ' . config('laravel-openrouter.api_key'),
-                'content-type'      => 'application/json',
+                'HTTP-Referer'  => 'https://github.com/moe-mizrak/laravel-openrouter',
+                'X-Title'       => 'laravel-openrouter',
+                'Content-Type'  => 'application/json',
             ],
         ]);
     }
