@@ -27,7 +27,10 @@ class OpenRouterAPITest extends TestCase
         // params will be sent to testRequest method after access is granted and testRequest is modified.
         $response = $this->api->testRequest();
 
+
         /* ASSERT */
         // TODO: assertion for testRequest response
     }
+
+    // todo add a request so that the response will be able to filtered instead of getting all response data
 }
