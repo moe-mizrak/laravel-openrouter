@@ -23,7 +23,22 @@ class FunctionData extends DataTransferObject
      * Arguments for the function.
      * JSON format arguments.
      *
-     * @var string
+     * @var string|null
      */
-    public string $arguments;
+    public ?string $arguments;
+
+    /**
+     * A description of the function.
+     *
+     * @var string|null
+     */
+    public ?string $description;
+
+    /**
+     * Parameters for the function.
+     * JSON Schema object.
+     *
+     * @var array|null
+     */
+    public ?array $parameters; // todo test if it should be string or array since in doc =>  parameters: object; // JSON Schema object
 }

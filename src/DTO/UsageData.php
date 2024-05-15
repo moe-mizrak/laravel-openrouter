@@ -32,11 +32,4 @@ class UsageData extends DataTransferObject
      * @var int|null
      */
     public ?int $total_tokens;
-
-    /**
-     * Total cost of the request
-     *
-     * @var int|null
-     */
-    public ?int $total_cost;
 }
