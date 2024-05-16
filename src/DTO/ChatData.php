@@ -21,6 +21,7 @@ class ChatData extends DataTransferObject
      * Constructor
      *
      * @param $params
+     * @throws XorValidationException
      * @throws \Spatie\DataTransferObject\Exceptions\UnknownProperties
      */
     public function __construct($params)
@@ -40,6 +41,7 @@ class ChatData extends DataTransferObject
 
     /**
      * Message array consists of DTO data.
+     * xor-gated with prompt field
      *
      * @var MessageData[]|null
      */
@@ -47,6 +49,7 @@ class ChatData extends DataTransferObject
 
     /**
      * Prompt string data.
+     * xor-gated with messages field
      *
      * @var string|null
      */

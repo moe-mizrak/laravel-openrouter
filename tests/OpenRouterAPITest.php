@@ -4,7 +4,10 @@ namespace MoeMizrak\LaravelOpenrouter\Tests;
 
 use Illuminate\Support\Arr;
 use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
+use MoeMizrak\LaravelOpenrouter\DTO\ImageContentPartData;
+use MoeMizrak\LaravelOpenrouter\DTO\ImageUrlData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
+use MoeMizrak\LaravelOpenrouter\DTO\TextContentData;
 use MoeMizrak\LaravelOpenrouter\Exceptions\XorValidationException;
 use MoeMizrak\LaravelOpenrouter\OpenRouterRequest;
 use MoeMizrak\LaravelOpenrouter\Types\RoleType;
@@ -31,6 +34,26 @@ class OpenRouterAPITest extends TestCase
     }
 
     /**
+     * General assertions required for testing instead of replicating the same code.
+     *
+     * @param $response
+     * @return void
+     */
+    private function generalTestAssertions($response): void
+    {
+        $this->assertInstanceOf(ResponseData::class, $response);
+        $this->assertNotNull($response->id);
+        $this->assertEquals($this->model, $response->model);
+        $this->assertEquals('chat.completion', $response->object);
+        $this->assertNotNull($response->created);
+        $this->assertNotNull($response->usage->prompt_tokens);
+        $this->assertNotNull($response->usage->completion_tokens);
+        $this->assertNotNull($response->usage->total_tokens);
+        $this->assertNotNull($response->choices);
+        $this->assertNotNull(Arr::get($response->choices[0], 'finish_reason'));
+    }
+
+    /**
      * @test
      */
     public function it_makes_a_basic_chat_completion_open_route_api_request()
@@ -43,7 +66,6 @@ class OpenRouterAPITest extends TestCase
                     'content' => $this->content,
                 ],
             ],
-            'prompt' => $this->prompt,
             'model' => $this->model,
             'max_tokens' => $this->max_tokens,
         ]);
@@ -52,18 +74,9 @@ class OpenRouterAPITest extends TestCase
         $response = $this->api->chatRequest($chatData);
 
         /* ASSERT */
-        $this->assertInstanceOf(ResponseData::class, $response);
-        $this->assertNotNull($response->id);
-        $this->assertEquals($this->model, $response->model);
-        $this->assertEquals('chat.completion', $response->object);
-        $this->assertNotNull($response->created);
-        $this->assertNotNull($response->usage->prompt_tokens);
-        $this->assertNotNull($response->usage->completion_tokens);
-        $this->assertNotNull($response->usage->total_tokens);
-        $this->assertNotNull($response->choices);
+        $this->generalTestAssertions($response);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
-        $this->assertNotNull(Arr::get($response->choices[0], 'finish_reason'));
     }
 
     /**
@@ -82,17 +95,8 @@ class OpenRouterAPITest extends TestCase
         $response = $this->api->chatRequest($chatData);
 
         /* ASSERT */
-        $this->assertInstanceOf(ResponseData::class, $response);
-        $this->assertNotNull($response->id);
-        $this->assertEquals($this->model, $response->model);
-        $this->assertEquals('chat.completion', $response->object);
-        $this->assertNotNull($response->created);
-        $this->assertNotNull($response->usage->prompt_tokens);
-        $this->assertNotNull($response->usage->completion_tokens);
-        $this->assertNotNull($response->usage->total_tokens);
-        $this->assertNotNull($response->choices);
+        $this->generalTestAssertions($response);
         $this->assertNotNull(Arr::get($response->choices[0], 'text'));
-        $this->assertNotNull(Arr::get($response->choices[0], 'finish_reason'));
     }
 
     /**
@@ -130,6 +134,114 @@ class OpenRouterAPITest extends TestCase
             'model' => $this->model,
             'max_tokens' => $this->max_tokens,
         ]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_successfully_sends_text_content_in_messages_in_the_open_route_api_request()
+    {
+        /* SETUP */
+        $textContentData = new TextContentData([
+            'type' => TextContentData::ALLOWED_TYPE, // it can only take text for text content
+            'text' => $this->content,
+        ]);
+        $chatData = new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER, // text content is only for user role
+                    'content' => [$textContentData], // will be an array of text content data (it can take string, array or null)
+                ],
+            ],
+            'model' => $this->model,
+            'max_tokens' => $this->max_tokens,
+        ]);
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->generalTestAssertions($response);
+        $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
+        $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_successfully_sends_image_and_text_content_in_messages_in_the_open_route_api_request()
+    {
+        /* SETUP */
+        $imageUrlData = new ImageUrlData([
+            'url' => 'https://www.thewowstyle.com/wp-content/uploads/2015/01/images-of-nature-4.jpg',
+            'detail' => 'Nature'
+        ]);
+        $imageContentPartData = new ImageContentPartData([
+            'type'      => ImageContentPartData::ALLOWED_TYPE, // it can only take image_url for image content
+            'image_url' => $imageUrlData,
+        ]);
+        $textContentData = new TextContentData([
+            'type' => TextContentData::ALLOWED_TYPE, // it can only take text for text content
+            'text' => 'what is in the image?',
+        ]);
+        $chatData = new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER, // image content is only for user role
+                    'content' => [
+                        $textContentData,
+                        $imageContentPartData,
+                    ],
+                ],
+            ],
+            'model' => $this->model,
+            'max_tokens' => $this->max_tokens,
+        ]);
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->generalTestAssertions($response);
+        $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
+        $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_successfully_sends_multiple_text_content_in_messages_in_the_open_route_api_request()
+    {
+        /* SETUP */
+        $textContentDataA = new TextContentData([
+            'type' => TextContentData::ALLOWED_TYPE, // it can only take text for text content
+            'text' => 'What is the result of 2+2?',
+        ]);
+        $textContentDataB = new TextContentData([
+            'type' => TextContentData::ALLOWED_TYPE, // it can only take text for text content
+            'text' => 'Now, multiply the result with 10.',
+        ]);
+        $chatData = new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER, // Text content is only for user role
+                    'content' => [
+                        $textContentDataA, // First text content
+                        $textContentDataB, // Second text content requires result from first content
+                    ],
+                ],
+            ],
+            'model' => $this->model,
+            'max_tokens' => $this->max_tokens,
+        ]);
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->generalTestAssertions($response);
+        $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
+        $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
     }
 
     // todo test $value instanceof DataTransferObject =>   #[AllowedValues(['none', 'auto'])]  public string|ToolCallData|null $tool_choice;
