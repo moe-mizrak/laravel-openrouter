@@ -5,7 +5,6 @@ storage/*.key
 .env
 .env.testing
 .phpunit.result.cache
-/phpunit.xml
 /.vagrant
 Homestead.yaml
 Homestead.json
