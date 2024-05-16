@@ -1,0 +1,52 @@
+name: Main
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup PHP Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8
+          extensions: mbstring, intl
+          ini-values: post_max_size=256M, short_open_tag=On, memory_limit=1024M
+          coverage: none
+        env:
+          COMPOSER_TOKEN: ${{ secrets.COMPOSER_TOKEN }}
+
+      - name: Cache Composer Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.get-composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Copy Environment Files
+        run: |
+          php -r "file_exists('.env.testing') || copy('.env.ci', '.env.testing');"
+          php -r "file_exists('.env') || copy('.env.ci', '.env');"
+
+      - name: Install Composer Dependencies
+        run: composer install --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: Run PHPUnit Tests
+        run: vendor/bin/phpunit --log-junit phpunit-report.xml
+
+      - name: Upload PHPUnit Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: PHPUnit Test Report
+          path: phpunit-report.xml
