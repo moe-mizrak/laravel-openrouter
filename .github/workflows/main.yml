@@ -27,12 +27,10 @@ jobs:
           COMPOSER_TOKEN: ${{ secrets.COMPOSER_TOKEN }}
 
       - name: Cache Composer Dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v1
         with:
-          path: ${{ steps.get-composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
+          path: ~/.composer/cache/files
+          key: dependencies-php-${{ matrix.php }}-L${{ matrix.laravel }}-${{ matrix.dependency-version }}-composer-${{ hashFiles('composer.json') }}
 
       - name: Copy Environment Files
         run: |
