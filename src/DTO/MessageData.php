@@ -15,9 +15,9 @@ class MessageData extends DataTransferObject
     /**
      * The content of the message.
      *
-     * @var string|null
+     * @var string|array|null
      */
-    public ?string $content;
+    public string|array|null $content; // todo check out type ContentPart = TextContent | ImageContentPart; from doc
 
     /**
      * The entity that produced the message.
@@ -33,4 +33,12 @@ class MessageData extends DataTransferObject
      * @var ToolCallData[]|null
      */
     public ?array $toolCalls;
+
+    /**
+     * An optional name for the participant. Provides the model information to differentiate between participants of the same role.
+     * e.g. name: "Moe"
+     *
+     * @var string|null
+     */
+    public ?string $name;
 }

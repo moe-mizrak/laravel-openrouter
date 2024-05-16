@@ -21,8 +21,7 @@ return [
     | Here you may specify the endpoint URL for the OpenRouter API.
     | This is the URL where your application will send requests to interact with OpenRouter.
     | You can find the API endpoint URL in the OpenRouter documentation.
-    | todo make url in a way that for chat completion it will be different, for checking rate limit, balance https://openrouter.ai/api/v1/auth/key
-    | .. todo here only main url will be set which is https://openrouter.ai/api/v1/  , so based on the req rest will be added
+    | Default value is https://openrouter.ai/api/v1/ , which is the base URL for all requests.
     */
-    'api_endpoint' => env('OPENROUTER_API_ENDPOINT'),
+    'api_endpoint' => env('OPENROUTER_API_ENDPOINT', 'https://openrouter.ai/api/v1/'),
 ];

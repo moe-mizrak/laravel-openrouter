@@ -2,7 +2,12 @@
 
 namespace MoeMizrak\LaravelOpenrouter;
 
+use GuzzleHttp\Exception\GuzzleException;
+use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
+use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
 use Psr\Http\Message\ResponseInterface;
+use Spatie\DataTransferObject\Arr;
+use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 
 /**
  * OpenRouter request and formed response class.
@@ -14,39 +19,64 @@ use Psr\Http\Message\ResponseInterface;
  */
 class OpenRouterRequest extends OpenRouterAPI
 {
-    // todo add method for getting the models, from the dto object or from the open router api
+    use DataHandlingTrait;
 
-    // todo add validation for payload objects and handle the error messages,
-    // .. todo you can use Spatie DTO validation as in AllowedValues https://github.com/moe-mizrak/Validation
+    // todo add other requests, e.g. /auth/keys, https://openrouter.ai/api/v1/generation?id=$GENERATION_ID
+    // todo check for a request that gives the list of all available models
 
-    // todo testing open router request
-    public function testRequest()
+    /**
+     * Sends a model request for the given chat conversation.
+     *
+     * @param ChatData $chatData
+     * @return ResponseData
+     *
+     * @throws GuzzleException
+     * @throws UnknownProperties
+     */
+    public function chatRequest(ChatData $chatData): ResponseData
     {
-        // JSON payload to be sent in the request body
-        $jsonPayload = [
-            'model' => 'mistralai/mistral-7b-instruct:free', // todo will be dynamic, retrive them from api call
-            'max_tokens' => 1024, // todo will be dynamic? if not set a value for covering most cases
-            'messages' => [
-                ['role' => 'user', 'content' => 'Hello, world'] // todo role and content should not be static
-            ]
-        ];
+        // The path for the chat completion request.
+        $chatCompletionPath = 'chat/completions';
+
+        // Filter null values from the chatData object and return array.
+        $chatData = $this->filterNullValuesRecursive($chatData);
 
         // Options for the Guzzle request
         $options = [
-            'json' => $jsonPayload, // Set the request body as JSON
+            'json' => ($chatData),
         ];
 
-        $response = $this->client->post('', $options);
+        // Send the request to the OpenRouter API chat completion endpoint and get the response.
+        $response = $this->client->request(
+            'POST',
+            $chatCompletionPath,
+            $options
+        );
 
         return $this->formResponse($response);
     }
 
-    public function formResponse(?ResponseInterface $response = null)
+    /**
+     * Forms the response as ResponseData including id, model, object created, choices and usage if exits.
+     * First decodes the json response and get the result, then map it in ResponseData to return the response.
+     *
+     * @param ResponseInterface|null $response
+     * @return ResponseData
+     * @throws UnknownProperties
+     */
+    public function formResponse(?ResponseInterface $response = null) : ResponseData
     {
+        // Get the response body or return null.
         $response = $response ? json_decode($response->getBody(), true) : null;
 
-        // todo dtos will be set here to the response
-
-        return $response;
+        // Map the response data to ResponseData and return it.
+        return new ResponseData([
+            'id'      => Arr::get($response, 'id'),
+            'model'   => Arr::get($response, 'model'),
+            'object'  => Arr::get($response, 'object'),
+            'created' => Arr::get($response, 'created'),
+            'choices' => Arr::get($response, 'choices'),
+            'usage'   => Arr::get($response, 'usage'),
+        ]);
     }
 }
