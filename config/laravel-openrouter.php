@@ -11,7 +11,7 @@ return [
     | You can obtain your API key from the OpenRouter dashboard.
     |
     */
-    'api_key'      => env('OPENROUTER_API_KEY'),
+    'api_key'      => env('OPENROUTER_API_KEY', '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'),
 
     /*
     |--------------------------------------------------------------------------
