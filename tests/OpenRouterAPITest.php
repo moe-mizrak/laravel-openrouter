@@ -5,9 +5,9 @@ namespace MoeMizrak\LaravelOpenrouter\Tests;
 use Illuminate\Support\Arr;
 use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
+use MoeMizrak\LaravelOpenrouter\Exceptions\XorValidationException;
 use MoeMizrak\LaravelOpenrouter\OpenRouterRequest;
 use MoeMizrak\LaravelOpenrouter\Types\RoleType;
-use Spatie\DataTransferObject\Exceptions\ValidationException;
 
 class OpenRouterAPITest extends TestCase
 {
@@ -43,6 +43,7 @@ class OpenRouterAPITest extends TestCase
                     'content' => $this->content,
                 ],
             ],
+            'prompt' => $this->prompt,
             'model' => $this->model,
             'max_tokens' => $this->max_tokens,
         ]);
@@ -72,7 +73,7 @@ class OpenRouterAPITest extends TestCase
     {
         /* SETUP */
         $chatData = new ChatData([
-            'prompt' => 'testing prompt',
+            'prompt' => $this->prompt,
             'model' => $this->model,
             'max_tokens' => $this->max_tokens,
         ]);
@@ -97,13 +98,35 @@ class OpenRouterAPITest extends TestCase
     /**
      * @test
      */
-    public function it_throws_validation_exception_when_both_message_and_prompt_empty_in_chat_data()
+    public function it_throws_xor_validation_exception_when_both_message_and_prompt_empty_in_chat_data()
     {
         /* SETUP */
-        $this->expectException(ValidationException::class);
+        $this->expectException(XorValidationException::class);
 
         /* EXECUTE */
         new ChatData([
+            'model' => $this->model,
+            'max_tokens' => $this->max_tokens,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_xor_validation_exception_when_both_message_and_prompt_are_provided()
+    {
+        /* SETUP */
+        $this->expectException(XorValidationException::class);
+
+        /* EXECUTE */
+        new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER,
+                    'content' => $this->content,
+                ],
+            ],
+            'prompt' => $this->prompt,
             'model' => $this->model,
             'max_tokens' => $this->max_tokens,
         ]);

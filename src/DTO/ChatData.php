@@ -2,8 +2,9 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
+use MoeMizrak\LaravelOpenrouter\Exceptions\XorValidationException;
 use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
-use MoeMizrak\LaravelOpenrouter\Rules\RequiredWithoutAll;
+use MoeMizrak\LaravelOpenrouter\Rules\XORFields;
 use MoeMizrak\LaravelOpenrouter\Types\RouteType;
 use MoeMizrak\LaravelOpenrouter\Types\ToolChoiceType;
 use Spatie\DataTransferObject\DataTransferObject;
@@ -17,11 +18,31 @@ use Spatie\DataTransferObject\DataTransferObject;
 class ChatData extends DataTransferObject
 {
     /**
+     * Constructor
+     *
+     * @param $params
+     * @throws \Spatie\DataTransferObject\Exceptions\UnknownProperties
+     */
+    public function __construct($params)
+    {
+        /**
+         * Handle validation for XOR fields here and throw an exception if NOT valid:
+         */
+        $validatorMessagesAndPrompt = new XORFields('messages', 'prompt'); // messages and prompt fields are XOR gated
+        $validationResultMessagesAndPrompt = $validatorMessagesAndPrompt->validate($params); // Validate params
+
+        if (! $validationResultMessagesAndPrompt->isValid) {
+            throw new XorValidationException($validationResultMessagesAndPrompt->message);
+        }
+
+        parent::__construct($params);
+    }
+
+    /**
      * Message array consists of DTO data.
      *
      * @var MessageData[]|null
      */
-    #[RequiredWithoutAll(['prompt'])]
     public ?array $messages;
 
     /**
@@ -29,7 +50,6 @@ class ChatData extends DataTransferObject
      *
      * @var string|null
      */
-    #[RequiredWithoutAll(['messages'])]
     public ?string $prompt;
 
     /**
