@@ -15,9 +15,9 @@ class MessageData extends DataTransferObject
     /**
      * The content of the message.
      *
-     * @var string|array|null
+     * @var string|TextContentData[]|ImageContentPartData[]|array|null
      */
-    public string|array|null $content; // todo check out type ContentPart = TextContent | ImageContentPart; from doc
+    public string|array|null $content;
 
     /**
      * The entity that produced the message.
