@@ -4,9 +4,11 @@ namespace MoeMizrak\LaravelOpenrouter\Tests;
 
 use Illuminate\Support\Arr;
 use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
+use MoeMizrak\LaravelOpenrouter\DTO\CostResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ImageContentPartData;
 use MoeMizrak\LaravelOpenrouter\DTO\ImageUrlData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
+use MoeMizrak\LaravelOpenrouter\DTO\ResponseFormatData;
 use MoeMizrak\LaravelOpenrouter\DTO\TextContentData;
 use MoeMizrak\LaravelOpenrouter\Exceptions\XorValidationException;
 use MoeMizrak\LaravelOpenrouter\OpenRouterRequest;
@@ -244,6 +246,146 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
     }
 
+    /**
+     * @test
+     * @deprecated - Please use if you set default model to a free one!
+     */
+    public function it_successfully_makes_a_basic_chat_completion_open_route_api_request_when_model_is_not_set()
+    {
+        /* SETUP */
+        $this->markTestSkipped('This test method is deprecated because if the default model is set to a non-free model,
+         it might call a paid one. For the sake of compatibility, this method will not be removed.');
+        // model is not set, so open router will use user default model
+        $chatData = new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER,
+                    'content' => $this->content,
+                ],
+            ],
+            'max_tokens' => $this->max_tokens,
+        ]);
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->assertInstanceOf(ResponseData::class, $response);
+        $this->assertNotNull($response->id);
+        $this->assertNotEquals($this->model, $response->model); // Not equal to defined model, instead uses some other model as default
+        $this->assertEquals('chat.completion', $response->object);
+        $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
+        $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_makes_a_basic_chat_completion_open_route_api_request_with_response_format()
+    {
+        /* SETUP */
+        $responseFormatData = new ResponseFormatData([
+            'type' => 'json_object'
+        ]);
+        $chatData = new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER,
+                    'content' => $this->content,
+                ],
+            ],
+            'model' => $this->model,
+            'max_tokens' => $this->max_tokens,
+            'response_format' => $responseFormatData,
+        ]);
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->generalTestAssertions($response);
+        $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
+        $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_makes_a_basic_chat_completion_open_route_api_request_with_stop_parameter()
+    {
+        /* SETUP */
+        $stop = ['bugs'];
+        $content = 'Repeat this sentence: Function junction, where parameters meet, variables mingle, and bugs retreat.';
+        $chatData = new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER,
+                    'content' => $content,
+                ],
+            ],
+            'model' => $this->model,
+            'max_tokens' => $this->max_tokens,
+            'stop' => $stop,
+        ]);
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->generalTestAssertions($response);
+        $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
+        $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
+        $this->assertEquals('bugs', Arr::get($response->choices[0], 'finish_reason'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_makes_cost_request_with_generation_id()
+    {
+        /* SETUP */
+        $chatData = new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER,
+                    'content' => $this->content,
+                ],
+            ],
+            'model' => $this->model,
+            'max_tokens' => $this->max_tokens,
+        ]);
+        $chatResponse = $this->api->chatRequest($chatData);
+        $generationId = $chatResponse->id;
+        sleep(3); // Pauses the script for 3 seconds just to make sure $generationId is generated
+
+        /* EXECUTE */
+        $response = $this->api->costRequest($generationId);
+
+        /* ASSERT */
+        $this->assertInstanceOf(CostResponseData::class, $response);
+        $this->assertNotNull($response->id);
+        $this->assertEquals($this->model, $response->model);
+        $this->assertNotNull($response->total_cost);
+        $this->assertNotNull($response->origin);
+        $this->assertNotNull($response->streamed);
+        $this->assertNotNull($response->cancelled);
+        $this->assertNotNull($response->finish_reason);
+        $this->assertNotNull($response->generation_time);
+        $this->assertNotNull($response->created_at);
+        $this->assertNotNull($response->provider_name);
+        $this->assertNotNull($response->tokens_prompt);
+        $this->assertNotNull($response->tokens_completion);
+        $this->assertNotNull($response->native_tokens_prompt);
+        $this->assertNotNull($response->native_tokens_completion);
+        $this->assertNotNull($response->app_id);
+        $this->assertNotNull($response->latency);
+        $this->assertNotNull($response->upstream_id);
+        $this->assertNotNull($response->usage);
+    }
+
+
+
+    //todo stream parameter should be tested
     // todo test $value instanceof DataTransferObject =>   #[AllowedValues(['none', 'auto'])]  public string|ToolCallData|null $tool_choice;
     // todo add test for $tool_choice in chatdata for dto object and others too, test validation class
     // todo add validation error case for tests, how to handle validation errors returned from spatie DTO, and even from api call error
