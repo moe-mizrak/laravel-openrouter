@@ -19,7 +19,7 @@ use Spatie\DataTransferObject\DataTransferObject;
 class ResponseData extends DataTransferObject
 {
     /**
-     *
+     * ID of the request which later can be used for cost request
      *
      * @var string
      */

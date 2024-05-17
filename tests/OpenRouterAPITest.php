@@ -4,6 +4,7 @@ namespace MoeMizrak\LaravelOpenrouter\Tests;
 
 use Illuminate\Support\Arr;
 use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
+use MoeMizrak\LaravelOpenrouter\DTO\CostResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ImageContentPartData;
 use MoeMizrak\LaravelOpenrouter\DTO\ImageUrlData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
@@ -336,6 +337,53 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
         $this->assertEquals('bugs', Arr::get($response->choices[0], 'finish_reason'));
     }
+
+    /**
+     * @test
+     */
+    public function it_makes_cost_request_with_generation_id()
+    {
+        /* SETUP */
+        $chatData = new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER,
+                    'content' => $this->content,
+                ],
+            ],
+            'model' => $this->model,
+            'max_tokens' => $this->max_tokens,
+        ]);
+        $chatResponse = $this->api->chatRequest($chatData);
+        $generationId = $chatResponse->id;
+        sleep(3); // Pauses the script for 3 seconds just to make sure $generationId is generated
+
+        /* EXECUTE */
+        $response = $this->api->costRequest($generationId);
+
+        /* ASSERT */
+        $this->assertInstanceOf(CostResponseData::class, $response);
+        $this->assertNotNull($response->id);
+        $this->assertEquals($this->model, $response->model);
+        $this->assertNotNull($response->total_cost);
+        $this->assertNotNull($response->origin);
+        $this->assertNotNull($response->streamed);
+        $this->assertNotNull($response->cancelled);
+        $this->assertNotNull($response->finish_reason);
+        $this->assertNotNull($response->generation_time);
+        $this->assertNotNull($response->created_at);
+        $this->assertNotNull($response->provider_name);
+        $this->assertNotNull($response->tokens_prompt);
+        $this->assertNotNull($response->tokens_completion);
+        $this->assertNotNull($response->native_tokens_prompt);
+        $this->assertNotNull($response->native_tokens_completion);
+        $this->assertNotNull($response->app_id);
+        $this->assertNotNull($response->latency);
+        $this->assertNotNull($response->upstream_id);
+        $this->assertNotNull($response->usage);
+    }
+
+
 
     //todo stream parameter should be tested
     // todo test $value instanceof DataTransferObject =>   #[AllowedValues(['none', 'auto'])]  public string|ToolCallData|null $tool_choice;
