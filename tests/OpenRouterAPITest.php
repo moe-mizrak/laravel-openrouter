@@ -613,6 +613,6 @@ class OpenRouterAPITest extends TestCase
             'tool_choice' => $toolChoice,
         ]);
     }
-
+  
     // todo add validation error case for tests, how to handle validation errors returned from spatie DTO, and even from api call error
 }
