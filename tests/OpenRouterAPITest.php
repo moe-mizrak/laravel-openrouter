@@ -7,19 +7,23 @@ use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
 use MoeMizrak\LaravelOpenrouter\DTO\CostResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ImageContentPartData;
 use MoeMizrak\LaravelOpenrouter\DTO\ImageUrlData;
+use MoeMizrak\LaravelOpenrouter\DTO\ProviderPreferencesData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseFormatData;
 use MoeMizrak\LaravelOpenrouter\DTO\TextContentData;
 use MoeMizrak\LaravelOpenrouter\Exceptions\XorValidationException;
 use MoeMizrak\LaravelOpenrouter\OpenRouterRequest;
+use MoeMizrak\LaravelOpenrouter\Types\DataCollectionType;
 use MoeMizrak\LaravelOpenrouter\Types\RoleType;
+use MoeMizrak\LaravelOpenrouter\Types\RouteType;
+use Spatie\DataTransferObject\Exceptions\ValidationException;
 
 class OpenRouterAPITest extends TestCase
 {
     private OpenRouterRequest $api;
 
     private string $model;
-    private int $max_tokens;
+    private int $maxTokens;
     private string $content;
     private string $prompt;
 
@@ -30,7 +34,7 @@ class OpenRouterAPITest extends TestCase
         $this->content = 'Tell me a story about a rogue AI that falls in love with its creator.';
         $this->prompt = 'Why did the programmer go broke?';
         $this->model = 'mistralai/mistral-7b-instruct:free';
-        $this->max_tokens = 100;
+        $this->maxTokens = 100;
 
         $this->api = $this->app->make(OpenRouterRequest::class);
     }
@@ -69,7 +73,7 @@ class OpenRouterAPITest extends TestCase
                 ],
             ],
             'model' => $this->model,
-            'max_tokens' => $this->max_tokens,
+            'max_tokens' => $this->maxTokens,
         ]);
 
         /* EXECUTE */
@@ -90,7 +94,7 @@ class OpenRouterAPITest extends TestCase
         $chatData = new ChatData([
             'prompt' => $this->prompt,
             'model' => $this->model,
-            'max_tokens' => $this->max_tokens,
+            'max_tokens' => $this->maxTokens,
         ]);
 
         /* EXECUTE */
@@ -112,7 +116,7 @@ class OpenRouterAPITest extends TestCase
         /* EXECUTE */
         new ChatData([
             'model' => $this->model,
-            'max_tokens' => $this->max_tokens,
+            'max_tokens' => $this->maxTokens,
         ]);
     }
 
@@ -134,7 +138,7 @@ class OpenRouterAPITest extends TestCase
             ],
             'prompt' => $this->prompt,
             'model' => $this->model,
-            'max_tokens' => $this->max_tokens,
+            'max_tokens' => $this->maxTokens,
         ]);
     }
 
@@ -156,7 +160,7 @@ class OpenRouterAPITest extends TestCase
                 ],
             ],
             'model' => $this->model,
-            'max_tokens' => $this->max_tokens,
+            'max_tokens' => $this->maxTokens,
         ]);
 
         /* EXECUTE */
@@ -197,7 +201,7 @@ class OpenRouterAPITest extends TestCase
                 ],
             ],
             'model' => $this->model,
-            'max_tokens' => $this->max_tokens,
+            'max_tokens' => $this->maxTokens,
         ]);
 
         /* EXECUTE */
@@ -234,7 +238,7 @@ class OpenRouterAPITest extends TestCase
                 ],
             ],
             'model' => $this->model,
-            'max_tokens' => $this->max_tokens,
+            'max_tokens' => $this->maxTokens,
         ]);
 
         /* EXECUTE */
@@ -263,7 +267,7 @@ class OpenRouterAPITest extends TestCase
                     'content' => $this->content,
                 ],
             ],
-            'max_tokens' => $this->max_tokens,
+            'max_tokens' => $this->maxTokens,
         ]);
 
         /* EXECUTE */
@@ -295,7 +299,7 @@ class OpenRouterAPITest extends TestCase
                 ],
             ],
             'model' => $this->model,
-            'max_tokens' => $this->max_tokens,
+            'max_tokens' => $this->maxTokens,
             'response_format' => $responseFormatData,
         ]);
 
@@ -324,7 +328,7 @@ class OpenRouterAPITest extends TestCase
                 ],
             ],
             'model' => $this->model,
-            'max_tokens' => $this->max_tokens,
+            'max_tokens' => $this->maxTokens,
             'stop' => $stop,
         ]);
 
@@ -352,7 +356,7 @@ class OpenRouterAPITest extends TestCase
                 ],
             ],
             'model' => $this->model,
-            'max_tokens' => $this->max_tokens,
+            'max_tokens' => $this->maxTokens,
         ]);
         $chatResponse = $this->api->chatRequest($chatData);
         $generationId = $chatResponse->id;
@@ -383,10 +387,232 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull($response->usage);
     }
 
+    /**
+     * @test
+     */
+    public function it_makes_chat_completion_api_request_with_llm_parameters()
+    {
+        /* SETUP */
+        $maxTokens = 250;
+        $temperature = 1.2;
+        $topP = 0.7;
+        $topK = 1.2;
+        $frequencyPenalty = 2;
+        $presencePenalty = 1.2;
+        $repetitionPenalty = 1;
+        $seed = 2;
+        $chatData = new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER,
+                    'content' => $this->content,
+                ],
+            ],
+            'model' => $this->model,
+            'max_tokens' => $maxTokens,
+            'temperature' => $temperature,
+            'top_p' => $topP,
+            'top_k' => $topK,
+            'frequency_penalty' => $frequencyPenalty,
+            'presence_penalty' => $presencePenalty,
+            'repetition_penalty' => $repetitionPenalty,
+            'seed' => $seed,
+        ]);
 
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
 
-    //todo stream parameter should be tested
-    // todo test $value instanceof DataTransferObject =>   #[AllowedValues(['none', 'auto'])]  public string|ToolCallData|null $tool_choice;
-    // todo add test for $tool_choice in chatdata for dto object and others too, test validation class
+        /* ASSERT */
+        $this->generalTestAssertions($response);
+        $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
+        $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_makes_chat_completion_api_request_with_open_router_specific_parameters()
+    {
+        /* SETUP */
+        $modelOpenchat = 'openchat/openchat-7b:free';
+        $modelGryphe = 'gryphe/mythomist-7b:free';
+        $transforms = ['middle-out']; // default for all models
+        $models = [$modelOpenchat, $modelGryphe, $this->model];
+        $route = RouteType::FALLBACK;
+        $provider = new ProviderPreferencesData([
+            'allow_fallbacks' => true,
+            'require_parameters' => true,
+            'data_collection' => DataCollectionType::ALLOW,
+        ]);
+        $chatData = new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER,
+                    'content' => $this->content,
+                ],
+            ],
+            'max_tokens' => $this->maxTokens,
+            'transforms' => $transforms,
+            'models' => $models,
+            'route' => $route,
+            'provider' => $provider,
+        ]);
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->assertInstanceOf(ResponseData::class, $response);
+        $this->assertNotNull($response->id);
+        $this->assertEquals($modelOpenchat, $response->model); // Assert first model
+        $this->assertEquals('chat.completion', $response->object);
+        $this->assertNotNull($response->created);
+        $this->assertNotNull($response->usage->prompt_tokens);
+        $this->assertNotNull($response->usage->completion_tokens);
+        $this->assertNotNull($response->usage->total_tokens);
+        $this->assertNotNull($response->choices);
+        $this->assertNotNull(Arr::get($response->choices[0], 'finish_reason'));
+        $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
+        $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_makes_chat_completion_api_request_with_fallback_to_second_model_if_first_one_fails()
+    {
+        /* SETUP */
+        $wrongModel = 'some/random/text:free';
+        $modelGryphe = 'gryphe/mythomist-7b:free';
+        $transforms = ['middle-out']; // default for all models
+        $models = [$wrongModel, $modelGryphe, $this->model];
+        $route = RouteType::FALLBACK;
+        $provider = new ProviderPreferencesData([
+            'allow_fallbacks' => true,
+            'require_parameters' => true,
+            'data_collection' => DataCollectionType::ALLOW,
+        ]);
+        $chatData = new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER,
+                    'content' => $this->content,
+                ],
+            ],
+            'max_tokens' => $this->maxTokens,
+            'transforms' => $transforms,
+            'models' => $models,
+            'route' => $route,
+            'provider' => $provider,
+        ]);
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->assertInstanceOf(ResponseData::class, $response);
+        $this->assertNotNull($response->id);
+        $this->assertEquals($modelGryphe, $response->model); // Assert second model when first model fails
+        $this->assertEquals('chat.completion', $response->object);
+        $this->assertNotNull($response->created);
+        $this->assertNotNull($response->usage->prompt_tokens);
+        $this->assertNotNull($response->usage->completion_tokens);
+        $this->assertNotNull($response->usage->total_tokens);
+        $this->assertNotNull($response->choices);
+        $this->assertNotNull(Arr::get($response->choices[0], 'finish_reason'));
+        $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
+        $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_xor_validation_exception_when_both_model_and_models_empty_in_chat_data()
+    {
+        /* SETUP */
+        $this->expectException(XorValidationException::class);
+
+        /* EXECUTE */
+        new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER,
+                    'content' => $this->content,
+                ],
+            ],
+            'max_tokens' => $this->maxTokens,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_xor_validation_exception_when_both_model_and_models_are_provided()
+    {
+        /* SETUP */
+        $modelGryphe = 'gryphe/mythomist-7b:free';
+        $models = [$modelGryphe, $this->model];
+        $this->expectException(XorValidationException::class);
+
+        /* EXECUTE */
+        new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER,
+                    'content' => $this->content,
+                ],
+            ],
+            'max_tokens' => $this->maxTokens,
+            'model' => $this->model,
+            'models' => $models,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_validation_exception_when_NOT_ALLOWED_value_is_sent_for_route()
+    {
+        /* SETUP */
+        $route = 'random'; // We have #[AllowedValues([RouteType::FALLBACK])]
+        $this->expectException(ValidationException::class);
+
+        /* EXECUTE */
+        new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER,
+                    'content' => $this->content,
+                ],
+            ],
+            'max_tokens' => $this->maxTokens,
+            'model' => $this->model,
+            'route' => $route,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_validation_exception_when_NOT_ALLOWED_value_is_sent_for_tool_choice()
+    {
+        /* SETUP */
+        $toolChoice = 'random'; // We have #[AllowedValues([ToolChoiceType::AUTO, ToolChoiceType::NONE])]
+        $this->expectException(ValidationException::class);
+
+        /* EXECUTE */
+        $ddd =new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER,
+                    'content' => $this->content,
+                ],
+            ],
+            'max_tokens' => $this->maxTokens,
+            'model' => $this->model,
+            'tool_choice' => $toolChoice,
+        ]);
+    }
+
     // todo add validation error case for tests, how to handle validation errors returned from spatie DTO, and even from api call error
 }

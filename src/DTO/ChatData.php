@@ -26,17 +26,37 @@ class ChatData extends DataTransferObject
      */
     public function __construct($params)
     {
-        /**
-         * Handle validation for XOR fields here and throw an exception if NOT valid:
-         */
-        $validatorMessagesAndPrompt = new XORFields('messages', 'prompt'); // messages and prompt fields are XOR gated
-        $validationResultMessagesAndPrompt = $validatorMessagesAndPrompt->validate($params); // Validate params
-
-        if (! $validationResultMessagesAndPrompt->isValid) {
-            throw new XorValidationException($validationResultMessagesAndPrompt->message);
-        }
+        $this->validateXorFields($params);
 
         parent::__construct($params);
+    }
+
+    /**
+     * Validate the XOR fields and throw an exception if not valid.
+     *
+     * @param array $params
+     * @throws XorValidationException
+     */
+    private function validateXorFields(array $params): void
+    {
+        /**
+         * Set the fields that have xor relation.
+         */
+        $xorFields = [
+            ['messages', 'prompt'], // messages and prompt fields are XOR gated
+            ['model', 'models'], // model and models fields are XOR gated
+        ];
+
+        // Loop through the xor fields and validate
+        foreach ($xorFields as [$firstField, $secondField]) {
+            $validator = new XORFields($firstField, $secondField);
+            $validationResult = $validator->validate($params);
+
+            // Throw exception in case validation is failed.
+            if (!$validationResult->isValid) {
+                throw new XorValidationException($validationResult->message);
+            }
+        }
     }
 
     /**
@@ -100,10 +120,10 @@ class ChatData extends DataTransferObject
     /**
      * Only natively supported by OpenAI models. For others, we submit a YAML-formatted string with these tools at the end of the prompt.
      *
-     * @var string|ToolCallData|null
+     * @var string|array|null
      */
     #[AllowedValues([ToolChoiceType::AUTO, ToolChoiceType::NONE])]
-    public string|ToolCallData|null $tool_choice; // none|auto or ToolCallData as {"type": "function", "function": {"name": "my_function"}}
+    public string|array|null $tool_choice; // none|auto or ToolCallData as {"type": "function", "function": {"name": "my_function"}}
 
     /**
      * Tool calls (also known as function calling) allow you to give an LLM access to external tools.
@@ -116,7 +136,7 @@ class ChatData extends DataTransferObject
     /**
      * Modify the likelihood of specified tokens appearing in the completion. e.g. {"50256": -100}
      */
-    public ?array $logit_bias; // todo json object, map => check openai doc and test it for array also
+    public ?array $logit_bias;
 
     // OpenRouter-only parameters
     /**
