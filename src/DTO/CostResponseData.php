@@ -5,7 +5,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 use Spatie\DataTransferObject\DataTransferObject;
 
 /**
- * CostResponseData is the response DTO for cost including token info and cost which consists of type of:
+ * CostResponseData is the response DTO for cost including token info and cost which consists of:
  *  - id
  *  - model
  *  - streamed

@@ -5,7 +5,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 use Spatie\DataTransferObject\DataTransferObject;
 
 /**
- * ResponseData is the general response DTO which consists of type of:
+ * ResponseData is the general response DTO which consists of:
  * - id
  * - model
  * - object

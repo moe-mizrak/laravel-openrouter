@@ -5,6 +5,7 @@ namespace MoeMizrak\LaravelOpenrouter;
 use GuzzleHttp\Exception\GuzzleException;
 use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
 use MoeMizrak\LaravelOpenrouter\DTO\CostResponseData;
+use MoeMizrak\LaravelOpenrouter\DTO\LimitResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
 use Psr\Http\Message\ResponseInterface;
 use Spatie\DataTransferObject\Arr;
@@ -21,9 +22,6 @@ use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 class OpenRouterRequest extends OpenRouterAPI
 {
     use DataHandlingTrait;
-
-    // todo add other requests, e.g. /auth/keys,
-    // todo check for a request that gives the list of all available models
 
     /**
      * Sends a model request for the given chat conversation.
@@ -78,6 +76,27 @@ class OpenRouterRequest extends OpenRouterAPI
         );
 
         return $this->formCostsResponse($response);
+    }
+
+    /**
+     * Sends limit request for the rate limit or credits left on an API key.
+     *
+     * @return LimitResponseData
+     * @throws GuzzleException
+     * @throws UnknownProperties
+     */
+    public function limitRequest(): LimitResponseData
+    {
+        // The path for the rate limit or credits left request.
+        $limitPath = 'auth/key';
+
+        // Send GET request to the OpenRouter API limit endpoint and get the response.
+        $response = $this->client->request(
+            'GET',
+            $limitPath
+        );
+
+        return $this->formLimitResponse($response);
     }
 
     /**
@@ -140,6 +159,30 @@ class OpenRouterRequest extends OpenRouterAPI
             'moderation_latency'       => Arr::get($response, 'data.moderation_latency'),
             'upstream_id'              => Arr::get($response, 'data.upstream_id'),
             'usage'                    => Arr::get($response, 'data.usage'),
+        ]);
+    }
+
+    /**
+     * Forms the response as LimitResponseData
+     * First decodes the json response and get the result, then map it in LimitResponseData to return the response.
+     *
+     * @param ResponseInterface|null $response
+     * @return LimitResponseData
+     * @throws UnknownProperties
+     */
+    private function formLimitResponse(?ResponseInterface $response = null): LimitResponseData
+    {
+        // Decode the json response
+        $response = $this->jsonDecode($response);
+
+        // Map the response data to LimitResponseData and return it.
+        return new LimitResponseData([
+            'label'           => Arr::get($response, 'data.label'),
+            'usage'           => Arr::get($response, 'data.usage'),
+            'limit'           => Arr::get($response, 'data.limit'),
+            'limit_remaining' => Arr::get($response, 'data.limit_remaining'),
+            'is_free_tier'    => Arr::get($response, 'data.is_free_tier'),
+            'rate_limit'      => Arr::get($response, 'data.rate_limit'),
         ]);
     }
 

@@ -40,5 +40,5 @@ class FunctionData extends DataTransferObject
      *
      * @var array|null
      */
-    public ?array $parameters; // todo test if it should be string or array since in doc =>  parameters: object; // JSON Schema object
+    public ?array $parameters;
 }
