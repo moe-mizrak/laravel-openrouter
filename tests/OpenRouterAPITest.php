@@ -7,6 +7,7 @@ use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
 use MoeMizrak\LaravelOpenrouter\DTO\CostResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ImageContentPartData;
 use MoeMizrak\LaravelOpenrouter\DTO\ImageUrlData;
+use MoeMizrak\LaravelOpenrouter\DTO\LimitResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ProviderPreferencesData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseFormatData;
@@ -457,7 +458,7 @@ class OpenRouterAPITest extends TestCase
             'route' => $route,
             'provider' => $provider,
         ]);
-
+      
         /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
@@ -601,7 +602,7 @@ class OpenRouterAPITest extends TestCase
         $this->expectException(ValidationException::class);
 
         /* EXECUTE */
-        $ddd =new ChatData([
+        new ChatData([
             'messages' => [
                 [
                     'role' => RoleType::USER,
@@ -613,6 +614,22 @@ class OpenRouterAPITest extends TestCase
             'tool_choice' => $toolChoice,
         ]);
     }
-  
-    // todo add validation error case for tests, how to handle validation errors returned from spatie DTO, and even from api call error
+
+    /**
+     * @test
+     */
+    public function it_makes_a_limit_open_route_api_request_and_gets_rate_limit_and_credit_left_on_api_key()
+    {
+        /* EXECUTE */
+        $response = $this->api->limitRequest();
+
+        /* ASSERT */
+        $this->assertInstanceOf(LimitResponseData::class, $response);
+        $this->assertNotNull($response->label);
+        $this->assertNotNull($response->usage);
+        $this->assertNotNull($response->is_free_tier);
+        $this->assertNotNull($response->rate_limit);
+        $this->assertNotNull($response->rate_limit->requests);
+        $this->assertNotNull($response->rate_limit->interval);
+    }
 }
