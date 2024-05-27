@@ -23,9 +23,9 @@ class ToolCallData extends DataTransferObject
     /**
      * Name of the tool. (i.e. function)
      *
-     * @var string
+     * @var string|null
      */
-    public string $type;
+    public ?string $type;
 
     /**
      * Function DTO object.

@@ -2,7 +2,6 @@
 
 namespace MoeMizrak\LaravelOpenrouter\Rules;
 
-use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Validation\ValidationResult;
 use Spatie\DataTransferObject\Validator;
 
@@ -29,7 +28,7 @@ class AllowedValues implements Validator
      */
     public function validate(mixed $value): ValidationResult
     {
-        if (in_array($value, $this->acceptableValues) || is_null($value) || $value instanceof DataTransferObject) {
+        if (in_array($value, $this->acceptableValues) || is_null($value) || is_array($value)) {
             return ValidationResult::valid();
         }
 
