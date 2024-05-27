@@ -458,7 +458,7 @@ class OpenRouterAPITest extends TestCase
             'route' => $route,
             'provider' => $provider,
         ]);
-
+      
         /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
