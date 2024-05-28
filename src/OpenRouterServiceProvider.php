@@ -43,6 +43,10 @@ class OpenRouterServiceProvider extends ServiceProvider
             );
         });
 
+        $this->app->bind(OpenRouterRequest::class, function () {
+            return $this->app->make('laravel-openrouter');
+        });
+
         // Register the facade alias.
         AliasLoader::getInstance()->alias('LaravelOpenRouter', LaravelOpenRouter::class);
     }
