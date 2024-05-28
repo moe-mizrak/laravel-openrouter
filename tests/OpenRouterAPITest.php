@@ -438,7 +438,7 @@ class OpenRouterAPITest extends TestCase
         $modelOpenchat = 'openchat/openchat-7b:free';
         $modelGryphe = 'gryphe/mythomist-7b:free';
         $transforms = ['middle-out']; // default for all models
-        $models = [$modelOpenchat, $modelGryphe, $this->model];
+        $models = [$this->model, $modelOpenchat, $modelGryphe];
         $route = RouteType::FALLBACK;
         $provider = new ProviderPreferencesData([
             'allow_fallbacks' => true,
@@ -465,7 +465,7 @@ class OpenRouterAPITest extends TestCase
         /* ASSERT */
         $this->assertInstanceOf(ResponseData::class, $response);
         $this->assertNotNull($response->id);
-        $this->assertEquals($modelOpenchat, $response->model); // Assert first model
+        $this->assertEquals($this->model, $response->model); // Assert first model
         $this->assertEquals('chat.completion', $response->object);
         $this->assertNotNull($response->created);
         $this->assertNotNull($response->usage->prompt_tokens);
