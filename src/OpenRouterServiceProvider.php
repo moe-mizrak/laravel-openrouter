@@ -5,7 +5,9 @@ namespace MoeMizrak\LaravelOpenrouter;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleRetry\GuzzleRetryMiddleware;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
+use MoeMizrak\LaravelOpenrouter\Facades\LaravelOpenRouter;
 
 class OpenRouterServiceProvider extends ServiceProvider
 {
@@ -35,11 +37,14 @@ class OpenRouterServiceProvider extends ServiceProvider
     {
         $this->configure();
 
-        $this->app->bind(OpenRouterRequest::class, function () {
+        $this->app->bind('laravel-openrouter', function () {
             return new OpenRouterRequest(
                 $this->configureClient()
             );
         });
+
+        // Register the facade alias.
+        AliasLoader::getInstance()->alias('LaravelOpenRouter', LaravelOpenRouter::class);
     }
 
     /**

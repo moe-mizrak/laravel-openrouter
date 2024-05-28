@@ -7,12 +7,12 @@ use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
 use MoeMizrak\LaravelOpenrouter\DTO\CostResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ImageContentPartData;
 use MoeMizrak\LaravelOpenrouter\DTO\ImageUrlData;
-use MoeMizrak\LaravelOpenrouter\DTO\LimitResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ProviderPreferencesData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseFormatData;
 use MoeMizrak\LaravelOpenrouter\DTO\TextContentData;
 use MoeMizrak\LaravelOpenrouter\Exceptions\XorValidationException;
+use MoeMizrak\LaravelOpenrouter\Facades\LaravelOpenRouter;
 use MoeMizrak\LaravelOpenrouter\OpenRouterRequest;
 use MoeMizrak\LaravelOpenrouter\Types\DataCollectionType;
 use MoeMizrak\LaravelOpenrouter\Types\RoleType;
@@ -618,18 +618,24 @@ class OpenRouterAPITest extends TestCase
     /**
      * @test
      */
-    public function it_makes_a_limit_open_route_api_request_and_gets_rate_limit_and_credit_left_on_api_key()
+    public function it_makes_a_open_route_api_request_by_using_facade()
     {
+        /* SETUP */
+        $chatData = new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER,
+                    'content' => $this->content,
+                ],
+            ],
+            'model' => $this->model,
+            'max_tokens' => $this->maxTokens,
+        ]);
+
         /* EXECUTE */
-        $response = $this->api->limitRequest();
+        $response = LaravelOpenRouter::chatRequest($chatData);
 
         /* ASSERT */
-        $this->assertInstanceOf(LimitResponseData::class, $response);
-        $this->assertNotNull($response->label);
-        $this->assertNotNull($response->usage);
-        $this->assertNotNull($response->is_free_tier);
-        $this->assertNotNull($response->rate_limit);
-        $this->assertNotNull($response->rate_limit->requests);
-        $this->assertNotNull($response->rate_limit->interval);
+        $this->generalTestAssertions($response);
     }
 }
