@@ -108,22 +108,22 @@ This is a sample chat data instance:
 ```php
 $chatData = new ChatData([
     'messages' => [
-        [
-            'role' => RoleType::USER,
+        new MessageData([
+            'role'    => RoleType::USER,
             'content' => [
                 new TextContentData([
                     'type' => TextContentData::ALLOWED_TYPE,
                     'text' => 'This is a sample text content.',
                 ]),
                 new ImageContentPartData([
-                    'type' => ImageContentPartData::ALLOWED_TYPE,
+                    'type'      => ImageContentPartData::ALLOWED_TYPE,
                     'image_url' => new ImageUrlData([
-                        'url' => 'https://example.com/image.jpg',
+                        'url'    => 'https://example.com/image.jpg',
                         'detail' => 'Sample image',
                     ]),
                 ]),
             ],
-        ],
+        ]),
     ],
     'response_format' => new ResponseFormatData([
         'type' => 'json_object',
@@ -149,9 +149,9 @@ $chatData = new ChatData([
     'models' => ['model1', 'model2'],
     'route' => RouteType::FALLBACK,
     'provider' => new ProviderPreferencesData([
-        'allow_fallbacks' => true,
+        'allow_fallbacks'    => true,
         'require_parameters' => true,
-        'data_collection' => DataCollectionType::ALLOW,
+        'data_collection'    => DataCollectionType::ALLOW,
     ]),
 ]);
 ```
@@ -162,13 +162,14 @@ To send a chat request, create an instance of `ChatData` and pass it to the `cha
 ```php
 $content = 'Tell me a story about a rogue AI that falls in love with its creator.'; // Your desired prompt or content
 $model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
+$messageData = new MessageData([
+    'content' => $content,
+    'role'    => RoleType::USER,
+]);
 
 $chatData = new ChatData([
     'messages'   => [
-        [
-            'role'    => RoleType::USER,
-            'content' => $content,
-        ],
+        $messageData,
     ],
     'model'      => $model,
     'max_tokens' => 100, // Adjust this value as needed
@@ -181,13 +182,14 @@ To retrieve the cost of a generation, first make a `chat request` and obtain the
 ```php
 $content = 'Tell me a story about a rogue AI that falls in love with its creator.'; // Your desired prompt or content
 $model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
+$messageData = new MessageData([
+    'content' => $content,
+    'role'    => RoleType::USER,
+]);
 
 $chatData = new ChatData([
     'messages'   => [
-        [
-            'role'    => RoleType::USER,
-            'content' => $content,
-        ],
+        $messageData,
     ],
     'model'      => $model,
     'max_tokens' => 100, // Adjust this value as needed
@@ -214,14 +216,16 @@ Similarly, to send a chat request, create an instance of `ChatData` and pass it 
 ```php
 $content = 'Tell me a story about a rogue AI that falls in love with its creator.'; // Your desired prompt or content
 $model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
+$messageData = new MessageData([
+    'content' => $content,
+    'role'    => RoleType::USER,
+]);
+
 $chatData = new ChatData([
-    'messages' => [
-        [
-            'role' => RoleType::USER,
-            'content' => $content,
-        ],
+    'messages'   => [
+        $messageData,
     ],
-    'model' => $model,
+    'model'      => $model,
     'max_tokens' => 100, // Adjust this value as needed
 ]);
 
@@ -232,13 +236,14 @@ Similarly, to retrieve the cost of a generation, create a `chat request` to obta
 ```php
 $content = 'Tell me a story about a rogue AI that falls in love with its creator.';
 $model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
+$messageData = new MessageData([
+    'content' => $content,
+    'role'    => RoleType::USER,
+]);
 
 $chatData = new ChatData([
     'messages'   => [
-        [
-            'role'    => RoleType::USER,
-            'content' => $content,
-        ],
+        $messageData,
     ],
     'model'      => $model,
     'max_tokens' => 100, // Adjust this value as needed
