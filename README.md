@@ -164,7 +164,7 @@ $content = 'Tell me a story about a rogue AI that falls in love with its creator
 $model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
 
 $chatData = new ChatData([
-    'messages'   => [ // Example with conversation history (use 'prompt' if starting fresh)
+    'messages'   => [
         [
             'role'    => RoleType::USER,
             'content' => $content,
@@ -183,7 +183,7 @@ $content = 'Tell me a story about a rogue AI that falls in love with its creator
 $model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
 
 $chatData = new ChatData([
-    'messages'   => [ // Example with conversation history (use 'prompt' if starting fresh)
+    'messages'   => [
         [
             'role'    => RoleType::USER,
             'content' => $content,
