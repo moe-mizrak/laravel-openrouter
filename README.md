@@ -31,8 +31,10 @@ composer require moe-mizrak/laravel-openrouter
 You can **publish** the **config file** with:
 
 ```bash
-php artisan vendor:publish --provider="MoeMizrak\LaravelOpenRouter\OpenRouterServiceProvider"
+php artisan vendor:publish
 ```
+> And then you can find the **laravel-openrouter** tag to publish the config file.
+
 This is the contents of the **published config file**:
 
 ```php

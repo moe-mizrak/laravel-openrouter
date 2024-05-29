@@ -13,6 +13,7 @@ use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseFormatData;
 use MoeMizrak\LaravelOpenrouter\DTO\TextContentData;
 use MoeMizrak\LaravelOpenrouter\Exceptions\XorValidationException;
+use MoeMizrak\LaravelOpenrouter\Facades\LaravelOpenRouter;
 use MoeMizrak\LaravelOpenrouter\OpenRouterRequest;
 use MoeMizrak\LaravelOpenrouter\Types\DataCollectionType;
 use MoeMizrak\LaravelOpenrouter\Types\RoleType;
@@ -458,7 +459,7 @@ class OpenRouterAPITest extends TestCase
             'route' => $route,
             'provider' => $provider,
         ]);
-      
+
         /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
@@ -631,5 +632,29 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull($response->rate_limit);
         $this->assertNotNull($response->rate_limit->requests);
         $this->assertNotNull($response->rate_limit->interval);
+    }
+
+    /**
+     * @test
+     */
+    public function it_makes_a_open_route_api_request_by_using_facade()
+    {
+        /* SETUP */
+        $chatData = new ChatData([
+            'messages' => [
+                [
+                    'role' => RoleType::USER,
+                    'content' => $this->content,
+                ],
+            ],
+            'model' => $this->model,
+            'max_tokens' => $this->maxTokens,
+        ]);
+
+        /* EXECUTE */
+        $response = LaravelOpenRouter::chatRequest($chatData);
+
+        /* ASSERT */
+        $this->generalTestAssertions($response);
     }
 }
