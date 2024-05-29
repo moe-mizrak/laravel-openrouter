@@ -104,6 +104,7 @@ Only natively suported by OpenAI models. For others, we submit a YAML-formatted 
 - **provider** (ProviderPreferencesData|null): An instance of the `ProviderPreferencesData` DTO object for configuring provider preferences.
 
 ### Creating a ChatData Instance
+This is a sample chat data instance:
 ```php
 $chatData = new ChatData([
     'messages' => [
