@@ -72,11 +72,10 @@ class OpenRouterRequest extends OpenRouterAPI
      * Sends a streaming request for the given chat conversation.
      *
      * @param ChatData $chatData
-     * @param int $readByte - Default 4096 byte (4kB) for performance.
      *
      * @return PromiseInterface
      */
-    public function chatStreamRequest(ChatData $chatData, int $readByte = 4096): PromiseInterface
+    public function chatStreamRequest(ChatData $chatData): PromiseInterface
     {
         // The path for the chat completion request.
         $chatCompletionPath = 'chat/completions';
@@ -109,10 +108,8 @@ class OpenRouterRequest extends OpenRouterAPI
          * Return streaming response promise which can be resolved with promise->wait().
          */
         return $promise->then(
-            function (ResponseInterface $response) use($readByte) {
-                $streamingResponse = $response->getBody()->read($readByte);
-
-                return $this->filterStreamingResponse($streamingResponse);
+            function (ResponseInterface $response) {
+                return $response->getBody();
             }
         );
     }
@@ -125,7 +122,7 @@ class OpenRouterRequest extends OpenRouterAPI
      * @return array
      * @throws UnknownProperties
      */
-    private function filterStreamingResponse(string $streamingResponse): array
+    public function filterStreamingResponse(string $streamingResponse): array
     {
         // Split the string by lines
         $lines = explode("\n", $streamingResponse);
@@ -133,7 +130,7 @@ class OpenRouterRequest extends OpenRouterAPI
         // Filter out unnecessary lines
         $filteredLines = array_filter($lines, function($line) {
             // Check if line starts with "data: {"
-            return strpos($line, 'data: {') === 0;
+            return str_starts_with($line, 'data: {');
         });
 
         // Decode the JSON data in each line

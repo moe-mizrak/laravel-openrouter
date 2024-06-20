@@ -150,10 +150,12 @@ class OpenRouterAPITest extends TestCase
         ]);
 
         /* EXECUTE */
-        $promise = $this->api->chatStreamRequest($chatData, 2048);
+        $promise = $this->api->chatStreamRequest($chatData);
 
         /* ASSERT */
-        $response = $promise->wait();
+        $stream = $promise->wait();
+        $rawResponse = $stream->read(1024);
+        $response = LaravelOpenRouter::filterStreamingResponse($rawResponse);
         $this->assertNotNull($response);
         $this->assertIsArray($response);
         $this->assertEquals('chat.completion.chunk', $response[0]->object);

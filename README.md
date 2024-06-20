@@ -23,6 +23,8 @@ This Laravel package provides an easy-to-use interface for integrating **[OpenRo
     - [Creating a ChatData Instance](#creating-a-chatdata-instance)
     - [Using Facade](#using-facade)
         - [Chat Request](#chat-request)
+          - [Stream Chat Request](#stream-chat-request)
+          - [Maintaining Conversation Continuity](#maintaining-conversation-continuity)
         - [Cost Request](#cost-request)
         - [Limit Request](#limit-request)
     - [Using OpenRouterRequest Class](#using-openrouterrequest-class)
@@ -177,6 +179,214 @@ $chatData = new ChatData([
 
 $chatResponse = LaravelOpenRouter::chatRequest($chatData);
 ```
+- #### Stream Chat Request
+Streaming chat request is also supported and can be used as following by using **chatStreamRequest** function:
+```php
+$content = 'Tell me a story about a rogue AI that falls in love with its creator.'; // Your desired prompt or content
+$model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
+$messageData = new MessageData([
+    'content' => $content,
+    'role'    => RoleType::USER,
+]);
+
+$chatData = new ChatData([
+    'messages'   => [
+        $messageData,
+    ],
+    'model'      => $model,
+    'max_tokens' => 100, // Adjust this value as needed
+]);
+
+/*
+ * Calls chatStreamRequest with optional $readByte parameter (default is set to 4096 when not specified)
+ */
+$promise = LaravelOpenRouter::chatStreamRequest($chatData); // PromiseInterface is returned from chatStreamRequest
+
+// Waits until the promise completes if possible.
+$stream = $promise->wait(); // $stream is type of GuzzleHttp\Psr7\Stream
+
+/*
+ * 1) You can retrieve whole raw response as: - Choose 1) or 2) depending on your case.
+ */
+$rawResponseAll = $stream->getContents(); // Instead of chunking streamed response as below - while (! $stream->eof()), it waits and gets raw response all together.
+$response = LaravelOpenRouter::filterStreamingResponse($rawResponse); // Optionally you can use filterStreamingResponse to filter raw streamed response, and map it into array of responseData DTO same as chatRequest response format.
+
+// 2) Or Retrieve streamed raw response as it becomes available:
+while (! $stream->eof()) {
+    $rawResponse = $stream->read(1024); // readByte can be set as desired, for better performance 4096 byte (4kB) can be used.
+    
+    /*
+     * Optionally you can use filterStreamingResponse to filter raw streamed response, and map it into array of responseData DTO same as chatRequest response format.
+     */
+    $response = LaravelOpenRouter::filterStreamingResponse($rawResponse);
+}
+```
+You do **not** need to specify `'stream' = true` in ChatData since `chatStreamRequest` does it for you.
+<details>
+
+This is the expected sample rawResponse (raw response returned from OpenRouter stream chunk) `$rawResponse`:
+```php
+"""
+: OPENROUTER PROCESSING\n
+\n
+data: {"id":"gen-eWgGaEbIzFq4ziGGIsIjyRtLda54","model":"mistralai/mistral-7b-instruct:free","object":"chat.completion.chunk","created":1718885921,"choices":[{"index":0,"delta":{"role":"assistant","content":"Title"},"finish_reason":null}]}\n
+\n
+data: {"id":"gen-eWgGaEbIzFq4ziGGIsIjyRtLda54","model":"mistralai/mistral-7b-instruct:free","object":"chat.completion.chunk","created":1718885921,"choices":[{"index":0,"delta":{"role":"assistant","content":": Quant"},"finish_reason":null}]}\n
+\n
+data: {"id":"gen-eWgGaEbIzFq4ziGGIsIjyRtLda54","model":"mistralai/mistral-7b-instruct:free","object":"chat.completion.chunk","created":1718885921,"choices":[{"index":0,"delta":{"role":"assistant","content":"um Echo"},"finish_reason":null}]}\n
+\n
+data: {"id":"gen-eWgGaEbIzFq4ziGGIsIjyRtLda54","model":"mistralai/mistral-7b-instruct:free","object":"chat.completion.chunk","created":1718885921,"choices":[{"index":0,"delta":{"role":"assistant","content":": A Sym"},"finish_reason":null}]}\n
+\n
+data: {"id":"gen-eWgGaEbIzFq4ziGG
+"""
+
+"""
+IsIjyRtLda54","model":"mistralai/mistral-7b-instruct:free","object":"chat.completion.chunk","created":1718885921,"choices":[{"index":0,"delta":{"role":"assistant","content":"phony of Code"},"finish_reason":null}]}\n
+\n
+data: {"id":"gen-eWgGaEbIzFq4ziGGIsIjyRtLda54","model":"mistralai/mistral-7b-instruct:free","object":"chat.completion.chunk","created":1718885921,"choices":[{"index":0,"delta":{"role":"assistant","content":"\n\nIn"},"finish_reason":null}]}\n
+\n
+data: {"id":"gen-eWgGaEbIzFq4ziGGIsIjyRtLda54","model":"mistralai/mistral-7b-instruct:free","object":"chat.completion.chunk","created":1718885921,"choices":[{"index":0,"delta":{"role":"assistant","content":" the heart of"},"finish_reason":null}]}\n
+\n
+data: {"id":"gen-eWgGaEbIzFq4ziGGIsIjyRtLda54","model":"mistralai/mistral-7b-instruct:free","object":"chat.completion.chunk","created":1718885921,"choices":[{"index":0,"delta":{"role":"assistant","content":" the bustling"},"finish_reason":null}]}\n
+\n
+data: {"id":"gen-eWgGaEbIzFq4ziGGIsIjyRtLda54","model":"mistralai/mistra
+"""
+
+"""
+l-7b-instruct:free","object":"chat.completion.chunk","created":1718885921,"choices":[{"index":0,"delta":{"role":"assistant","content":" city of Ne"},"finish_reason":null}]}\n
+\n
+data: {"id":"gen-eWgGaEbIzFq4ziGGIsIjyRtLda54","model":"mistralai/mistral-7b-instruct:free","object":"chat.completion.chunk","created":1718885921,"choices":[{"index":0,"delta":{"role":"assistant","content":"o-Tok"},"finish_reason":null}]}\n
+\n
+data: {"id":"gen-eWgGaEbIzFq4ziGGIsIjyRtLda54","model":"mistralai/mistral-7b-instruct:free","object":"chat.completion.chunk","created":1718885921,"choices":[{"index":0,"delta":{"role":"assistant","content":"yo, a"},"finish_reason":null}]}\n
+\n
+data: {"id":"gen-eWgGaEbIzFq4ziGGIsIjyRtLda54","model":"mistralai/mistral-7b-instruct:free","object":"chat.completion.chunk","created":1718885921,"choices":[{"index":0,"delta":{"role":"assistant","content":" brilliant young research"},"finish_reason":null}]}\n
+\n
+data: {"id":"gen-eWgGaEbIzFq4ziGGIsIjyRtLda54","model":"mistralai/mistral-7b-instruct:free","object":"chat.com
+"""
+...
+
+: OPENROUTER PROCESSING\n
+\n
+data: {"id":"gen-C6Xym94jZcvJv2vVpxYSyw2tV1fR","model":"mistralai/mistral-7b-instruct:free","object":"chat.completion.chunk","created":1718887189,"choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}],"usage":{"prompt_tokens":23,"completion_tokens":100,"total_tokens":123}}\n
+\n
+data: [DONE]\n 
+```
+Last `data:` carries usage information of streaming.
+`data: [DONE]\n` returned from OpenRouter server when streaming is over.
+
+This is the sample response after filterStreamingResponse:
+```
+[
+    ResponseData(
+        id: "gen-QcWgjEtiEDNHgomV2jjoQpCZlkRZ",
+        model: "mistralai/mistral-7b-instruct:free",
+        object: "chat.completion.chunk",
+        created: 1718888436,
+        choices: [
+            [
+                "index" => 0,
+                "delta" => [
+                    "role" => "assistant",
+                    "content" => "Title"
+                ],
+                "finish_reason" => null
+            ]
+        ],
+        usage: null
+    ), 
+    ResponseData(
+        id: "gen-QcWgjEtiEDNHgomV2jjoQpCZlkRZ",
+        model: "mistralai/mistral-7b-instruct:free",
+        object: "chat.completion.chunk",
+        created: 1718888436,
+        choices: [
+            [
+                "index" => 0,
+                "delta" => [
+                    "role" => "assistant",
+                    "content" => "Quant"
+                ],
+                "finish_reason" => null
+            ]
+        ],
+        usage: null
+    ), 
+    ...
+    new ResponseData([
+        'id' => 'gen-QcWgjEtiEDNHgomV2jjoQpCZlkRZ',
+        'model' => 'mistralai/mistral-7b-instruct:free',
+        'object' => 'chat.completion.chunk',
+        'created' => 1718888436,
+        'choices' => [
+            [
+                'index' => 0,
+                'delta' => [
+                    'role' => 'assistant',
+                    'content' => '',
+                ],
+                'finish_reason' => null,
+            ],
+        ],
+        'usage' => new UsageData([
+            'prompt_tokens' => 23,
+            'completion_tokens' => 100,
+            'total_tokens' => 123,
+        ]),
+    ]),
+]
+```
+</details>
+
+- #### Maintaining Conversation Continuity
+If you want to maintain **conversation continuity** meaning that historical chat will be remembered and considered for your new chat request, you need to send historical messages along with the new message:
+```php
+$model = 'mistralai/mistral-7b-instruct:free';
+        
+$firstMessage = new MessageData([
+    'role'    => RoleType::USER,
+    'content' => 'My name is Moe, the AI necromancer.',
+]);
+        
+$chatData = new ChatData([
+    'messages' => [
+         $firstMessage,
+     ],
+     'model'   => $model,
+]);
+// This is the chat which you want LLM to remember
+$oldResponse = LaravelOpenRouter::chatRequest($chatData);
+        
+/*
+* You can skip part above and just create your historical message below (maybe you retrieve historical messages from DB etc.)
+*/
+        
+// Here adding historical response to new message
+$historicalMessage = new MessageData([
+    'role'    => RoleType::ASSISTANT, // set as assistant since it is a historical message retrieved previously
+    'content' => Arr::get($oldResponse->choices[0],'message.content'), // Historical response content retrieved from previous chat request
+]);
+// This is your new message
+$newMessage = new MessageData([
+    'role'    => RoleType::USER,
+    'content' => 'Who am I?',
+]);
+        
+$chatData = new ChatData([
+    'messages' => [
+         $historicalMessage,
+         $newMessage,
+    ],
+    'model' => $model,
+]);
+
+$response = LaravelOpenRouter::chatRequest($chatData);
+```
+Expected response:
+```php
+$content = Arr::get($response->choices[0], 'message.content');
+// content = You are Moe, a fictional character and AI Necromancer, as per the context of the conversation we've established. In reality, you are the user interacting with me, an assistant designed to help answer questions and engage in friendly conversation.
+```
+
 #### Cost Request
 To retrieve the cost of a generation, first make a `chat request` and obtain the `generationId`. Then, pass the generationId to the `costRequest` method:
 ```php
@@ -231,6 +441,7 @@ $chatData = new ChatData([
 
 $response = $this->openRouterRequest->chatRequest($chatData);
 ```
+
 #### Cost Request
 Similarly, to retrieve the cost of a generation, create a `chat request` to obtain the `generationId`, then pass the `generationId` to the `costRequest` method:
 ```php
