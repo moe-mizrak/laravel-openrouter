@@ -93,6 +93,99 @@ class OpenRouterAPITest extends TestCase
     /**
      * @test
      */
+    public function it_makes_a_basic_chat_completion_open_route_api_request_with_historical_data()
+    {
+        /* SETUP */
+        $firstMessage = new MessageData([
+            'role' => RoleType::USER,
+            'content' => 'My name is Moe, the AI necromancer.',
+        ]);
+        $chatData = new ChatData([
+            'messages' => [
+                $firstMessage,
+            ],
+            'model' => $this->model,
+            'max_tokens' => $this->maxTokens,
+        ]);
+        $oldResponse = $this->api->chatRequest($chatData);
+        $historicalMessage = new MessageData([
+            'role'    => RoleType::ASSISTANT,
+            'content' => Arr::get($oldResponse->choices[0],'message.content'),
+        ]);
+        $newMessage = new MessageData([
+            'role' => RoleType::USER,
+            'content' => 'Who am I?',
+        ]);
+        $chatData = new ChatData([
+            'messages' => [
+                $historicalMessage,
+                $newMessage,
+            ],
+            'model' => $this->model,
+            'max_tokens' => $this->maxTokens,
+        ]);
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->generalTestAssertions($response);
+        $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
+        $content = Arr::get($response->choices[0], 'message.content');
+        $this->assertTrue(str_contains($content, 'Moe'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_makes_a_basic_chat_completion_stream_request()
+    {
+        /* SETUP */
+        $chatData = new ChatData([
+            'messages' => [
+                $this->messageData,
+            ],
+            'model' => $this->model,
+            'max_tokens' => $this->maxTokens,
+        ]);
+
+        /* EXECUTE */
+        $promise = $this->api->chatStreamRequest($chatData, 2048);
+
+        /* ASSERT */
+        $response = $promise->wait();
+        $this->assertNotNull($response);
+        $this->assertIsArray($response);
+        $this->assertEquals('chat.completion.chunk', $response[0]->object);
+        $this->assertNotNull(Arr::get($response[0]->choices[0], 'delta'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_responds_error_data_when_stream_request_is_made_to_chat_completion_function()
+    {
+        /* SETUP */
+        $chatData = new ChatData([
+            'messages' => [
+                $this->messageData,
+            ],
+            'model' => $this->model,
+            'max_tokens' => $this->maxTokens,
+            'stream' => true,
+        ]);
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->assertEquals(400, $response->code);
+        $this->assertEquals('For stream chat completion please use "chatStreamRequest" method instead!', $response->message);
+    }
+
+    /**
+     * @test
+     */
     public function it_makes_a_basic_prompt_chat_completion_open_route_api_request()
     {
         /* SETUP */

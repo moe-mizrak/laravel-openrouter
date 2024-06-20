@@ -3,8 +3,10 @@
 namespace MoeMizrak\LaravelOpenrouter;
 
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Promise\PromiseInterface;
 use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
 use MoeMizrak\LaravelOpenrouter\DTO\CostResponseData;
+use MoeMizrak\LaravelOpenrouter\DTO\ErrorData;
 use MoeMizrak\LaravelOpenrouter\DTO\LimitResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
 use Psr\Http\Message\ResponseInterface;
@@ -27,15 +29,23 @@ class OpenRouterRequest extends OpenRouterAPI
      * Sends a model request for the given chat conversation.
      *
      * @param ChatData $chatData
-     * @return ResponseData
      *
+     * @return ErrorData|ResponseData
      * @throws GuzzleException
      * @throws UnknownProperties
      */
-    public function chatRequest(ChatData $chatData): ResponseData
+    public function chatRequest(ChatData $chatData): ErrorData|ResponseData
     {
         // The path for the chat completion request.
         $chatCompletionPath = 'chat/completions';
+
+        // Detect if stream chat completion is requested, and return ErrorData stating that chatStreamRequest needs to be used instead.
+        if ($chatData->stream) {
+            return new ErrorData([
+                'code'    => 400,
+                'message' => 'For stream chat completion please use "chatStreamRequest" method instead!',
+            ]);
+        }
 
         // Filter null values from the chatData object and return array.
         $chatData = $this->filterNullValuesRecursive($chatData);
@@ -52,15 +62,101 @@ class OpenRouterRequest extends OpenRouterAPI
             $options
         );
 
+        // Decode the json response
+        $response = $this->jsonDecode($response);
+
         return $this->formChatResponse($response);
+    }
+
+    /**
+     * Sends a streaming request for the given chat conversation.
+     *
+     * @param ChatData $chatData
+     * @param int $readByte - Default 4096 byte (4kB) for performance.
+     *
+     * @return PromiseInterface
+     */
+    public function chatStreamRequest(ChatData $chatData, int $readByte = 4096): PromiseInterface
+    {
+        // The path for the chat completion request.
+        $chatCompletionPath = 'chat/completions';
+
+        $chatData->stream = true;
+
+        // Filter null values from the chatData object and return array.
+        $chatData = $this->filterNullValuesRecursive($chatData);
+
+        // Add headers for streaming.
+        $headers = [
+            'Content-Type' => 'text/event-stream',
+            'Cache-Control' => 'no-cache'
+        ];
+
+        // Options for the Guzzle request
+        $options = [
+            'json'    => $chatData,
+            'headers' => $headers
+        ];
+
+        // Send POST request to the OpenRouter API chat completion endpoint and get the streaming response.
+        $promise = $this->client->requestAsync(
+            'POST',
+            $chatCompletionPath,
+            $options
+        );
+
+        /*
+         * Return streaming response promise which can be resolved with promise->wait().
+         */
+        return $promise->then(
+            function (ResponseInterface $response) use($readByte) {
+                $streamingResponse = $response->getBody()->read($readByte);
+
+                return $this->filterStreamingResponse($streamingResponse);
+            }
+        );
+    }
+
+    /**
+     * It filters streaming response string so that response string is mapped into ResponseData.
+     *
+     * @param string $streamingResponse
+     *
+     * @return array
+     * @throws UnknownProperties
+     */
+    private function filterStreamingResponse(string $streamingResponse): array
+    {
+        // Split the string by lines
+        $lines = explode("\n", $streamingResponse);
+
+        // Filter out unnecessary lines
+        $filteredLines = array_filter($lines, function($line) {
+            // Check if line starts with "data: {"
+            return strpos($line, 'data: {') === 0;
+        });
+
+        // Decode the JSON data in each line
+        $responseDataArray = [];
+
+        foreach ($filteredLines as $line) {
+            // Remove "data: " and decode JSON
+            $data = json_decode(substr($line, strlen('data: ')), true);
+            // Check whether decoding was successful.
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $responseDataArray[] = $this->formChatResponse($data);
+            }
+        }
+
+        return $responseDataArray;
     }
 
     /**
      * Sends a cost request for the given generation id.
      *
      * @param string $generationId
-     * @return CostResponseData
      *
+     * @return CostResponseData
      * @throws GuzzleException
      * @throws UnknownProperties
      */
@@ -101,17 +197,14 @@ class OpenRouterRequest extends OpenRouterAPI
 
     /**
      * Forms the response as ResponseData including id, model, object created, choices and usage if exits.
-     * First decodes the json response and get the result, then map it in ResponseData to return the response.
      *
-     * @param ResponseInterface|null $response
+     * @param mixed $response
+     *
      * @return ResponseData
      * @throws UnknownProperties
      */
-    private function formChatResponse(?ResponseInterface $response = null) : ResponseData
+    private function formChatResponse(mixed $response = null) : ResponseData
     {
-        // Decode the json response
-        $response = $this->jsonDecode($response);
-
         // Map the response data to ResponseData and return it.
         return new ResponseData([
             'id'      => Arr::get($response, 'id'),
@@ -128,6 +221,7 @@ class OpenRouterRequest extends OpenRouterAPI
      * First decodes the json response, then map it in CostResponseData to return the response.
      *
      * @param ResponseInterface|null $response
+     *
      * @return CostResponseData
      * @throws UnknownProperties
      */
@@ -167,6 +261,7 @@ class OpenRouterRequest extends OpenRouterAPI
      * First decodes the json response and get the result, then map it in LimitResponseData to return the response.
      *
      * @param ResponseInterface|null $response
+     *
      * @return LimitResponseData
      * @throws UnknownProperties
      */
@@ -190,6 +285,7 @@ class OpenRouterRequest extends OpenRouterAPI
      * Decodes response to json.
      *
      * @param ResponseInterface|null $response
+     *
      * @return mixed|null
      */
     private function jsonDecode(?ResponseInterface $response = null): mixed
