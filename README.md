@@ -198,9 +198,9 @@ $chatData = new ChatData([
 ]);
 
 /*
- * Calls chatStreamRequest with optional $readByte parameter (default is set to 4096 when not specified)
+ * Calls chatStreamRequest ($promise is type of PromiseInterface)
  */
-$promise = LaravelOpenRouter::chatStreamRequest($chatData); // PromiseInterface is returned from chatStreamRequest
+$promise = LaravelOpenRouter::chatStreamRequest($chatData);
 
 // Waits until the promise completes if possible.
 $stream = $promise->wait(); // $stream is type of GuzzleHttp\Psr7\Stream
