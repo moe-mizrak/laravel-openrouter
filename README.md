@@ -209,7 +209,7 @@ $stream = $promise->wait(); // $stream is type of GuzzleHttp\Psr7\Stream
  * 1) You can retrieve whole raw response as: - Choose 1) or 2) depending on your case.
  */
 $rawResponseAll = $stream->getContents(); // Instead of chunking streamed response as below - while (! $stream->eof()), it waits and gets raw response all together.
-$response = LaravelOpenRouter::filterStreamingResponse($rawResponse); // Optionally you can use filterStreamingResponse to filter raw streamed response, and map it into array of responseData DTO same as chatRequest response format.
+$response = LaravelOpenRouter::filterStreamingResponse($rawResponseAll); // Optionally you can use filterStreamingResponse to filter raw streamed response, and map it into array of responseData DTO same as chatRequest response format.
 
 // 2) Or Retrieve streamed raw response as it becomes available:
 while (! $stream->eof()) {

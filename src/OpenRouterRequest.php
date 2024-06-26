@@ -4,6 +4,7 @@ namespace MoeMizrak\LaravelOpenrouter;
 
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Promise\PromiseInterface;
+use JsonException;
 use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
 use MoeMizrak\LaravelOpenrouter\DTO\CostResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ErrorData;
@@ -24,6 +25,9 @@ use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 class OpenRouterRequest extends OpenRouterAPI
 {
     use DataHandlingTrait;
+
+    // Buffer variable for incomplete streaming data.
+    private static string $buffer = '';
 
     /**
      * Sends a model request for the given chat conversation.
@@ -124,24 +128,59 @@ class OpenRouterRequest extends OpenRouterAPI
      */
     public function filterStreamingResponse(string $streamingResponse): array
     {
+        // Prepend any leftover data from the previous iteration
+        $streamingResponse = self::$buffer . $streamingResponse;
+        // Clear buffer
+        self::$buffer = '';
+
         // Split the string by lines
         $lines = explode("\n", $streamingResponse);
 
-        // Filter out unnecessary lines
-        $filteredLines = array_filter($lines, function($line) {
-            // Check if line starts with "data: {"
-            return str_starts_with($line, 'data: {');
-        });
-
-        // Decode the JSON data in each line
+        // Filter out unnecessary lines and decode the JSON data
         $responseDataArray = [];
 
-        foreach ($filteredLines as $line) {
-            // Remove "data: " and decode JSON
-            $data = json_decode(substr($line, strlen('data: ')), true);
-            // Check whether decoding was successful.
-            if (json_last_error() === JSON_ERROR_NONE) {
-                $responseDataArray[] = $this->formChatResponse($data);
+        // Flag to indicate if the first line is a complete JSON
+        $firstLineComplete = false;
+
+        foreach ($lines as $line) {
+            if (str_starts_with($line, 'data: ')) {
+                // Remove "data: " prefix
+                $jsonData = substr($line, strlen('data: '));
+
+                try {
+                    // Attempt to decode the JSON data
+                    $data = json_decode($jsonData, true, 512, JSON_THROW_ON_ERROR);
+                    $responseDataArray[] = $this->formChatResponse($data);
+                    $firstLineComplete = true;
+                } catch (JsonException $e) {
+                    // If JSON decoding fails, buffer the line and continue
+                    self::$buffer = $line;
+                    continue;
+                }
+            } else if (trim($line) === '' && ! empty(self::$buffer)) {
+                // If the line is empty and there's something in the buffer, try to process the buffer
+                try {
+                    // Attempt to decode the JSON data
+                    $data = json_decode(self::$buffer, true, 512, JSON_THROW_ON_ERROR);
+                    $responseDataArray[] = $this->formChatResponse($data);
+                    self::$buffer = ''; // Clear buffer after successful processing
+                } catch (JsonException $e) {
+                    // If JSON decoding fails, retain the buffer for next iteration
+                    continue;
+                }
+            } else if (! str_starts_with($line, 'data: ') && ! empty(trim($line))) {
+                // If the line doesn't start with 'data: ', it might be part of a multiline JSON or a partial line
+                if (! $firstLineComplete) {
+                    // If it's the first line and not complete, assume it's part of the first JSON object
+                    self::$buffer = $line;
+                    $firstLineComplete = true; // Set flag to true after buffering incomplete first line
+                } else {
+                    // If it's not the first line or the first line is complete, buffer it for next iteration
+                    self::$buffer .= $line;
+                }
+            } else {
+                // Line does not contain 'data: ' and is not part of a multiline JSON, likely incomplete
+                self::$buffer .= $line;
             }
         }
 
