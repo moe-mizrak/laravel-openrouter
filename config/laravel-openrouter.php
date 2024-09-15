@@ -24,4 +24,14 @@ return [
     | Default value is https://openrouter.ai/api/v1/ , which is the base URL for all requests.
     */
     'api_endpoint' => env('OPENROUTER_API_ENDPOINT', 'https://openrouter.ai/api/v1/'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | OpenRouter Timeout
+    |--------------------------------------------------------------------------
+    |
+    | Request timeout in seconds. Increase value to 120 - 180 if you use long-thinking models like openai/o1
+    |
+    */
+    'api_timeout'      => env('OPENROUTER_API_TIMEOUT', 20),
 ];

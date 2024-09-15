@@ -113,7 +113,7 @@ class OpenRouterServiceProvider extends ServiceProvider
          */
         return new Client([
             'base_uri' => config('laravel-openrouter.api_endpoint'),
-            'timeout'  => self::DEFAULT_TIMEOUT,
+            'timeout'  => config('laravel-openrouter.api_timeout', self::DEFAULT_TIMEOUT),
             'handler'  => $handlerStack,
             'headers'  => [
                 'Authorization' => 'Bearer ' . config('laravel-openrouter.api_key'),
