@@ -50,9 +50,9 @@ class CostResponseData extends DataTransferObject
     /**
      * Total cost of the request
      *
-     * @var int
+     * @var float
      */
-    public int $total_cost;
+    public float $total_cost;
 
     /**
      * Origin of the request
