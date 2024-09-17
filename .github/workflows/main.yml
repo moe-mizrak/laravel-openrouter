@@ -50,7 +50,7 @@ jobs:
         run: vendor/bin/phpunit --log-junit phpunit-report.xml
 
       - name: Upload PHPUnit Report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: PHPUnit Test Report
           path: phpunit-report.xml
