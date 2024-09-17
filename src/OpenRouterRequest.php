@@ -2,6 +2,7 @@
 
 namespace MoeMizrak\LaravelOpenrouter;
 
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Promise\PromiseInterface;
 use JsonException;
@@ -60,7 +61,7 @@ class OpenRouterRequest extends OpenRouterAPI
         ];
 
         // Send POST request to the OpenRouter API chat completion endpoint and get the response.
-        $response = $this->client->request(
+        $response = app(ClientInterface::class)->request(
             'POST',
             $chatCompletionPath,
             $options
@@ -102,7 +103,7 @@ class OpenRouterRequest extends OpenRouterAPI
         ];
 
         // Send POST request to the OpenRouter API chat completion endpoint and get the streaming response.
-        $promise = $this->client->requestAsync(
+        $promise = app(ClientInterface::class)->requestAsync(
             'POST',
             $chatCompletionPath,
             $options
@@ -202,7 +203,7 @@ class OpenRouterRequest extends OpenRouterAPI
         $costPath = 'generation?id=' . $generationId;
 
         // Send GET request to the OpenRouter API generation endpoint and get the response.
-        $response = $this->client->request(
+        $response = app(ClientInterface::class)->request(
             'GET',
             $costPath
         );
@@ -223,7 +224,7 @@ class OpenRouterRequest extends OpenRouterAPI
         $limitPath = 'auth/key';
 
         // Send GET request to the OpenRouter API limit endpoint and get the response.
-        $response = $this->client->request(
+        $response = app(ClientInterface::class)->request(
             'GET',
             $limitPath
         );

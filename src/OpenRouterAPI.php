@@ -2,8 +2,6 @@
 
 namespace MoeMizrak\LaravelOpenrouter;
 
-use GuzzleHttp\Client;
-
 /**
  * This abstract class forms the response from OpenRouter
  *
@@ -12,9 +10,4 @@ use GuzzleHttp\Client;
  */
 abstract class OpenRouterAPI
 {
-    /**
-     * OpenRouterAPI constructor.
-     * @param Client $client
-     */
-    public function __construct(protected Client $client) {}
 }
