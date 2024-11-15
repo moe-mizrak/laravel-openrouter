@@ -108,12 +108,12 @@ class ChatData extends DataTransferObject
      * See LLM Parameters (https://openrouter.ai/docs#parameters) for following:
      */
     public ?int $max_tokens = 1024; // Range: [1, context_length) The maximum number of tokens that can be generated in the completion. Default 1024.
-    public ?int $temperature; // Range: [0, 2] Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
-    public ?int $top_p; // Range: (0, 1] An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass.
-    public ?int $top_k; // Range: [1, Infinity) Not available for OpenAI models
-    public ?int $frequency_penalty; // Range: [-2, 2] Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
-    public ?int $presence_penalty; // Range: [-2, 2] Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
-    public ?int $repetition_penalty; // Range: (0, 2]
+    public ?float $temperature; // Range: [0, 2] Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
+    public ?float $top_p; // Range: (0, 1] An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass.
+    public ?float $top_k; // Range: [1, Infinity) Not available for OpenAI models
+    public ?float $frequency_penalty; // Range: [-2, 2] Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
+    public ?float $presence_penalty; // Range: [-2, 2] Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
+    public ?float $repetition_penalty; // Range: (0, 2]
     public ?int $seed; // OpenAI only. This feature is in Beta. If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same seed and parameters should return the same result.
 
     // Function-calling

@@ -89,12 +89,12 @@ The `ChatData` class is used to encapsulate the data required for making chat re
 #### LLM Parameters
 These properties control various aspects of the generated response (more [info](https://openrouter.ai/docs#parameters)):
 - **max_tokens** (int|null): The maximum number of tokens that can be generated in the completion. Default is 1024.
-- **temperature** (int|null): A value between 0 and 2 controlling the randomness of the output.
-- **top_p** (int|null): A value between 0 and 1 for nucleus sampling, an alternative to temperature sampling.
-- **top_k** (int|null): A value between 1 and infinity for top-k sampling (not available for OpenAI models).
-- **frequency_penalty** (int|null): A value between -2 and 2 for penalizing new tokens based on their existing frequency.
-- **presence_penalty** (int|null): A value between -2 and 2 for penalizing new tokens based on whether they appear in the text so far.
-- **repetition_penalty** (int|null): A value between 0 and 2 for penalizing repetitive tokens.
+- **temperature** (float|null): A value between 0 and 2 controlling the randomness of the output.
+- **top_p** (float|null): A value between 0 and 1 for nucleus sampling, an alternative to temperature sampling.
+- **top_k** (float|null): A value between 1 and infinity for top-k sampling (not available for OpenAI models).
+- **frequency_penalty** (float|null): A value between -2 and 2 for penalizing new tokens based on their existing frequency.
+- **presence_penalty** (float|null): A value between -2 and 2 for penalizing new tokens based on whether they appear in the text so far.
+- **repetition_penalty** (float|null): A value between 0 and 2 for penalizing repetitive tokens.
 - **seed** (int|null): A value for deterministic sampling (OpenAI models only, in beta).
 #### Function-calling
 Only natively suported by OpenAI models. For others, we submit a YAML-formatted string with these tools at the end of the prompt.
