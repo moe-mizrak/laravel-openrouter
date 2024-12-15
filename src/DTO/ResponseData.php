@@ -7,6 +7,7 @@ use Spatie\DataTransferObject\DataTransferObject;
 /**
  * ResponseData is the general response DTO which consists of:
  * - id
+ * - provider
  * - model
  * - object
  * - created
@@ -24,6 +25,13 @@ class ResponseData extends DataTransferObject
      * @var string
      */
     public string $id;
+
+    /**
+     * Model provider e.g. HuggingFace
+     *
+     * @var string|null
+     */
+    public ?string $provider;
 
     /**
      * Name of the model e.g. mistralai/mistral-7b-instruct:free

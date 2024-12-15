@@ -176,7 +176,7 @@ class CostResponseData extends DataTransferObject
     /**
      * Usage associated with the request
      *
-     * @var int|null
+     * @var float|null
      */
-    public ?int $usage;
+    public ?float $usage;
 }
