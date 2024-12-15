@@ -28,9 +28,14 @@ class LimitResponseData extends DataTransferObject
     /**
      * Number of credits used.
      *
-     * @var int|null
+     * @var float|null
      */
-    public ?int $usage;
+    public ?float $usage;
+
+    /**
+     * @var float|null
+     */
+    public ?float $limit_remaining;
 
     /**
      * Credit limit for the key, or null if unlimited.

@@ -55,6 +55,7 @@ class OpenRouterAPITest extends TestCase
     {
         return [
             'id' => 'gen-QcWgjEtiEDNHgomV2jjoQpCZlkRZ',
+            'provider' => 'HuggingFace',
             'model' => $this->model,
             'object' => 'chat.completion',
             'created' => 1718888436,
@@ -82,7 +83,7 @@ class OpenRouterAPITest extends TestCase
             'data' => [
                 'id'                       => "gen-QcWgjEtiEDNHgomV2jjoQpCZlkRZ",
                 'model'                    => $this->model,
-                'total_cost'               => 0,
+                'total_cost'               => 0.00492,
                 'streamed'                 => true,
                 'origin'                   => "https://github.com/moe-mizrak/laravel-openrouter",
                 'cancelled'                => false,
@@ -110,10 +111,10 @@ class OpenRouterAPITest extends TestCase
         return [
             'data' => [
                 'label'           => 'sk-or-v1-7a3...1f9',
-                'usage'           => 0,
+                'usage'           => 7.2E-5,
                 'limit'           => 1,
                 'is_free_tier'    => true,
-                'limit_remaining' => 12,
+                'limit_remaining' => -0.0369027621,
                 'rate_limit'      => [
                     'requests'  => 10,
                     'interval' => '10s',
@@ -808,6 +809,8 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull($response->label);
         $this->assertNotNull($response->usage);
         $this->assertNotNull($response->is_free_tier);
+        $this->assertNotNull($response->limit);
+        $this->assertNotNull($response->limit_remaining);
         $this->assertNotNull($response->rate_limit);
         $this->assertNotNull($response->rate_limit->requests);
         $this->assertNotNull($response->rate_limit->interval);
