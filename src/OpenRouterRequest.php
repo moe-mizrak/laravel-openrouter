@@ -5,15 +5,16 @@ namespace MoeMizrak\LaravelOpenrouter;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Promise\PromiseInterface;
+use Illuminate\Support\Arr;
 use JsonException;
 use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
 use MoeMizrak\LaravelOpenrouter\DTO\CostResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ErrorData;
 use MoeMizrak\LaravelOpenrouter\DTO\LimitResponseData;
+use MoeMizrak\LaravelOpenrouter\DTO\RateLimitData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
+use MoeMizrak\LaravelOpenrouter\DTO\UsageData;
 use Psr\Http\Message\ResponseInterface;
-use Spatie\DataTransferObject\Arr;
-use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 
 /**
  * OpenRouter request and formed response class.
@@ -46,10 +47,10 @@ class OpenRouterRequest extends OpenRouterAPI
 
         // Detect if stream chat completion is requested, and return ErrorData stating that chatStreamRequest needs to be used instead.
         if ($chatData->stream) {
-            return new ErrorData([
-                'code'    => 400,
-                'message' => 'For stream chat completion please use "chatStreamRequest" method instead!',
-            ]);
+            return new ErrorData(
+                code: 400,
+                message: 'For stream chat completion please use "chatStreamRequest" method instead!',
+            );
         }
 
         // Filter null values from the chatData object and return array.
@@ -242,16 +243,25 @@ class OpenRouterRequest extends OpenRouterAPI
      */
     private function formChatResponse(mixed $response = null) : ResponseData
     {
+        // Map the usage data if it exists.
+        $usageArray = Arr::get($response, 'usage');
+        $usage = new UsageData(
+            prompt_tokens: Arr::get($usageArray, 'prompt_tokens'),
+            completion_tokens: Arr::get($usageArray, 'completion_tokens'),
+            total_tokens: Arr::get($usageArray, 'total_tokens'),
+        );
+
+
         // Map the response data to ResponseData and return it.
-        return new ResponseData([
-            'id'       => Arr::get($response, 'id'),
-            'provider' => Arr::get($response, 'provider'),
-            'model'    => Arr::get($response, 'model'),
-            'object'   => Arr::get($response, 'object'),
-            'created'  => Arr::get($response, 'created'),
-            'choices'  => Arr::get($response, 'choices'),
-            'usage'    => Arr::get($response, 'usage'),
-        ]);
+        return new ResponseData(
+            id: Arr::get($response, 'id'),
+            provider: Arr::get($response, 'provider'),
+            model: Arr::get($response, 'model'),
+            object: Arr::get($response, 'object'),
+            created: Arr::get($response, 'created'),
+            choices: Arr::get($response, 'choices'),
+            usage: $usage,
+        );
     }
 
     /**
@@ -269,29 +279,30 @@ class OpenRouterRequest extends OpenRouterAPI
         $response = $this->jsonDecode($response);
 
         // Map the response data to CostResponseData and return it.
-        return new CostResponseData([
-            'id'                       => Arr::get($response, 'data.id'),
-            'model'                    => Arr::get($response, 'data.model'),
-            'streamed'                 => Arr::get($response, 'data.streamed'),
-            'total_cost'               => Arr::get($response, 'data.total_cost'),
-            'origin'                   => Arr::get($response, 'data.origin'),
-            'cancelled'                => Arr::get($response, 'data.cancelled'),
-            'finish_reason'            => Arr::get($response, 'data.finish_reason'),
-            'generation_time'          => Arr::get($response, 'data.generation_time'),
-            'created_at'               => Arr::get($response, 'data.created_at'),
-            'provider_name'            => Arr::get($response, 'data.provider_name'),
-            'tokens_prompt'            => Arr::get($response, 'data.tokens_prompt'),
-            'tokens_completion'        => Arr::get($response, 'data.tokens_completion'),
-            'native_tokens_prompt'     => Arr::get($response, 'data.native_tokens_prompt'),
-            'native_tokens_completion' => Arr::get($response, 'data.native_tokens_completion'),
-            'num_media_prompt'         => Arr::get($response, 'data.num_media_prompt'),
-            'num_media_completion'     => Arr::get($response, 'data.num_media_completion'),
-            'app_id'                   => Arr::get($response, 'data.app_id'),
-            'latency'                  => Arr::get($response, 'data.latency'),
-            'moderation_latency'       => Arr::get($response, 'data.moderation_latency'),
-            'upstream_id'              => Arr::get($response, 'data.upstream_id'),
-            'usage'                    => Arr::get($response, 'data.usage'),
-        ]);
+        return new CostResponseData(
+            id: Arr::get($response, 'data.id'),
+            model: Arr::get($response, 'data.model'),
+            total_cost: Arr::get($response, 'data.total_cost'),
+            origin: Arr::get($response, 'data.origin'),
+            streamed: Arr::get($response, 'data.streamed'),
+            cancelled: Arr::get($response, 'data.cancelled'),
+            finish_reason: Arr::get($response, 'data.finish_reason'),
+            generation_time: Arr::get($response, 'data.generation_time'),
+            created_at: Arr::get($response, 'data.created_at'),
+            provider_name: Arr::get($response, 'data.provider_name'),
+            tokens_prompt: Arr::get($response, 'data.tokens_prompt'),
+            tokens_completion: Arr::get($response, 'data.tokens_completion'),
+            native_tokens_prompt: Arr::get($response, 'data.native_tokens_prompt'),
+            native_tokens_completion: Arr::get($response, 'data.native_tokens_completion'),
+            num_media_prompt: Arr::get($response, 'data.num_media_prompt'),
+            num_media_completion: Arr::get($response, 'data.num_media_completion'),
+            app_id: Arr::get($response, 'data.app_id'),
+            latency: Arr::get($response, 'data.latency'),
+            moderation_latency: Arr::get($response, 'data.moderation_latency'),
+            upstream_id: Arr::get($response, 'data.upstream_id'),
+            usage: Arr::get($response, 'data.usage'),
+        );
+
     }
 
     /**
@@ -308,15 +319,22 @@ class OpenRouterRequest extends OpenRouterAPI
         // Decode the json response
         $response = $this->jsonDecode($response);
 
+        // Map the rate limit data if it exists.
+        $rateLimitArray = Arr::get($response, 'data.rate_limit');
+        $rateLimit = new RateLimitData(
+            requests: Arr::get($rateLimitArray, 'requests'),
+            interval: Arr::get($rateLimitArray, 'interval'),
+        );
+
         // Map the response data to LimitResponseData and return it.
-        return new LimitResponseData([
-            'label'           => Arr::get($response, 'data.label'),
-            'usage'           => Arr::get($response, 'data.usage'),
-            'limit'           => Arr::get($response, 'data.limit'),
-            'limit_remaining' => Arr::get($response, 'data.limit_remaining'),
-            'is_free_tier'    => Arr::get($response, 'data.is_free_tier'),
-            'rate_limit'      => Arr::get($response, 'data.rate_limit'),
-        ]);
+        return new LimitResponseData(
+            label: Arr::get($response, 'data.label'),
+            usage: Arr::get($response, 'data.usage'),
+            limit_remaining: Arr::get($response, 'data.limit_remaining'),
+            limit: Arr::get($response, 'data.limit'),
+            is_free_tier: Arr::get($response, 'data.is_free_tier'),
+            rate_limit: $rateLimit,
+        );
     }
 
     /**

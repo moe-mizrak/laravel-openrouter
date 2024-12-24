@@ -2,7 +2,7 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\LaravelData\Data as DataTransferObject;
 
 /**
  * An array of tool calls the run step was involved in.
@@ -14,23 +14,30 @@ use Spatie\DataTransferObject\DataTransferObject;
 class ToolCallData extends DataTransferObject
 {
     /**
-     * ID of the tool call.
-     *
-     * @var string|null
+     * @param string|null $id
+     * @param string|null $type
+     * @param FunctionData|null $function
      */
-    public ?string $id;
+    public function __construct(
+        /**
+         * ID of the tool call.
+         *
+         * @var string|null
+         */
+        public ?string $id = null,
 
-    /**
-     * Name of the tool. (i.e. function)
-     *
-     * @var string|null
-     */
-    public ?string $type;
+        /**
+         * Name of the tool. (i.e. function)
+         *
+         * @var string|null
+         */
+        public ?string $type = null,
 
-    /**
-     * Function DTO object.
-     *
-     * @var FunctionData|null
-     */
-    public ?FunctionData $function;
+        /**
+         * Function DTO object.
+         *
+         * @var FunctionData|null
+         */
+        public ?FunctionData $function = null
+    ) {}
 }

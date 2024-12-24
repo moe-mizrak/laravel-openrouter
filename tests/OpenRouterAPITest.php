@@ -23,7 +23,6 @@ use MoeMizrak\LaravelOpenrouter\OpenRouterRequest;
 use MoeMizrak\LaravelOpenrouter\Types\DataCollectionType;
 use MoeMizrak\LaravelOpenrouter\Types\RoleType;
 use MoeMizrak\LaravelOpenrouter\Types\RouteType;
-use Spatie\DataTransferObject\Exceptions\ValidationException;
 
 class OpenRouterAPITest extends TestCase
 {
@@ -43,10 +42,10 @@ class OpenRouterAPITest extends TestCase
         $this->prompt = 'Why did the programmer go broke?';
         $this->model = 'mistralai/mistral-7b-instruct:free';
         $this->maxTokens = 100;
-        $this->messageData = new MessageData([
-            'content' => $this->content,
-            'role' => RoleType::USER,
-        ]);
+        $this->messageData = new MessageData(
+            content: $this->content,
+            role: RoleType::USER,
+        );
 
         $this->api = $this->app->make(OpenRouterRequest::class);
     }
@@ -69,11 +68,11 @@ class OpenRouterAPITest extends TestCase
                     'finish_reason' => 'stop',
                 ],
             ],
-            'usage' => new UsageData([
-                'prompt_tokens' => 23,
-                'completion_tokens' => 100,
-                'total_tokens' => 123,
-            ]),
+            'usage' => new UsageData(
+                prompt_tokens: 23,
+                completion_tokens: 100,
+                total_tokens: 123,
+            ),
         ];
     }
 
@@ -159,13 +158,13 @@ class OpenRouterAPITest extends TestCase
     public function it_makes_a_basic_chat_completion_open_route_api_request()
     {
         /* SETUP */
-        $chatData = new ChatData([
-            'messages' => [
+        $chatData = new ChatData(
+            messages: [
                 $this->messageData,
             ],
-            'model' => $this->model,
-            'max_tokens' => $this->maxTokens,
-        ]);
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
         $this->mockOpenRouter($this->mockBasicBody());
 
         /* EXECUTE */
@@ -183,35 +182,35 @@ class OpenRouterAPITest extends TestCase
     public function it_makes_a_basic_chat_completion_open_route_api_request_with_historical_data()
     {
         /* SETUP */
-        $firstMessage = new MessageData([
-            'role' => RoleType::USER,
-            'content' => 'My name is Moe, the AI necromancer.',
-        ]);
-        $chatData = new ChatData([
-            'messages' => [
+        $firstMessage = new MessageData(
+            content: 'My name is Moe, the AI necromancer.',
+            role: RoleType::USER,
+        );
+        $chatData = new ChatData(
+            messages: [
                 $firstMessage,
             ],
-            'model' => $this->model,
-            'max_tokens' => $this->maxTokens,
-        ]);
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
         $this->mockOpenRouter($this->mockBasicBody());
         $oldResponse = $this->api->chatRequest($chatData);
-        $historicalMessage = new MessageData([
-            'role'    => RoleType::ASSISTANT,
-            'content' => Arr::get($oldResponse->choices[0],'message.content'),
-        ]);
-        $newMessage = new MessageData([
-            'role' => RoleType::USER,
-            'content' => 'Who am I?',
-        ]);
-        $chatData = new ChatData([
-            'messages' => [
+        $historicalMessage = new MessageData(
+            content: Arr::get($oldResponse->choices[0], 'message.content'),
+            role: RoleType::ASSISTANT,
+        );
+        $newMessage = new MessageData(
+            content: 'Who am I?',
+            role: RoleType::USER,
+        );
+        $chatData = new ChatData(
+            messages: [
                 $historicalMessage,
                 $newMessage,
             ],
-            'model' => $this->model,
-            'max_tokens' => $this->maxTokens,
-        ]);
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
         $mockBody = $this->mockBasicBody();
         $mockBody['choices'][0]['message.content'] = 'You are Moe the AI Necromancer, a friendly and knowledgeable assistant designed to help answer questions and engage in stimulating conversations. I specialize in a wide range of topics, including necromancy, AI, and many other subjects. How can I assist you today?';
         $this->mockOpenRouter($mockBody);
@@ -233,13 +232,13 @@ class OpenRouterAPITest extends TestCase
     {
         /* SETUP */
         $this->markTestSkipped('Test skipped until stream request is mocked');
-        $chatData = new ChatData([
-            'messages' => [
+        $chatData = new ChatData(
+            messages: [
                 $this->messageData,
             ],
-            'model' => $this->model,
-            'max_tokens' => $this->maxTokens,
-        ]);
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
 
         /* EXECUTE */
         $promise = $this->api->chatStreamRequest($chatData);
@@ -260,14 +259,14 @@ class OpenRouterAPITest extends TestCase
     public function it_responds_error_data_when_stream_request_is_made_to_chat_completion_function()
     {
         /* SETUP */
-        $chatData = new ChatData([
-            'messages' => [
+        $chatData = new ChatData(
+            messages: [
                 $this->messageData,
             ],
-            'model' => $this->model,
-            'max_tokens' => $this->maxTokens,
-            'stream' => true,
-        ]);
+            model: $this->model,
+            stream: true,
+            max_tokens: $this->maxTokens,
+        );
 
         /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
@@ -283,11 +282,11 @@ class OpenRouterAPITest extends TestCase
     public function it_makes_a_basic_prompt_chat_completion_open_route_api_request()
     {
         /* SETUP */
-        $chatData = new ChatData([
-            'prompt' => $this->prompt,
-            'model' => $this->model,
-            'max_tokens' => $this->maxTokens,
-        ]);
+        $chatData = new ChatData(
+            prompt: $this->prompt,
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
         $mockBody = $this->mockBasicBody();
         $mockBody['choices'][0]['text'] = 'Some mocked text';
         $this->mockOpenRouter($mockBody);
@@ -309,10 +308,10 @@ class OpenRouterAPITest extends TestCase
         $this->expectException(XorValidationException::class);
 
         /* EXECUTE */
-        new ChatData([
-            'model' => $this->model,
-            'max_tokens' => $this->maxTokens,
-        ]);
+        new ChatData(
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
     }
 
     /**
@@ -324,14 +323,14 @@ class OpenRouterAPITest extends TestCase
         $this->expectException(XorValidationException::class);
 
         /* EXECUTE */
-        new ChatData([
-            'messages' => [
+        new ChatData(
+            messages: [
                 $this->messageData,
             ],
-            'prompt' => $this->prompt,
-            'model' => $this->model,
-            'max_tokens' => $this->maxTokens,
-        ]);
+            prompt: $this->prompt,
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
     }
 
     /**
@@ -340,23 +339,23 @@ class OpenRouterAPITest extends TestCase
     public function it_successfully_sends_text_content_in_messages_in_the_open_route_api_request()
     {
         /* SETUP */
-        $textContentData = new TextContentData([
-            'type' => TextContentData::ALLOWED_TYPE, // it can only take text for text content
-            'text' => $this->content,
-        ]);
-        $messageData = new MessageData([
-            'role' => RoleType::USER, // text content is only for user role
-            'content' => [
+        $textContentData = new TextContentData(
+            type: TextContentData::ALLOWED_TYPE, // it can only take text for text content
+            text: $this->content,
+        );
+        $messageData = new MessageData(
+            content: [
                 $textContentData,
-            ],
-        ]);
-        $chatData = new ChatData([
-            'messages' => [
+            ], // text content is only for user role
+            role: RoleType::USER,
+        );
+        $chatData = new ChatData(
+            messages: [
                 $messageData,
             ],
-            'model' => $this->model,
-            'max_tokens' => $this->maxTokens,
-        ]);
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
         $this->mockOpenRouter($this->mockBasicBody());
 
         /* EXECUTE */
@@ -374,32 +373,32 @@ class OpenRouterAPITest extends TestCase
     public function it_successfully_sends_image_and_text_content_in_messages_in_the_open_route_api_request()
     {
         /* SETUP */
-        $imageUrlData = new ImageUrlData([
-            'url' => 'https://www.thewowstyle.com/wp-content/uploads/2015/01/images-of-nature-4.jpg',
-            'detail' => 'Nature'
-        ]);
-        $imageContentPartData = new ImageContentPartData([
-            'type'      => ImageContentPartData::ALLOWED_TYPE, // it can only take image_url for image content
-            'image_url' => $imageUrlData,
-        ]);
-        $textContentData = new TextContentData([
-            'type' => TextContentData::ALLOWED_TYPE, // it can only take text for text content
-            'text' => 'what is in the image?',
-        ]);
-        $messageData = new MessageData([
-            'role' => RoleType::USER, // image content is only for user role
-            'content' => [
+        $imageUrlData = new ImageUrlData(
+            url: 'https://www.thewowstyle.com/wp-content/uploads/2015/01/images-of-nature-4.jpg',
+            detail: 'Nature'
+        );
+        $imageContentPartData = new ImageContentPartData(
+            type: ImageContentPartData::ALLOWED_TYPE, // it can only take image_url for image content
+            image_url: $imageUrlData,
+        );
+        $textContentData = new TextContentData(
+            type: TextContentData::ALLOWED_TYPE, // it can only take text for text content
+            text: 'what is in the image?',
+        );
+        $messageData = new MessageData(
+            content: [
                 $textContentData,
                 $imageContentPartData,
-            ],
-        ]);
-        $chatData = new ChatData([
-            'messages' => [
+            ], // image content is only for user role
+            role: RoleType::USER,
+        );
+        $chatData = new ChatData(
+            messages: [
                 $messageData,
             ],
-            'model' => $this->model,
-            'max_tokens' => $this->maxTokens,
-        ]);
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
         $this->mockOpenRouter($this->mockBasicBody());
 
         /* EXECUTE */
@@ -417,28 +416,28 @@ class OpenRouterAPITest extends TestCase
     public function it_successfully_sends_multiple_text_content_in_messages_in_the_open_route_api_request()
     {
         /* SETUP */
-        $textContentDataA = new TextContentData([
-            'type' => TextContentData::ALLOWED_TYPE, // it can only take text for text content
-            'text' => 'What is the result of 2+2?',
-        ]);
-        $textContentDataB = new TextContentData([
-            'type' => TextContentData::ALLOWED_TYPE, // it can only take text for text content
-            'text' => 'Now, multiply the result with 10.',
-        ]);
-        $messageData = new MessageData([
-            'role' => RoleType::USER, // Text content is only for user role
-            'content' => [
+        $textContentDataA = new TextContentData(
+            type: TextContentData::ALLOWED_TYPE, // it can only take text for text content
+            text: 'What is the result of 2+2?',
+        );
+        $textContentDataB = new TextContentData(
+            type: TextContentData::ALLOWED_TYPE, // it can only take text for text content
+            text: 'Now, multiply the result with 10.',
+        );
+        $messageData = new MessageData(
+            content: [
                 $textContentDataA, // First text content
                 $textContentDataB, // Second text content requires result from first content
-            ],
-        ]);
-        $chatData = new ChatData([
-            'messages' => [
+            ], // Text content is only for user role
+            role: RoleType::USER,
+        );
+        $chatData = new ChatData(
+            messages: [
                 $messageData,
             ],
-            'model' => $this->model,
-            'max_tokens' => $this->maxTokens,
-        ]);
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
         $this->mockOpenRouter($this->mockBasicBody());
 
         /* EXECUTE */
@@ -460,12 +459,12 @@ class OpenRouterAPITest extends TestCase
         $this->markTestSkipped('This test method is deprecated because if the default model is set to a non-free model,
          it might call a paid one. For the sake of compatibility, this method will not be removed.');
         // model is not set, so open router will use user default model
-        $chatData = new ChatData([
-            'messages' => [
+        $chatData = new ChatData(
+            messages: [
                 $this->messageData,
             ],
-            'max_tokens' => $this->maxTokens,
-        ]);
+            max_tokens: $this->maxTokens,
+        );
 
         /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
@@ -485,17 +484,17 @@ class OpenRouterAPITest extends TestCase
     public function it_makes_a_basic_chat_completion_open_route_api_request_with_response_format()
     {
         /* SETUP */
-        $responseFormatData = new ResponseFormatData([
-            'type' => 'json_object'
-        ]);
-        $chatData = new ChatData([
-            'messages' => [
+        $responseFormatData = new ResponseFormatData(
+            type: 'json_object'
+        );
+        $chatData = new ChatData(
+            messages: [
                 $this->messageData,
             ],
-            'model' => $this->model,
-            'max_tokens' => $this->maxTokens,
-            'response_format' => $responseFormatData,
-        ]);
+            model: $this->model,
+            response_format: $responseFormatData,
+            max_tokens: $this->maxTokens,
+        );
         $this->mockOpenRouter($this->mockBasicBody());
 
         /* EXECUTE */
@@ -515,18 +514,18 @@ class OpenRouterAPITest extends TestCase
         /* SETUP */
         $stop = ['bugs'];
         $content = 'Repeat this sentence: Function junction, where parameters meet, variables mingle, and bugs retreat.';
-        $messageData = new MessageData([
-            'role' => RoleType::USER,
-            'content' => $content,
-        ]);
-        $chatData = new ChatData([
-            'messages' => [
+        $messageData = new MessageData(
+            content: $content,
+            role: RoleType::USER,
+        );
+        $chatData = new ChatData(
+            messages: [
                 $messageData,
             ],
-            'model' => $this->model,
-            'max_tokens' => $this->maxTokens,
-            'stop' => $stop,
-        ]);
+            model: $this->model,
+            stop: $stop,
+            max_tokens: $this->maxTokens,
+        );
         $mockBody = $this->mockBasicBody();
         $mockBody['choices'][0]['finish_reason'] = 'bugs';
         $this->mockOpenRouter($mockBody);
@@ -547,13 +546,13 @@ class OpenRouterAPITest extends TestCase
     public function it_makes_cost_request_with_generation_id()
     {
         /* SETUP */
-        $chatData = new ChatData([
-            'messages' => [
+        $chatData = new ChatData(
+            messages: [
                 $this->messageData,
             ],
-            'model' => $this->model,
-            'max_tokens' => $this->maxTokens,
-        ]);
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
         $this->mockOpenRouter($this->mockBasicBody());
         $chatResponse = $this->api->chatRequest($chatData);
         $generationId = $chatResponse->id;
@@ -597,20 +596,20 @@ class OpenRouterAPITest extends TestCase
         $presencePenalty = 1.2;
         $repetitionPenalty = 1;
         $seed = 2;
-        $chatData = new ChatData([
-            'messages' => [
+        $chatData = new ChatData(
+            messages: [
                 $this->messageData,
             ],
-            'model' => $this->model,
-            'max_tokens' => $maxTokens,
-            'temperature' => $temperature,
-            'top_p' => $topP,
-            'top_k' => $topK,
-            'frequency_penalty' => $frequencyPenalty,
-            'presence_penalty' => $presencePenalty,
-            'repetition_penalty' => $repetitionPenalty,
-            'seed' => $seed,
-        ]);
+            model: $this->model,
+            max_tokens: $maxTokens,
+            temperature: $temperature,
+            top_p: $topP,
+            top_k: $topK,
+            frequency_penalty: $frequencyPenalty,
+            presence_penalty: $presencePenalty,
+            repetition_penalty: $repetitionPenalty,
+            seed: $seed,
+        );
         $this->mockOpenRouter($this->mockBasicBody());
 
         /* EXECUTE */
@@ -633,21 +632,21 @@ class OpenRouterAPITest extends TestCase
         $transforms = ['middle-out']; // default for all models
         $models = [$this->model, $modelOpenchat, $modelGryphe];
         $route = RouteType::FALLBACK;
-        $provider = new ProviderPreferencesData([
-            'allow_fallbacks' => true,
-            'require_parameters' => true,
-            'data_collection' => DataCollectionType::ALLOW,
-        ]);
-        $chatData = new ChatData([
-            'messages' => [
+        $provider = new ProviderPreferencesData(
+            allow_fallbacks: true,
+            require_parameters: true,
+            data_collection: DataCollectionType::ALLOW,
+        );
+        $chatData = new ChatData(
+            messages: [
                 $this->messageData,
             ],
-            'max_tokens' => $this->maxTokens,
-            'transforms' => $transforms,
-            'models' => $models,
-            'route' => $route,
-            'provider' => $provider,
-        ]);
+            max_tokens: $this->maxTokens,
+            transforms: $transforms,
+            models: $models,
+            route: $route,
+            provider: $provider,
+        );
         $this->mockOpenRouter($this->mockBasicBody());
 
         /* EXECUTE */
@@ -678,21 +677,21 @@ class OpenRouterAPITest extends TestCase
         $transforms = ['middle-out']; // default for all models
         $models = [$wrongModel, $modelGryphe, $this->model];
         $route = RouteType::FALLBACK;
-        $provider = new ProviderPreferencesData([
-            'allow_fallbacks' => true,
-            'require_parameters' => true,
-            'data_collection' => DataCollectionType::ALLOW,
-        ]);
-        $chatData = new ChatData([
-            'messages' => [
+        $provider = new ProviderPreferencesData(
+            allow_fallbacks: true,
+            require_parameters: true,
+            data_collection: DataCollectionType::ALLOW,
+        );
+        $chatData = new ChatData(
+            messages: [
                 $this->messageData,
             ],
-            'max_tokens' => $this->maxTokens,
-            'transforms' => $transforms,
-            'models' => $models,
-            'route' => $route,
-            'provider' => $provider,
-        ]);
+            max_tokens: $this->maxTokens,
+            transforms: $transforms,
+            models: $models,
+            route: $route,
+            provider: $provider,
+        );
         $mockBody = $this->mockBasicBody();
         $mockBody['model'] = $modelGryphe;
         $this->mockOpenRouter($mockBody);
@@ -724,12 +723,12 @@ class OpenRouterAPITest extends TestCase
         $this->expectException(XorValidationException::class);
 
         /* EXECUTE */
-        new ChatData([
-            'messages' => [
+        new ChatData(
+            messages: [
                 $this->messageData,
             ],
-            'max_tokens' => $this->maxTokens,
-        ]);
+            max_tokens: $this->maxTokens,
+        );
     }
 
     /**
@@ -743,14 +742,14 @@ class OpenRouterAPITest extends TestCase
         $this->expectException(XorValidationException::class);
 
         /* EXECUTE */
-        new ChatData([
-            'messages' => [
+        new ChatData(
+            messages: [
                 $this->messageData,
             ],
-            'max_tokens' => $this->maxTokens,
-            'model' => $this->model,
-            'models' => $models,
-        ]);
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+            models: $models,
+        );
     }
 
     /**
@@ -763,14 +762,14 @@ class OpenRouterAPITest extends TestCase
         $this->expectException(ValidationException::class);
 
         /* EXECUTE */
-        new ChatData([
-            'messages' => [
+        new ChatData(
+            messages: [
                 $this->messageData,
             ],
-            'max_tokens' => $this->maxTokens,
-            'model' => $this->model,
-            'route' => $route,
-        ]);
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+            route: $route,
+        );
     }
 
     /**
@@ -783,14 +782,14 @@ class OpenRouterAPITest extends TestCase
         $this->expectException(ValidationException::class);
 
         /* EXECUTE */
-        new ChatData([
-            'messages' => [
+        new ChatData(
+            messages: [
                 $this->messageData,
             ],
-            'max_tokens' => $this->maxTokens,
-            'model' => $this->model,
-            'tool_choice' => $toolChoice,
-        ]);
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+            tool_choice: $toolChoice,
+        );
     }
 
     /**
@@ -822,13 +821,13 @@ class OpenRouterAPITest extends TestCase
     public function it_makes_a_open_route_api_request_by_using_facade()
     {
         /* SETUP */
-        $chatData = new ChatData([
-            'messages' => [
+        $chatData = new ChatData(
+            messages: [
                 $this->messageData,
             ],
-            'model' => $this->model,
-            'max_tokens' => $this->maxTokens,
-        ]);
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
         $this->mockOpenRouter($this->mockBasicBody());
 
         /* EXECUTE */

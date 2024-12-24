@@ -2,8 +2,8 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\LaravelData\Data as DataTransferObject;
+use Spatie\LaravelData\Attributes\Validation\In;
 
 /**
  * DTO for the image contents.
@@ -19,17 +19,22 @@ class ImageContentPartData extends DataTransferObject
     public const ALLOWED_TYPE = 'image_url';
 
     /**
-     * Type of the content. (i.e. image_url)
-     *
-     * @var string
+     * @param ImageUrlData $image_url
      */
-    #[AllowedValues([self::ALLOWED_TYPE])]
-    public string $type = self::ALLOWED_TYPE;
+    public function __construct(
+        /**
+         * Type of the content. (i.e. image_url)
+         *
+         * @var string
+         */
+        #[In([self::ALLOWED_TYPE])]
+        public string $type = self::ALLOWED_TYPE,
 
-    /**
-     * DTO of image url.
-     *
-     * @var ImageUrlData
-     */
-    public ImageUrlData $image_url;
+        /**
+         * DTO of image url.
+         *
+         * @var ImageUrlData
+         */
+        public ImageUrlData $image_url
+    ) {}
 }

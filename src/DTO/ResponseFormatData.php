@@ -2,7 +2,7 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\LaravelData\Data as DataTransferObject;
 
 /**
  * Allows to force the model to produce specific output format.
@@ -17,9 +17,14 @@ use Spatie\DataTransferObject\DataTransferObject;
 class ResponseFormatData extends DataTransferObject
 {
     /**
-     * The format of the output, e.g. json, text, srt, verbose_json ...
-     *
-     * @var string
+     * @param string $type
      */
-    public string $type;
+    public function __construct(
+        /**
+         * The format of the output, e.g. json, text, srt, verbose_json ...
+         *
+         * @var string
+         */
+        public string $type
+    ) {}
 }

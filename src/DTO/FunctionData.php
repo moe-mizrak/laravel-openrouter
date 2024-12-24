@@ -2,7 +2,7 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\LaravelData\Data as DataTransferObject;
 
 /**
  * Function tool that is called.
@@ -13,32 +13,40 @@ use Spatie\DataTransferObject\DataTransferObject;
 class FunctionData extends DataTransferObject
 {
     /**
-     * The name of the function e.g. getCurrentTemperature.
-     *
-     * @var string
+     * @param string $name
+     * @param string|null $arguments
+     * @param string|null $description
+     * @param array|null $parameters
      */
-    public string $name;
+    public function __construct(
+        /**
+         * The name of the function e.g. getCurrentTemperature.
+         *
+         * @var string
+         */
+        public string $name,
 
-    /**
-     * Arguments for the function.
-     * JSON format arguments.
-     *
-     * @var string|null
-     */
-    public ?string $arguments;
+        /**
+         * Arguments for the function.
+         * JSON format arguments.
+         *
+         * @var string|null
+         */
+        public ?string $arguments = null,
 
-    /**
-     * A description of the function.
-     *
-     * @var string|null
-     */
-    public ?string $description;
+        /**
+         * A description of the function.
+         *
+         * @var string|null
+         */
+        public ?string $description = null,
 
-    /**
-     * Parameters for the function.
-     * JSON Schema object.
-     *
-     * @var array|null
-     */
-    public ?array $parameters;
+        /**
+         * Parameters for the function.
+         * JSON Schema object.
+         *
+         * @var array|null
+         */
+        public ?array $parameters = null
+    ) {}
 }

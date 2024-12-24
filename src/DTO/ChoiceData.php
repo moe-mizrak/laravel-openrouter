@@ -2,7 +2,7 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\LaravelData\Data as DataTransferObject;
 
 /**
  * ChoiceData is the DTO for the choices of the api call.
@@ -13,16 +13,24 @@ use Spatie\DataTransferObject\DataTransferObject;
 class ChoiceData extends DataTransferObject
 {
     /**
-     * Depends on the model. Ex: 'stop' | 'length' | 'content_filter' | 'tool_calls' | 'function_call' ...
+     * ChoiceData constructor.
      *
-     * @var string|null
+     * @param string|null $finish_reason
+     * @param ErrorData|null $error
      */
-    public ?string $finish_reason;
+    public function __construct(
+        /**
+         * Depends on the model. Ex: 'stop' | 'length' | 'content_filter' | 'tool_calls' | 'function_call' ...
+         *
+         * @var string|null
+         */
+        public ?string $finish_reason = null,
 
-    /**
-     * Error returned from the api request
-     *
-     * @var ErrorData|null
-     */
-    public ?ErrorData $error;
+        /**
+         * Error returned from the API request
+         *
+         * @var ErrorData|null
+         */
+        public ?ErrorData $error = null
+    ) {}
 }
