@@ -2,8 +2,6 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\LaravelData\Data as DataTransferObject;
-
 /**
  * DTO for error messages.
  *
@@ -30,5 +28,7 @@ class ErrorData extends DataTransferObject
          * @var string
          */
         public string $message
-    ) {}
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }

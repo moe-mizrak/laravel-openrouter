@@ -2,12 +2,11 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use MoeMizrak\LaravelOpenrouter\Exceptions\XorValidationException;
+use MoeMizrak\LaravelOpenrouter\Exceptions\OpenRouterValidationException;
+use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
 use MoeMizrak\LaravelOpenrouter\Rules\XORFields;
 use MoeMizrak\LaravelOpenrouter\Types\RouteType;
 use MoeMizrak\LaravelOpenrouter\Types\ToolChoiceType;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Data as DataTransferObject;
 
 /**
  * DTO for the chat completion request.
@@ -20,7 +19,7 @@ class ChatData extends DataTransferObject
     /**
      * Constructor
      *
-     * @throws XorValidationException
+     * @throws OpenRouterValidationException
      */
     public function __construct(
         /**
@@ -86,7 +85,7 @@ class ChatData extends DataTransferObject
          *
          * @var string|array|null
          */
-        #[In([ToolChoiceType::AUTO, ToolChoiceType::NONE])]
+        #[AllowedValues([ToolChoiceType::AUTO, ToolChoiceType::NONE])]
         public string|array|null $tool_choice = null, // none|auto or ToolCallData as {"type": "function", "function": {"name": "my_function"}}
 
         /**
@@ -121,7 +120,7 @@ class ChatData extends DataTransferObject
         /**
          * @var string|null
          */
-        #[In([RouteType::FALLBACK])]
+        #[AllowedValues([RouteType::FALLBACK])]
         public ?string $route = null,
 
         /**
@@ -134,6 +133,8 @@ class ChatData extends DataTransferObject
     {
         $this->validateXorFields($this->messages, $this->prompt);
         $this->validateXorFields($this->model, $this->models);
+
+        parent::__construct(...func_get_args());
     }
 
     /**
@@ -143,15 +144,17 @@ class ChatData extends DataTransferObject
      * @param mixed $secondField
      *
      * @return void
-     * @throws XorValidationException
+     * @throws OpenRouterValidationException
      */
     private function validateXorFields(mixed $firstField, mixed $secondField): void
     {
+        // Validate XOR fields
         $xorFields = new XORFields($firstField, $secondField);
         $validationResult = $xorFields->validate();
 
+        // Throw an exception if the validation fails
         if (! $validationResult->isValid) {
-            throw new XorValidationException($validationResult->message);
+            throw new OpenRouterValidationException($validationResult->message);
         }
     }
 }

@@ -2,8 +2,6 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\LaravelData\Data as DataTransferObject;
-
 /**
  * Function tool that is called.
  *
@@ -48,5 +46,7 @@ class FunctionData extends DataTransferObject
          * @var array|null
          */
         public ?array $parameters = null
-    ) {}
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }

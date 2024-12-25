@@ -2,8 +2,6 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\LaravelData\Data as DataTransferObject;
-
 /**
  * ResponseData is the general response DTO which consists of:
  * - id
@@ -78,5 +76,7 @@ class ResponseData extends DataTransferObject
          * @var UsageData|null
          */
         public ?UsageData $usage = null
-    ) {}
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }

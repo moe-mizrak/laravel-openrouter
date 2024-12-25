@@ -2,8 +2,6 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\LaravelData\Data as DataTransferObject;
-
 /**
  * ChoiceData is the DTO for the choices of the api call.
  *
@@ -32,5 +30,7 @@ class ChoiceData extends DataTransferObject
          * @var ErrorData|null
          */
         public ?ErrorData $error = null
-    ) {}
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }

@@ -2,8 +2,6 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\LaravelData\Data as DataTransferObject;
-
 /**
  * LimitResponseData is the response DTO for rate limit or credits left which consists of:
  *  - label
@@ -66,5 +64,7 @@ class LimitResponseData extends DataTransferObject
          * @var RateLimitData|null
          */
         public ?RateLimitData $rate_limit = null
-    ) {}
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }

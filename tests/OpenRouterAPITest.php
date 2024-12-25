@@ -17,7 +17,7 @@ use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseFormatData;
 use MoeMizrak\LaravelOpenrouter\DTO\TextContentData;
 use MoeMizrak\LaravelOpenrouter\DTO\UsageData;
-use MoeMizrak\LaravelOpenrouter\Exceptions\XorValidationException;
+use MoeMizrak\LaravelOpenrouter\Exceptions\OpenRouterValidationException;
 use MoeMizrak\LaravelOpenrouter\Facades\LaravelOpenRouter;
 use MoeMizrak\LaravelOpenrouter\OpenRouterRequest;
 use MoeMizrak\LaravelOpenrouter\Types\DataCollectionType;
@@ -305,7 +305,7 @@ class OpenRouterAPITest extends TestCase
     public function it_throws_xor_validation_exception_when_both_message_and_prompt_empty_in_chat_data()
     {
         /* SETUP */
-        $this->expectException(XorValidationException::class);
+        $this->expectException(OpenRouterValidationException::class);
 
         /* EXECUTE */
         new ChatData(
@@ -320,7 +320,7 @@ class OpenRouterAPITest extends TestCase
     public function it_throws_xor_validation_exception_when_both_message_and_prompt_are_provided()
     {
         /* SETUP */
-        $this->expectException(XorValidationException::class);
+        $this->expectException(OpenRouterValidationException::class);
 
         /* EXECUTE */
         new ChatData(
@@ -720,7 +720,7 @@ class OpenRouterAPITest extends TestCase
     public function it_throws_xor_validation_exception_when_both_model_and_models_empty_in_chat_data()
     {
         /* SETUP */
-        $this->expectException(XorValidationException::class);
+        $this->expectException(OpenRouterValidationException::class);
 
         /* EXECUTE */
         new ChatData(
@@ -739,7 +739,7 @@ class OpenRouterAPITest extends TestCase
         /* SETUP */
         $modelGryphe = 'gryphe/mythomist-7b:free';
         $models = [$modelGryphe, $this->model];
-        $this->expectException(XorValidationException::class);
+        $this->expectException(OpenRouterValidationException::class);
 
         /* EXECUTE */
         new ChatData(
@@ -759,7 +759,7 @@ class OpenRouterAPITest extends TestCase
     {
         /* SETUP */
         $route = 'random'; // We have #[AllowedValues([RouteType::FALLBACK])]
-        $this->expectException(ValidationException::class);
+        $this->expectException(OpenRouterValidationException::class);
 
         /* EXECUTE */
         new ChatData(
@@ -779,7 +779,7 @@ class OpenRouterAPITest extends TestCase
     {
         /* SETUP */
         $toolChoice = 'random'; // We have #[AllowedValues([ToolChoiceType::AUTO, ToolChoiceType::NONE])]
-        $this->expectException(ValidationException::class);
+        $this->expectException(OpenRouterValidationException::class);
 
         /* EXECUTE */
         new ChatData(

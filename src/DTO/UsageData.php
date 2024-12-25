@@ -2,8 +2,6 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\LaravelData\Data as DataTransferObject;
-
 /**
  * UsageData is the DTO for the usage info of the api call.
  *
@@ -40,5 +38,7 @@ class UsageData extends DataTransferObject
          * @var int|null
          */
         public ?int $total_tokens = null
-    ) {}
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }

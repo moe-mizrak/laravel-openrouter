@@ -2,8 +2,6 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\LaravelData\Data as DataTransferObject;
-
 /**
  * CostResponseData is the response DTO for cost including token info and cost which consists of:
  *  - id
@@ -203,5 +201,7 @@ class CostResponseData extends DataTransferObject
          * @var float|null
          */
         public ?float $usage = null
-    ) {}
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }

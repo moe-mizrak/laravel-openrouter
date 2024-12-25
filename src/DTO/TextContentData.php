@@ -2,8 +2,7 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\LaravelData\Data as DataTransferObject;
-use Spatie\LaravelData\Attributes\Validation\In;
+use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
 
 /**
  * DTO for the contents.
@@ -28,7 +27,7 @@ class TextContentData extends DataTransferObject
          *
          * @var string
          */
-        #[In([self::ALLOWED_TYPE])]
+        #[AllowedValues([self::ALLOWED_TYPE])]
         public string $type = self::ALLOWED_TYPE,
 
         /**
@@ -37,5 +36,7 @@ class TextContentData extends DataTransferObject
          * @var string
          */
         public string $text,
-    ) {}
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }

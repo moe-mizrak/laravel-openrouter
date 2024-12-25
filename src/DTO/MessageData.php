@@ -2,8 +2,6 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\LaravelData\Data as DataTransferObject;
-
 /**
  * DTO that represents a message i.e. any changed fields on a message.
  *
@@ -48,5 +46,7 @@ class MessageData extends DataTransferObject
          * @var string|null
          */
         public ?string $name = null,
-    ) {}
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }

@@ -2,9 +2,8 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
+use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
 use MoeMizrak\LaravelOpenrouter\Types\DataCollectionType;
-use Spatie\LaravelData\Data as DataTransferObject;
-use Spatie\LaravelData\Attributes\Validation\In;
 
 /**
  * DTO for the provider preferences.
@@ -46,7 +45,7 @@ class ProviderPreferencesData extends DataTransferObject
          *
          * @var string|null
          */
-        #[In([DataCollectionType::ALLOW, DataCollectionType::DENY])]
+        #[AllowedValues([DataCollectionType::ALLOW, DataCollectionType::DENY])]
         public ?string $data_collection = null,
 
         /**
@@ -59,5 +58,7 @@ class ProviderPreferencesData extends DataTransferObject
          * @var array|null
          */
         public ?array $order = null
-    ) {}
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }

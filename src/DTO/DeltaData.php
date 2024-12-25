@@ -2,8 +2,6 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\LaravelData\Data as DataTransferObject;
-
 /**
  * DTO that represents a message delta i.e. any changed fields on a message during streaming.
  *
@@ -39,5 +37,7 @@ class DeltaData extends DataTransferObject
          * @var ToolCallData[]|null
          */
         public ?array $toolCalls = null
-    ) {}
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }

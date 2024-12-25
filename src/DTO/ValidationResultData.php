@@ -2,8 +2,6 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\LaravelData\Data as DataTransferObject;
-
 /**
  * DTO for the validation result.
  * Contains whether the validation is successful and an optional message for failure.
@@ -33,5 +31,7 @@ class ValidationResultData extends DataTransferObject
          * @var string|null
          */
         public ?string $message = null
-    ) {}
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }
