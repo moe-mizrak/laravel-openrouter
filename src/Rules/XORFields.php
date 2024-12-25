@@ -12,7 +12,7 @@ use MoeMizrak\LaravelOpenrouter\DTO\ValidationResultData;
  * Class XORFields
  * @package MoeMizrak\LaravelOpenrouter\Rules
  */
-class XORFields
+final readonly class XORFields
 {
     /**
      * Constructor a new validation instance.

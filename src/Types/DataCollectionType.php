@@ -8,7 +8,7 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
  * Class DataCollectionType
  * @package MoeMizrak\LaravelOpenrouter\Types
  */
-class DataCollectionType
+final readonly class DataCollectionType
 {
     /**
      * allow: (default) allow providers which store user data non-transiently and may train on it.

@@ -10,7 +10,7 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
  * Class ToolChoiceType
  * @package MoeMizrak\LaravelOpenrouter\Types
  */
-class ToolChoiceType
+final readonly class ToolChoiceType
 {
     /**
      * auto means the model can pick between generating a message or calling one or more tools.

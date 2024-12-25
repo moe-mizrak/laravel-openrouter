@@ -9,7 +9,7 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
  * Class RoleType
  * @package MoeMizrak\LaravelOpenrouter\Types
  */
-class RoleType
+final readonly class RoleType
 {
     /**
      * User role : Represents the input or messages from the user interacting with the assistant.

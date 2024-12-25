@@ -11,7 +11,7 @@ use MoeMizrak\LaravelOpenrouter\Exceptions\OpenRouterValidationException;
  * @package MoeMizrak\LaravelOpenrouter\Rules
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_PARAMETER)]
-class AllowedValues
+final readonly class AllowedValues
 {
     /**
      * Constructor a new validation instance.

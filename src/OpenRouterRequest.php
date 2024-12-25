@@ -3,7 +3,6 @@
 namespace MoeMizrak\LaravelOpenrouter;
 
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Support\Arr;
 use JsonException;
@@ -37,8 +36,7 @@ class OpenRouterRequest extends OpenRouterAPI
      * @param ChatData $chatData
      *
      * @return ErrorData|ResponseData
-     * @throws GuzzleException
-     * @throws UnknownProperties
+     * @throws \ReflectionException
      */
     public function chatRequest(ChatData $chatData): ErrorData|ResponseData
     {
@@ -126,7 +124,7 @@ class OpenRouterRequest extends OpenRouterAPI
      * @param string $streamingResponse
      *
      * @return array
-     * @throws UnknownProperties
+     * @throws \ReflectionException
      */
     public function filterStreamingResponse(string $streamingResponse): array
     {
@@ -195,8 +193,7 @@ class OpenRouterRequest extends OpenRouterAPI
      * @param string $generationId
      *
      * @return CostResponseData
-     * @throws GuzzleException
-     * @throws UnknownProperties
+     * @throws \ReflectionException
      */
     public function costRequest(string $generationId): CostResponseData
     {
@@ -216,8 +213,6 @@ class OpenRouterRequest extends OpenRouterAPI
      * Sends limit request for the rate limit or credits left on an API key.
      *
      * @return LimitResponseData
-     * @throws GuzzleException
-     * @throws UnknownProperties
      */
     public function limitRequest(): LimitResponseData
     {
@@ -236,10 +231,10 @@ class OpenRouterRequest extends OpenRouterAPI
     /**
      * Forms the response as ResponseData including id, model, object created, choices and usage if exits.
      *
-     * @param mixed $response
+     * @param mixed|null $response
      *
      * @return ResponseData
-     * @throws UnknownProperties
+     * @throws \ReflectionException
      */
     private function formChatResponse(mixed $response = null) : ResponseData
     {
@@ -271,7 +266,7 @@ class OpenRouterRequest extends OpenRouterAPI
      * @param ResponseInterface|null $response
      *
      * @return CostResponseData
-     * @throws UnknownProperties
+     * @throws \ReflectionException
      */
     private function formCostsResponse(?ResponseInterface $response = null) : CostResponseData
     {
@@ -312,7 +307,7 @@ class OpenRouterRequest extends OpenRouterAPI
      * @param ResponseInterface|null $response
      *
      * @return LimitResponseData
-     * @throws UnknownProperties
+     * @throws \ReflectionException
      */
     private function formLimitResponse(?ResponseInterface $response = null): LimitResponseData
     {
