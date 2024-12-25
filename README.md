@@ -36,7 +36,11 @@ This Laravel package provides an easy-to-use interface for integrating **[OpenRo
 
 ## 🤖 Requirements
 
-- **PHP 8.2** or **higher**
+- **PHP 8.2** or **higher** Use version `v2.x.x` (latest compatible version)
+    - Uses [spatie laravel-data](https://github.com/spatie/laravel-data)
+- **PHP 8.1**: Use version `v1.0.7`.
+    - Uses [spatie data-transfer-object](https://github.com/spatie/data-transfer-object)
+    - For correct way to use DTOs, refer to [v1.0.7 README](https://github.com/moe-mizrak/laravel-openrouter/tree/v1.0.7).
 
 ## 🏁 Get Started
 
