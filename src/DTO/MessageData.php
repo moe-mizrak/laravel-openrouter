@@ -11,10 +11,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 class MessageData extends DataTransferObject
 {
     /**
-     * @param array|ImageContentPartData[]|TextContentData[]|string|null $content
-     * @param string|null $role
-     * @param ToolCallData[]|null $toolCalls
-     * @param string|null $name
+     * @inheritDoc
      */
     public function __construct(
         /**

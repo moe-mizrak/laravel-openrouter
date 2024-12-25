@@ -11,10 +11,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 class FunctionData extends DataTransferObject
 {
     /**
-     * @param string $name
-     * @param string|null $arguments
-     * @param string|null $description
-     * @param array|null $parameters
+     * @inheritDoc
      */
     public function __construct(
         /**

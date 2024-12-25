@@ -17,9 +17,7 @@ use MoeMizrak\LaravelOpenrouter\Types\ToolChoiceType;
 class ChatData extends DataTransferObject
 {
     /**
-     * Constructor
-     *
-     * @throws OpenRouterValidationException
+     * @inheritDoc
      */
     public function __construct(
         /**

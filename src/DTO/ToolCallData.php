@@ -12,9 +12,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 class ToolCallData extends DataTransferObject
 {
     /**
-     * @param string|null $id
-     * @param string|null $type
-     * @param FunctionData|null $function
+     * @inheritDoc
      */
     public function __construct(
         /**

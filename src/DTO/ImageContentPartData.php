@@ -18,8 +18,7 @@ class ImageContentPartData extends DataTransferObject
     public const ALLOWED_TYPE = 'image_url';
 
     /**
-     * @param string $type
-     * @param ImageUrlData $image_url
+     * @inheritDoc
      */
     public function __construct(
         /**

@@ -15,7 +15,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 class ResponseFormatData extends DataTransferObject
 {
     /**
-     * @param string $type
+     * @inheritDoc
      */
     public function __construct(
         /**

@@ -32,27 +32,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 class CostResponseData extends DataTransferObject
 {
     /**
-     * @param string $id
-     * @param string $model
-     * @param float $total_cost
-     * @param string $origin
-     * @param bool|null $streamed
-     * @param bool|null $cancelled
-     * @param string|null $finish_reason
-     * @param int|null $generation_time
-     * @param string $created_at
-     * @param string|null $provider_name
-     * @param int|null $tokens_prompt
-     * @param int|null $tokens_completion
-     * @param int|null $native_tokens_prompt
-     * @param int|null $native_tokens_completion
-     * @param int|null $num_media_prompt
-     * @param int|null $num_media_completion
-     * @param int|null $app_id
-     * @param int|null $latency
-     * @param int|null $moderation_latency
-     * @param string|null $upstream_id
-     * @param float|null $usage
+     * @inheritDoc
      */
     public function __construct(
         /**

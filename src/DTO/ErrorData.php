@@ -11,8 +11,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 class ErrorData extends DataTransferObject
 {
     /**
-     * @param int $code
-     * @param string $message
+     * @inheritDoc
      */
     public function __construct(
         /**

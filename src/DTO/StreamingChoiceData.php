@@ -11,9 +11,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 class StreamingChoiceData extends ChoiceData
 {
     /**
-     * StreamingChoiceData constructor.
-     *
-     * @param DeltaData $delta
+     * @inheritDoc
      */
     public function __construct(
         /**

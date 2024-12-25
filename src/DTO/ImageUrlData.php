@@ -11,8 +11,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 class ImageUrlData extends DataTransferObject
 {
     /**
-     * @param string $url
-     * @param string|null $detail
+     * @inheritDoc
      */
     public function __construct(
         /**

@@ -13,8 +13,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 class RateLimitData extends DataTransferObject
 {
     /**
-     * @param int|null $requests
-     * @param string|null $interval
+     * @inheritDoc
      */
     public function __construct(
         /**

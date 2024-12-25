@@ -18,13 +18,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 class ResponseData extends DataTransferObject
 {
     /**
-     * @param string $id
-     * @param string|null $provider
-     * @param string $model
-     * @param string $object
-     * @param int $created
-     * @param array|null $choices
-     * @param UsageData|null $usage
+     * @inheritDoc
      */
     public function __construct(
         /**

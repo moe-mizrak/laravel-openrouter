@@ -12,10 +12,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 class ValidationResultData extends DataTransferObject
 {
     /**
-     * ValidationResultData constructor.
-     *
-     * @param bool $isValid
-     * @param string|null $message
+     * @inheritDoc
      */
     public function __construct(
         /**

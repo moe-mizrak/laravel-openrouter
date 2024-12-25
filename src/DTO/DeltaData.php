@@ -11,9 +11,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 class DeltaData extends DataTransferObject
 {
     /**
-     * @param string|null $content
-     * @param string|null $role
-     * @param ToolCallData[]|null $toolCalls
+     * @inheritDoc
      */
     public function __construct(
         /**

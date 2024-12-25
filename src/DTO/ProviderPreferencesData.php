@@ -15,10 +15,7 @@ use MoeMizrak\LaravelOpenrouter\Types\DataCollectionType;
 class ProviderPreferencesData extends DataTransferObject
 {
     /**
-     * @param bool|null $allow_fallbacks
-     * @param bool|null $require_parameters
-     * @param string|null $data_collection
-     * @param array|null $order
+     * @inheritDoc
      */
     public function __construct(
         /**

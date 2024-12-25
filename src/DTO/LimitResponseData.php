@@ -17,12 +17,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 class LimitResponseData extends DataTransferObject
 {
     /**
-     * @param string|null $label
-     * @param float|null $usage
-     * @param float|null $limit_remaining
-     * @param int|null $limit
-     * @param bool|null $is_free_tier
-     * @param RateLimitData|null $rate_limit
+     * @inheritDoc
      */
     public function __construct(
         /**

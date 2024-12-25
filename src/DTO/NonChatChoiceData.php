@@ -11,7 +11,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 class NonChatChoiceData extends ChoiceData
 {
     /**
-     * @param string $text
+     * @inheritDoc
      */
     public function __construct(
         /**

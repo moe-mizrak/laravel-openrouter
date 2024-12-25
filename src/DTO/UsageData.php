@@ -11,11 +11,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 class UsageData extends DataTransferObject
 {
     /**
-     * UsageData constructor.
-     *
-     * @param int|null $prompt_tokens
-     * @param int|null $completion_tokens
-     * @param int|null $total_tokens
+     * @inheritDoc
      */
     public function __construct(
         /**

@@ -11,10 +11,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 class ChoiceData extends DataTransferObject
 {
     /**
-     * ChoiceData constructor.
-     *
-     * @param string|null $finish_reason
-     * @param ErrorData|null $error
+     * @inheritDoc
      */
     public function __construct(
         /**

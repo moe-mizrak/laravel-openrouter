@@ -18,8 +18,7 @@ class TextContentData extends DataTransferObject
     public const ALLOWED_TYPE = 'text';
 
     /**
-     * @param string $type
-     * @param string $text
+     * @inheritDoc
      */
     public function __construct(
         /**
