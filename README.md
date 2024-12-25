@@ -36,7 +36,7 @@ This Laravel package provides an easy-to-use interface for integrating **[OpenRo
 
 ## 🤖 Requirements
 
-- **PHP 8.1** or **higher**
+- **PHP 8.2** or **higher**
 
 ## 🏁 Get Started
 
@@ -109,56 +109,56 @@ Only natively suported by OpenAI models. For others, we submit a YAML-formatted 
 - **provider** (ProviderPreferencesData|null): An instance of the `ProviderPreferencesData` DTO object for configuring provider preferences.
 
 ### Creating a ChatData Instance
-This is a sample chat data instance:
+This is a sample chat data instance (Refer to [spatie laravel-data](https://spatie.be/docs/laravel-data/v4/introduction) how to create, use DTOs):
 ```php
-$chatData = new ChatData([
-    'messages' => [
-        new MessageData([
-            'role'    => RoleType::USER,
-            'content' => [
-                new TextContentData([
-                    'type' => TextContentData::ALLOWED_TYPE,
-                    'text' => 'This is a sample text content.',
-                ]),
-                new ImageContentPartData([
-                    'type'      => ImageContentPartData::ALLOWED_TYPE,
-                    'image_url' => new ImageUrlData([
-                        'url'    => 'https://example.com/image.jpg',
-                        'detail' => 'Sample image',
-                    ]),
-                ]),
+$chatData = new ChatData(
+    messages: [
+        new MessageData(
+            role: RoleType::USER,
+            content: [
+                new TextContentData(
+                    type: TextContentData::ALLOWED_TYPE,
+                    text: 'This is a sample text content.',
+                ),
+                new ImageContentPartData(
+                    type: ImageContentPartData::ALLOWED_TYPE,
+                    image_url: new ImageUrlData(
+                        url: 'https://example.com/image.jpg',
+                        detail: 'Sample image',
+                    ),
+                ),
             ],
-        ]),
+        ),
     ],
-    'response_format' => new ResponseFormatData([
-        'type' => 'json_object',
-    ]),
-    'stop' => ['stop_token'],
-    'stream' => true,
-    'max_tokens' => 1024,
-    'temperature' => 0.7,
-    'top_p' => 0.9,
-    'top_k' => 50,
-    'frequency_penalty' => 0.5,
-    'presence_penalty' => 0.2,
-    'repetition_penalty' => 1.2,
-    'seed' => 42,
-    'tool_choice' => 'auto',
-    'tools' => [
+    response_format: new ResponseFormatData(
+        type: 'json_object',
+    ),
+    stop: ['stop_token'],
+    stream: true,
+    max_tokens: 1024,
+    temperature: 0.7,
+    top_p: 0.9,
+    top_k: 50,
+    frequency_penalty: 0.5,
+    presence_penalty: 0.2,
+    repetition_penalty: 1.2,
+    seed: 42,
+    tool_choice: 'auto',
+    tools: [
         // ToolCallData instances
     ],
-    'logit_bias' => [
+    logit_bias: [
         '50256' => -100,
     ],
-    'transforms' => ['middle-out'],
-    'models' => ['model1', 'model2'],
-    'route' => RouteType::FALLBACK,
-    'provider' => new ProviderPreferencesData([
-        'allow_fallbacks'    => true,
-        'require_parameters' => true,
-        'data_collection'    => DataCollectionType::ALLOW,
-    ]),
-]);
+    transforms: ['middle-out'],
+    models: ['model1', 'model2'],
+    route: RouteType::FALLBACK,
+    provider: new ProviderPreferencesData(
+        allow_fallbacks: true,
+        require_parameters: true,
+        data_collection: DataCollectionType::ALLOW,
+    ),
+);
 ```
 ### Using Facade
 The `LaravelOpenRouter` facade offers a convenient way to make OpenRouter API requests.
@@ -167,18 +167,18 @@ To send a chat request, create an instance of `ChatData` and pass it to the `cha
 ```php
 $content = 'Tell me a story about a rogue AI that falls in love with its creator.'; // Your desired prompt or content
 $model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
-$messageData = new MessageData([
-    'content' => $content,
-    'role'    => RoleType::USER,
-]);
+$messageData = new MessageData(
+    content: $content,
+    role: RoleType::USER,
+);
 
-$chatData = new ChatData([
-    'messages'   => [
+$chatData = new ChatData(
+    messages: [
         $messageData,
     ],
-    'model'      => $model,
-    'max_tokens' => 100, // Adjust this value as needed
-]);
+    model: $model,
+    max_tokens: 100, // Adjust this value as needed
+);
 
 $chatResponse = LaravelOpenRouter::chatRequest($chatData);
 ```
@@ -187,18 +187,18 @@ Streaming chat request is also supported and can be used as following by using *
 ```php
 $content = 'Tell me a story about a rogue AI that falls in love with its creator.'; // Your desired prompt or content
 $model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
-$messageData = new MessageData([
-    'content' => $content,
-    'role'    => RoleType::USER,
-]);
+$messageData = new MessageData(
+    content: $content,
+    role: RoleType::USER,
+);
 
-$chatData = new ChatData([
-    'messages'   => [
+$chatData = new ChatData(
+    messages: [
         $messageData,
     ],
-    'model'      => $model,
-    'max_tokens' => 100, // Adjust this value as needed
-]);
+    model: $model,
+    max_tokens: 100,
+);
 
 /*
  * Calls chatStreamRequest ($promise is type of PromiseInterface)
@@ -315,12 +315,12 @@ This is the sample response after filterStreamingResponse:
         usage: null
     ), 
     ...
-    new ResponseData([
-        'id' => 'gen-QcWgjEtiEDNHgomV2jjoQpCZlkRZ',
-        'model' => 'mistralai/mistral-7b-instruct:free',
-        'object' => 'chat.completion.chunk',
-        'created' => 1718888436,
-        'choices' => [
+    new ResponseData(
+        id: 'gen-QcWgjEtiEDNHgomV2jjoQpCZlkRZ',
+        model: 'mistralai/mistral-7b-instruct:free',
+        object: 'chat.completion.chunk',
+        created: 1718888436,
+        choices: [
             [
                 'index' => 0,
                 'delta' => [
@@ -330,11 +330,11 @@ This is the sample response after filterStreamingResponse:
                 'finish_reason' => null,
             ],
         ],
-        'usage' => new UsageData([
-            'prompt_tokens' => 23,
-            'completion_tokens' => 100,
-            'total_tokens' => 123,
-        ]),
+        usage: new UsageData(
+            prompt_tokens: 23,
+            completion_tokens: 100,
+            total_tokens: 123,
+        ),
     ]),
 ]
 ```
@@ -345,17 +345,17 @@ If you want to maintain **conversation continuity** meaning that historical chat
 ```php
 $model = 'mistralai/mistral-7b-instruct:free';
         
-$firstMessage = new MessageData([
-    'role'    => RoleType::USER,
-    'content' => 'My name is Moe, the AI necromancer.',
-]);
+$firstMessage = new MessageData(
+    role: RoleType::USER,
+    content: 'My name is Moe, the AI necromancer.',
+);
         
-$chatData = new ChatData([
-    'messages' => [
-         $firstMessage,
-     ],
-     'model'   => $model,
-]);
+$chatData = new ChatData(
+    messages: [
+        $firstMessage,
+    ],
+    model: $model,
+);
 // This is the chat which you want LLM to remember
 $oldResponse = LaravelOpenRouter::chatRequest($chatData);
         
@@ -364,23 +364,23 @@ $oldResponse = LaravelOpenRouter::chatRequest($chatData);
 */
         
 // Here adding historical response to new message
-$historicalMessage = new MessageData([
-    'role'    => RoleType::ASSISTANT, // set as assistant since it is a historical message retrieved previously
-    'content' => Arr::get($oldResponse->choices[0],'message.content'), // Historical response content retrieved from previous chat request
-]);
+$historicalMessage = new MessageData(
+    role: RoleType::ASSISTANT, // Set as assistant since it is a historical message retrieved previously
+    content: Arr::get($oldResponse->choices[0], 'message.content'), // Historical response content retrieved from previous chat request
+);
 // This is your new message
-$newMessage = new MessageData([
-    'role'    => RoleType::USER,
-    'content' => 'Who am I?',
-]);
+$newMessage = new MessageData(
+    role: RoleType::USER,
+    content: 'Who am I?',
+);
         
-$chatData = new ChatData([
-    'messages' => [
-         $historicalMessage,
-         $newMessage,
+$chatData = new ChatData(
+    messages: [
+        $historicalMessage,
+        $newMessage,
     ],
-    'model' => $model,
-]);
+    model: $model,
+);
 
 $response = LaravelOpenRouter::chatRequest($chatData);
 ```
@@ -395,18 +395,18 @@ To retrieve the cost of a generation, first make a `chat request` and obtain the
 ```php
 $content = 'Tell me a story about a rogue AI that falls in love with its creator.'; // Your desired prompt or content
 $model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
-$messageData = new MessageData([
-    'content' => $content,
-    'role'    => RoleType::USER,
-]);
+$messageData = new MessageData(
+    content: $content,
+    role: RoleType::USER,
+);
 
-$chatData = new ChatData([
-    'messages'   => [
+$chatData = new ChatData(
+    messages: [
         $messageData,
     ],
-    'model'      => $model,
-    'max_tokens' => 100, // Adjust this value as needed
-]);
+    model: $model,
+    max_tokens: 100,
+);
 
 $chatResponse = LaravelOpenRouter::chatRequest($chatData);
 $generationId = $chatResponse->id; // generation id which will be passed to costRequest
@@ -429,18 +429,18 @@ Similarly, to send a chat request, create an instance of `ChatData` and pass it 
 ```php
 $content = 'Tell me a story about a rogue AI that falls in love with its creator.'; // Your desired prompt or content
 $model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
-$messageData = new MessageData([
-    'content' => $content,
-    'role'    => RoleType::USER,
-]);
+$messageData = new MessageData(
+    content: $content,
+    role: RoleType::USER,
+);
 
-$chatData = new ChatData([
-    'messages'   => [
+$chatData = new ChatData(
+    messages: [
         $messageData,
     ],
-    'model'      => $model,
-    'max_tokens' => 100, // Adjust this value as needed
-]);
+    model: $model,
+    max_tokens: 100,
+);
 
 $response = $this->openRouterRequest->chatRequest($chatData);
 ```
@@ -450,18 +450,18 @@ Similarly, to retrieve the cost of a generation, create a `chat request` to obta
 ```php
 $content = 'Tell me a story about a rogue AI that falls in love with its creator.';
 $model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
-$messageData = new MessageData([
-    'content' => $content,
-    'role'    => RoleType::USER,
-]);
+$messageData = new MessageData(
+    content: $content,
+    role: RoleType::USER,
+);
 
-$chatData = new ChatData([
-    'messages'   => [
+$chatData = new ChatData(
+    messages: [
         $messageData,
     ],
-    'model'      => $model,
-    'max_tokens' => 100, // Adjust this value as needed
-]);
+    model: $model,
+    max_tokens: 100,
+);
 
 $chatResponse = $this->openRouterRequest->chatRequest($chatData);
 $generationId = $chatResponse->id; // generation id which will be passed to costRequest
