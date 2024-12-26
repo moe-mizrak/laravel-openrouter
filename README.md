@@ -392,10 +392,12 @@ $content = Arr::get($response->choices[0], 'message.content');
 ```
 
 - #### Structured Output
+(Please also refer to [OpenRouter Document Structured Output](https://openrouter.ai/docs/structured-outputs) for models supporting structured output, also more details)
+
 If you want to receive the response in a structured format, you can specify the `type` property for `response_format` (ResponseFormatData) as `json_object` in the `ChatData` object.
+
 Additionally, it's recommended to set the `require_parameters` property for `provider` (ProviderPreferencesData) to `true` in the `ChatData` object.
 
-(Please also refer to [OpenRouter Document Structured Output](https://openrouter.ai/docs/structured-outputs) for models supporting structured output, also more details)
 ```php
 $chatData = new ChatData([
     'messages' => [
