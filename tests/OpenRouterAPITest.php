@@ -482,6 +482,82 @@ class OpenRouterAPITest extends TestCase
     /**
      * @test
      */
+    public function it_makes_a_basic_chat_completion_open_route_api_request_with_response_format_json_schema()
+    {
+        /* SETUP */
+        $responseFormatData = new ResponseFormatData([
+            'type' => 'json_schema',
+            'json_schema' => [
+                'name' => 'content',
+                'strict' => true,
+                'schema' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'title' => [
+                            'type' => 'string',
+                            'description' => 'article title'
+                        ],
+                        'story' => [
+                            'type' => 'string',
+                            'description' => 'article content',
+                        ]
+                    ],
+                    'required' => ['title', 'story'],
+                    'additionalProperties' => false
+                ]
+            ],
+        ]);
+        $responseBody = [
+            'id' => 'gen-QcWgjEtiEDNHgomV2jjoQpCZlkRZ',
+            'provider' => 'HuggingFace',
+            'model' => $this->model,
+            'object' => 'chat.completion',
+            'created' => 1718888436,
+            'choices' => [
+                [
+                    'index' => 0,
+                    'message' => [
+                        'role' => RoleType::ASSISTANT,
+                        'content' => '{
+                             "title": "Sample name of the story",
+                             "story": "Sample story"
+                        }',
+                    ],
+                    'finish_reason' => 'stop',
+                ],
+            ],
+            'usage' => new UsageData([
+                'prompt_tokens' => 23,
+                'completion_tokens' => 100,
+                'total_tokens' => 123,
+            ]),
+        ];
+        $provider = new ProviderPreferencesData([
+            'require_parameters' => true,
+        ]);
+        $chatData = new ChatData([
+            'messages' => [
+                $this->messageData,
+            ],
+            'model' => 'google/gemini-flash-1.5-exp',
+            'max_tokens' => $this->maxTokens,
+            'response_format' => $responseFormatData,
+            'provider' => $provider,
+        ]);
+        $this->mockOpenRouter($responseBody);
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->generalTestAssertions($response);
+        $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
+        $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
+    }
+
+    /**
+     * @test
+     */
     public function it_makes_a_basic_chat_completion_open_route_api_request_with_response_format()
     {
         /* SETUP */
