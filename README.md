@@ -392,8 +392,8 @@ $content = Arr::get($response->choices[0], 'message.content');
 ```
 
 - #### Structured Output
-If you want to receive the response in a structured format, you can specify the `response_format` property in the `ChatData` object.
-And also setting `require_parameters` to **true** in provider preferences (in `ProviderPreferencesData` DTO object) is advised for structured output.
+If you want to receive the response in a structured format, you can specify the `type` property for `response_format` (ResponseFormatData) as `json_object` in the `ChatData` object.
+Additionally, it's recommended to set the `require_parameters` property for `provider` (ProviderPreferencesData) to `true` in the `ChatData` object.
 
 (Please also refer to [OpenRouter Document Structured Output](https://openrouter.ai/docs/structured-outputs) for models supporting structured output, also more details)
 ```php
@@ -408,16 +408,16 @@ $chatData = new ChatData([
     'response_format' => new ResponseFormatData([
         'type' => 'json_object',
     ]),
-    'provider' => new ProviderPreferencesData([
+    'provider'        => new ProviderPreferencesData([
         'require_parameters' => true,
     ]),
 ]);
 ```
 
-You can also specify the `response_format` property as `json_schema` to receive the response in a specified schema format (set `'strict' => true` in `json_schema` array for strict schema):
+You can also specify the `response_format` as `json_schema` to receive the response in a specified schema format (Advisable to set `'strict' => true` in `json_schema` array for strict schema):
 ```php
 $chatData = new ChatData([
-    'messages' => [
+    'messages'        => [
         new MessageData([
             'role'    => RoleType::USER,
             'content' => 'Tell me a story about a rogue AI that falls in love with its creator.',
