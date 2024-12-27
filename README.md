@@ -443,7 +443,7 @@ $chatData = new ChatData([
                         'description' => 'article detail'
                     ],
                     'keywords' => [
-                        'type' => 'array',
+                        'type' => 'string',
                         'description' => 'article keywords',
                     ],
                 ],
