@@ -428,7 +428,7 @@ $chatData = new ChatData([
     'model'           => 'mistralai/mistral-7b-instruct:free',
     'response_format' => new ResponseFormatData([
         'type'   => 'json_schema',
-        'json_schema' => json_encode([
+        'json_schema' => [
             'name' => 'article',
             'strict' => true,
             'schema' => [
@@ -443,14 +443,14 @@ $chatData = new ChatData([
                         'description' => 'article detail'
                     ],
                     'keywords' => [
-                        'type' => 'array',
+                        'type' => 'string',
                         'description' => 'article keywords',
                     ],
                 ],
                 'required' => ['title', 'details', 'keywords'],
                 'additionalProperties' => false
             ]
-        ]),
+        ],
     ]),
     'provider' => new ProviderPreferencesData([
         'require_parameters' => true,
