@@ -23,7 +23,14 @@ class ResponseFormatData extends DataTransferObject
          *
          * @var string
          */
-        public string $type
+        public string $type,
+
+        /**
+         * The JSON schema for the output format.
+         *
+         * @var mixed
+         */
+        public mixed $json_schema = null
     ) {
         parent::__construct(...func_get_args());
     }

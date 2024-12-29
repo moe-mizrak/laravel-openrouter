@@ -25,6 +25,7 @@ This Laravel package provides an easy-to-use interface for integrating **[OpenRo
         - [Chat Request](#chat-request)
           - [Stream Chat Request](#stream-chat-request)
           - [Maintaining Conversation Continuity](#maintaining-conversation-continuity)
+          - [Structured Output](#structured-output)
         - [Cost Request](#cost-request)
         - [Limit Request](#limit-request)
     - [Using OpenRouterRequest Class](#using-openrouterrequest-class)
@@ -339,7 +340,7 @@ This is the sample response after filterStreamingResponse:
             completion_tokens: 100,
             total_tokens: 123,
         ),
-    ]),
+    ),
 ]
 ```
 </details>
@@ -392,6 +393,73 @@ Expected response:
 ```php
 $content = Arr::get($response->choices[0], 'message.content');
 // content = You are Moe, a fictional character and AI Necromancer, as per the context of the conversation we've established. In reality, you are the user interacting with me, an assistant designed to help answer questions and engage in friendly conversation.
+```
+
+- #### Structured Output
+(Please also refer to [OpenRouter Document Structured Output](https://openrouter.ai/docs/structured-outputs) for models supporting structured output, also for more details)
+
+If you want to receive the response in a structured format, you can specify the `type` property for `response_format` (ResponseFormatData) as `json_object` in the `ChatData` object.
+
+Additionally, it's recommended to set the `require_parameters` property for `provider` (ProviderPreferencesData) to `true` in the `ChatData` object.
+
+```php
+$chatData = new ChatData([
+    'messages' => [
+        new MessageData([
+            'role'    => RoleType::USER,
+            'content' => 'Tell me a story about a rogue AI that falls in love with its creator.',
+        ]),
+    ],
+    'model'           => 'mistralai/mistral-7b-instruct:free',
+    'response_format' => new ResponseFormatData([
+        'type' => 'json_object',
+    ]),
+    'provider'        => new ProviderPreferencesData([
+        'require_parameters' => true,
+    ]),
+]);
+```
+
+You can also specify the `response_format` as `json_schema` to receive the response in a specified schema format (Advisable to set `'strict' => true` in `json_schema` array for strict schema):
+```php
+$chatData = new ChatData([
+    'messages'        => [
+        new MessageData([
+            'role'    => RoleType::USER,
+            'content' => 'Tell me a story about a rogue AI that falls in love with its creator.',
+        ]),
+    ],
+    'model'           => 'mistralai/mistral-7b-instruct:free',
+    'response_format' => new ResponseFormatData([
+        'type'   => 'json_schema',
+        'json_schema' => [
+            'name' => 'article',
+            'strict' => true,
+            'schema' => [
+                'type' => 'object',
+                'properties' => [
+                    'title' => [
+                        'type' => 'string',
+                        'description' => 'article title'
+                    ],
+                    'details' => [
+                        'type' => 'string',
+                        'description' => 'article detail'
+                    ],
+                    'keywords' => [
+                        'type' => 'string',
+                        'description' => 'article keywords',
+                    ],
+                ],
+                'required' => ['title', 'details', 'keywords'],
+                'additionalProperties' => false
+            ]
+        ],
+    ]),
+    'provider' => new ProviderPreferencesData([
+        'require_parameters' => true,
+    ]),
+]);
 ```
 
 #### Cost Request
