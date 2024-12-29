@@ -2,8 +2,6 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\DataTransferObject\DataTransferObject;
-
 /**
  * Allows to force the model to produce specific output format.
  * Only supported by OpenAI models, Nitro models, and some others - check the
@@ -17,16 +15,23 @@ use Spatie\DataTransferObject\DataTransferObject;
 class ResponseFormatData extends DataTransferObject
 {
     /**
-     * The format of the output, e.g. json, text, srt, verbose_json ...
-     *
-     * @var string
+     * @inheritDoc
      */
-    public string $type;
+    public function __construct(
+        /**
+         * The format of the output, e.g. json, text, srt, verbose_json ...
+         *
+         * @var string
+         */
+        public string $type,
 
-    /**
-     * The JSON schema for the output format.
-     *
-     * @var mixed
-     */
-    public mixed $json_schema = null;
+        /**
+         * The JSON schema for the output format.
+         *
+         * @var mixed
+         */
+        public mixed $json_schema = null
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }

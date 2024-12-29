@@ -3,7 +3,6 @@
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
-use Spatie\DataTransferObject\DataTransferObject;
 
 /**
  * DTO for the contents.
@@ -19,17 +18,24 @@ class TextContentData extends DataTransferObject
     public const ALLOWED_TYPE = 'text';
 
     /**
-     * Type of the content. (i.e. text)
-     *
-     * @var string
+     * @inheritDoc
      */
-    #[AllowedValues([self::ALLOWED_TYPE])]
-    public string $type = self::ALLOWED_TYPE;
+    public function __construct(
+        /**
+         * Type of the content. (i.e. text)
+         *
+         * @var string
+         */
+        #[AllowedValues([self::ALLOWED_TYPE])]
+        public string $type = self::ALLOWED_TYPE,
 
-    /**
-     * Text of the content.
-     *
-     * @var string
-     */
-    public string $text;
+        /**
+         * Text of the content.
+         *
+         * @var string
+         */
+        public string $text,
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }

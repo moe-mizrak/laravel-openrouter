@@ -2,8 +2,6 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\DataTransferObject\DataTransferObject;
-
 /**
  * DTO for error messages.
  *
@@ -13,16 +11,23 @@ use Spatie\DataTransferObject\DataTransferObject;
 class ErrorData extends DataTransferObject
 {
     /**
-     * Error code e.g. 400, 408 ...
-     *
-     * @var int
+     * @inheritDoc
      */
-    public int $code;
+    public function __construct(
+        /**
+         * Error code e.g. 400, 408 ...
+         *
+         * @var int
+         */
+        public int $code,
 
-    /**
-     * Error message.
-     *
-     * @var string
-     */
-    public string $message;
+        /**
+         * Error message.
+         *
+         * @var string
+         */
+        public string $message
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }
