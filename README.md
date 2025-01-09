@@ -458,6 +458,9 @@ $chatData = new ChatData([
 ]);
 ```
 
+> [!TIP]
+> You can also use **prompt engineering** to obtain structured output and control the format of responses.
+
 #### Cost Request
 To retrieve the cost of a generation, first make a `chat request` and obtain the `generationId`. Then, pass the generationId to the `costRequest` method:
 ```php
