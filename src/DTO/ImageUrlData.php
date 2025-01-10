@@ -2,8 +2,6 @@
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use Spatie\DataTransferObject\DataTransferObject;
-
 /**
  * DTO for the image url which are url and optional detail.
  *
@@ -13,16 +11,23 @@ use Spatie\DataTransferObject\DataTransferObject;
 class ImageUrlData extends DataTransferObject
 {
     /**
-     * URL or base64 encoded image data
-     *
-     * @var string
+     * @inheritDoc
      */
-    public string $url;
+    public function __construct(
+        /**
+         * URL or base64 encoded image data
+         *
+         * @var string
+         */
+        public string $url,
 
-    /**
-     * Optional, defaults to 'auto'
-     *
-     * @var string|null
-     */
-    public ?string $detail;
+        /**
+         * Optional, defaults to 'auto'
+         *
+         * @var string|null
+         */
+        public ?string $detail = null
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }

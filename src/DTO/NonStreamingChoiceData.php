@@ -11,9 +11,16 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 class NonStreamingChoiceData extends ChoiceData
 {
     /**
-     * DTO of the message data.
-     *
-     * @var MessageData
+     * @inheritDoc
      */
-    public MessageData $message;
+    public function __construct(
+        /**
+         * DTO of the message data.
+         *
+         * @var MessageData
+         */
+        public MessageData $message
+    ) {
+        parent::__construct();
+    }
 }
