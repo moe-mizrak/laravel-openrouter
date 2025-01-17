@@ -13,7 +13,7 @@ This Laravel package provides an easy-to-use interface for integrating **[OpenRo
 
 - [🤖 Requirements](#-requirements)
 - [🏁 Get Started](#-get-started)
-- [⚙️ Configuration](#-configuration)
+- [🧩 Configuration](#-configuration)
 - [🎨 Usage](#-usage)
     - [Understanding ChatData DTO](#understanding-chatdata-dto)
         - [LLM Parameters](#llm-parameters)
@@ -60,7 +60,7 @@ return [
 ];
 ```
 
-## ⚙️ Configuration
+## 🧩 Configuration
 After publishing the package configuration file, you'll need to add the following environment variables to your **.env** file:
 
 ```env
