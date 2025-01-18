@@ -4,7 +4,7 @@
 <br />
 
 [![Latest Version on Packagist](https://img.shields.io/badge/packagist-v1.0-blue)](https://packagist.org/packages/moe-mizrak/laravel-openrouter)
-[![OpenRouter Discord](https://img.shields.io/badge/OpenRouter-grey?style=plastic&logo=discord&labelColor=white)](https://discord.gg/3TbKAakhGb)
+[![OpenRouter Discord](https://img.shields.io/badge/OpenRouter-5865F2?logo=discord&logoColor=white)](https://discord.gg/3TbKAakhGb)
 <br />
 
 This Laravel package provides an easy-to-use interface for integrating **[OpenRouter](https://openrouter.ai/)** into your Laravel applications. **OpenRouter** is a unified interface for Large Language Models (LLMs) that allows you to interact with various **[AI models](https://openrouter.ai/docs#models)** through a single API.
