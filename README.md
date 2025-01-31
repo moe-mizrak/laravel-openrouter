@@ -56,7 +56,9 @@ This is the contents of the **published config file**:
 return [
     'api_endpoint' => env('OPENROUTER_API_ENDPOINT', 'https://openrouter.ai/api/v1/'),
     'api_key'      => env('OPENROUTER_API_KEY'),
-    'api_timeout'  => env('OPENROUTER_API_TIMEOUT', 20)
+    'api_timeout'  => env('OPENROUTER_API_TIMEOUT', 20),
+    'title'        => env('OPENROUTER_API_TITLE', 'laravel-openrouter'),
+    'referer'      => env('OPENROUTER_API_REFERER', 'https://github.com/moe-mizrak/laravel-openrouter'),
 ];
 ```
 
@@ -67,11 +69,15 @@ After publishing the package configuration file, you'll need to add the followin
 OPENROUTER_API_ENDPOINT=https://openrouter.ai/api/v1/
 OPENROUTER_API_KEY=your_api_key
 OPENROUTER_API_TIMEOUT=request_timeout
+OPENROUTER_API_TITLE=
+OPENROUTER_API_REFERER=
 ```
 
 - OPENROUTER_API_ENDPOINT: The endpoint URL for the **OpenRouter API** (default: https://openrouter.ai/api/v1/).
 - OPENROUTER_API_KEY: Your **API key** for accessing the OpenRouter API. You can obtain this key from the [OpenRouter dashboard](https://openrouter.ai/keys).
 - OPENROUTER_API_TIMEOUT: Request timeout in seconds. Increase value to 120 - 180 if you use long-thinking models like openai/o1 (default: 20)
+- OPENROUTER_API_TITLE: Optional - Site URL for rankings on openrouter.ai
+- OPENROUTER_API_REFERER: Optional - Site referer for rankings on openrouter.ai
 
 ## 🎨 Usage
 This package provides two ways to interact with the OpenRouter API: 
