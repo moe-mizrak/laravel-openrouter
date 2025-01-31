@@ -87,6 +87,7 @@ The `ChatData` class is used to encapsulate the data required for making chat re
 - **response_format** (ResponseFormatData|null): An instance of the `ResponseFormatData` class representing the desired format for the response.
 - **stop** (array|string|null): A value specifying the stop sequence for the chat generation.
 - **stream** (bool|null): A boolean indicating whether streaming should be enabled or not.
+- **include_reasoning** (bool|null): Whether to return the model's reasoning.
 #### LLM Parameters
 These properties control various aspects of the generated response (more [info](https://openrouter.ai/docs#parameters)):
 - **max_tokens** (int|null): The maximum number of tokens that can be generated in the completion. Default is 1024.

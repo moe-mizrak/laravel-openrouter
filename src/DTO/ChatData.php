@@ -167,11 +167,11 @@ class ChatData extends DataTransferObject
      */
     public ?ProviderPreferencesData $provider;
 
-    
     /**
      * Enable think tokens.
+     * Default: false
      *
      * @var bool|null
      */
-    public ?bool $include_reasoning;
+    public ?bool $include_reasoning = false;
 }
