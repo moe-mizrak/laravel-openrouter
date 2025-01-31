@@ -34,4 +34,28 @@ return [
     |
     */
     'api_timeout'      => env('OPENROUTER_API_TIMEOUT', 20),
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | OpenRouter Title
+    |--------------------------------------------------------------------------
+    |
+    | Title of your app to pass to openrouter
+    |
+    */
+    'title'      => env('OPENROUTER_API_TITLE', 'laravel-openrouter'),
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | OpenRouter Timeout
+    |--------------------------------------------------------------------------
+    |
+    | URL of your app to pass to openrouter
+    |
+    */
+    'referer'      => env('OPENROUTER_API_REFERER', 'https://github.com/moe-mizrak/laravel-openrouter'),
 ];
