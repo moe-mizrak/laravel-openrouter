@@ -54,3 +54,4 @@ jobs:
         with:
           name: PHPUnit Test Report
           path: phpunit-report.xml
+          overwrite: true
