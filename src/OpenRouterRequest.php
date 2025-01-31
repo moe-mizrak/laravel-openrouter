@@ -251,6 +251,7 @@ class OpenRouterRequest extends OpenRouterAPI
             'created'  => Arr::get($response, 'created'),
             'choices'  => Arr::get($response, 'choices'),
             'usage'    => Arr::get($response, 'usage'),
+            'citations'    => Arr::get($response, 'citations'),
         ]);
     }
 
