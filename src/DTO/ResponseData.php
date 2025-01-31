@@ -63,6 +63,13 @@ class ResponseData extends DataTransferObject
     public ?array $choices;
 
     /**
+     * If using Perplexity Sonar, will return citations
+     *
+     * @var string[]|null
+     */
+    public ?array $citations;
+
+    /**
      * Usage information of api request.
      *
      * @var UsageData|null
