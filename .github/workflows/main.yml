@@ -1,48 +1,56 @@
-name: run-tests
+name: Test
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-20.04
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        php: [8.4, 8.3, 8.2, 8.1]
-        laravel: [11.*, 10.*]
-        stability: [prefer-stable]
-        include:
-          - laravel: 11.*
-            testbench: ^9.0
-          - laravel: 10.*
-            testbench: ^8.0
+        php:
+          - '8.1'
+          - '8.2'
+          - '8.3'
+          - '8.4'
+        laravel:
+          - 10
+          - 11
         exclude:
-          - laravel: 11.*
-            php: 8.1
-
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
-
+          - php: '8.1'
+            laravel: 11
+    name: PHP ${{ matrix.php }} + Laravel ${{ matrix.laravel }}
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-          coverage: none
+      - name: Set up PHP ${{ matrix.php }}
+        run: sudo update-alternatives --set php /usr/bin/php${{ matrix.php }}
 
-      - name: Setup problem matchers
+      - name: Update Composer to latest version
+        run: sudo composer self-update
+
+      - name: Validate composer.json
+        run: composer validate
+
+      - name: Install Composer dependencies
         run: |
-          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
-          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+          composer install --no-interaction
+          if [[ "${{ matrix.laravel }}" == 10 ]]; then
+            composer update --no-interaction --with-all-dependencies orchestra/testbench:^8.0 symfony/console:^6.0
+          elif [[ "${{ matrix.laravel }}" == 11 ]]; then
+            composer update --no-interaction --with-all-dependencies orchestra/testbench:^9.0 symfony/console:^7.0
+          fi
 
-      - name: Install dependencies
+      - name: Install npm dependencies
+        run: npm install
+
+      - name: Run tests
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
-
-      - name: Execute tests
-        run: vendor/bin/pest
+          if [[ "${{ matrix.php }}" == '8.1' && "${{ matrix.laravel }}" == 10 ]]; then
+            composer test-coverage
+          else
+            composer test
+          fi
