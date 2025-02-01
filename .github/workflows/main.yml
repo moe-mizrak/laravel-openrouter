@@ -14,11 +14,11 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         php: [ 8.1, 8.2, 8.3, 8.4 ]
-        laravel: [ 10.*, 11.* ]
+        laravel: [ 10, 11 ]
         dependency-version: [ prefer-lowest, prefer-stable ]
         exclude:
           - php: 8.1
-            laravel: 11.*
+            laravel: 11
 
     name: Tests PHP${{ matrix.php }} - Laravel v${{ matrix.laravel }}
     steps:
@@ -38,11 +38,6 @@ jobs:
           path: ~/.composer/cache/files
           key: dependencies-php-${{ matrix.php }}-L${{ matrix.laravel }}-${{ matrix.dependency-version }}-composer-${{ hashFiles('composer.json') }}
 
-      - name: Copy Environment Files
-        run: |
-          php -r "file_exists('.env.testing') || copy('.env.ci', '.env.testing');"
-          php -r "file_exists('.env') || copy('.env.ci', '.env');"
-
       - name: Install Composer Dependencies
         run: composer install --no-interaction --no-scripts --no-progress --prefer-dist
 
@@ -50,7 +45,7 @@ jobs:
         run: vendor/bin/phpunit --log-junit phpunit-report.xml
 
       - name: Upload PHPUnit Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: PHPUnit Test Report
+          name: phpunit-report-php${{ matrix.php }}-laravel-${{ matrix.laravel }}-${{ matrix.dependency-version }}
           path: phpunit-report.xml

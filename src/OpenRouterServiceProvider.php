@@ -120,8 +120,8 @@ class OpenRouterServiceProvider extends ServiceProvider
             'handler'  => $handlerStack,
             'headers'  => [
                 'Authorization' => 'Bearer ' . config('laravel-openrouter.api_key'),
-                'HTTP-Referer'  => 'https://github.com/moe-mizrak/laravel-openrouter',
-                'X-Title'       => 'laravel-openrouter',
+                'HTTP-Referer'  => config('laravel-openrouter.referer'),
+                'X-Title'       => config('laravel-openrouter.title'),
                 'Content-Type'  => 'application/json',
             ],
         ]);

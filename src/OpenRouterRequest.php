@@ -244,13 +244,14 @@ class OpenRouterRequest extends OpenRouterAPI
     {
         // Map the response data to ResponseData and return it.
         return new ResponseData([
-            'id'       => Arr::get($response, 'id'),
-            'provider' => Arr::get($response, 'provider'),
-            'model'    => Arr::get($response, 'model'),
-            'object'   => Arr::get($response, 'object'),
-            'created'  => Arr::get($response, 'created'),
-            'choices'  => Arr::get($response, 'choices'),
-            'usage'    => Arr::get($response, 'usage'),
+            'id'        => Arr::get($response, 'id'),
+            'provider'  => Arr::get($response, 'provider'),
+            'model'     => Arr::get($response, 'model'),
+            'object'    => Arr::get($response, 'object'),
+            'created'   => Arr::get($response, 'created'),
+            'choices'   => Arr::get($response, 'choices'),
+            'usage'     => Arr::get($response, 'usage'),
+            'citations' => Arr::get($response, 'citations'),
         ]);
     }
 
