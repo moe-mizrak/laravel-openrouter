@@ -69,7 +69,14 @@ class ResponseData extends DataTransferObject
          *
          * @var UsageData|null
          */
-        public ?UsageData $usage = null
+        public ?UsageData $usage = null,
+
+        /**
+         * If using Perplexity Sonar, will return citations
+         *
+         * @var string[]|null
+         */
+        public ?array $citations,
     ) {
         parent::__construct(...func_get_args());
     }

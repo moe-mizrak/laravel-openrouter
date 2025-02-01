@@ -4,7 +4,7 @@
 <br />
 
 [![Latest Version on Packagist](https://img.shields.io/badge/packagist-v1.0-blue)](https://packagist.org/packages/moe-mizrak/laravel-openrouter)
-[![](https://dcbadge.vercel.app/api/server/KBPhAPEJNj?style=flat)](https://discord.gg/3TbKAakhGb)
+[![OpenRouter Discord](https://img.shields.io/badge/OpenRouter-5865F2?logo=discord&logoColor=white)](https://discord.gg/3TbKAakhGb)
 <br />
 
 This Laravel package provides an easy-to-use interface for integrating **[OpenRouter](https://openrouter.ai/)** into your Laravel applications. **OpenRouter** is a unified interface for Large Language Models (LLMs) that allows you to interact with various **[AI models](https://openrouter.ai/docs#models)** through a single API.
@@ -13,7 +13,7 @@ This Laravel package provides an easy-to-use interface for integrating **[OpenRo
 
 - [🤖 Requirements](#-requirements)
 - [🏁 Get Started](#-get-started)
-- [⚙️ Configuration](#-configuration)
+- [🧩 Configuration](#-configuration)
 - [🎨 Usage](#-usage)
     - [Understanding ChatData DTO](#understanding-chatdata-dto)
         - [LLM Parameters](#llm-parameters)
@@ -60,22 +60,28 @@ This is the contents of the **published config file**:
 return [
     'api_endpoint' => env('OPENROUTER_API_ENDPOINT', 'https://openrouter.ai/api/v1/'),
     'api_key'      => env('OPENROUTER_API_KEY'),
-    'api_timeout'  => env('OPENROUTER_API_TIMEOUT', 20)
+    'api_timeout'  => env('OPENROUTER_API_TIMEOUT', 20),
+    'title'        => env('OPENROUTER_API_TITLE', 'laravel-openrouter'),
+    'referer'      => env('OPENROUTER_API_REFERER', 'https://github.com/moe-mizrak/laravel-openrouter'),
 ];
 ```
 
-## ⚙️ Configuration
+## 🧩 Configuration
 After publishing the package configuration file, you'll need to add the following environment variables to your **.env** file:
 
 ```env
 OPENROUTER_API_ENDPOINT=https://openrouter.ai/api/v1/
 OPENROUTER_API_KEY=your_api_key
 OPENROUTER_API_TIMEOUT=request_timeout
+OPENROUTER_API_TITLE=
+OPENROUTER_API_REFERER=
 ```
 
 - OPENROUTER_API_ENDPOINT: The endpoint URL for the **OpenRouter API** (default: https://openrouter.ai/api/v1/).
 - OPENROUTER_API_KEY: Your **API key** for accessing the OpenRouter API. You can obtain this key from the [OpenRouter dashboard](https://openrouter.ai/keys).
 - OPENROUTER_API_TIMEOUT: Request timeout in seconds. Increase value to 120 - 180 if you use long-thinking models like openai/o1 (default: 20)
+- OPENROUTER_API_TITLE: Optional - Site URL for rankings on openrouter.ai
+- OPENROUTER_API_REFERER: Optional - Site referer for rankings on openrouter.ai
 
 ## 🎨 Usage
 This package provides two ways to interact with the OpenRouter API: 
@@ -91,6 +97,7 @@ The `ChatData` class is used to encapsulate the data required for making chat re
 - **response_format** (ResponseFormatData|null): An instance of the `ResponseFormatData` class representing the desired format for the response.
 - **stop** (array|string|null): A value specifying the stop sequence for the chat generation.
 - **stream** (bool|null): A boolean indicating whether streaming should be enabled or not.
+- **include_reasoning** (bool|null): Whether to return the model's reasoning.
 #### LLM Parameters
 These properties control various aspects of the generated response (more [info](https://openrouter.ai/docs#parameters)):
 - **max_tokens** (int|null): The maximum number of tokens that can be generated in the completion. Default is 1024.
@@ -140,6 +147,7 @@ $chatData = new ChatData(
     ),
     stop: ['stop_token'],
     stream: true,
+    include_reasoning: true,
     max_tokens: 1024,
     temperature: 0.7,
     top_p: 0.9,
@@ -461,6 +469,9 @@ $chatData = new ChatData([
     ]),
 ]);
 ```
+
+> [!TIP]
+> You can also use **prompt engineering** to obtain structured output and control the format of responses.
 
 #### Cost Request
 To retrieve the cost of a generation, first make a `chat request` and obtain the `generationId`. Then, pass the generationId to the `costRequest` method:

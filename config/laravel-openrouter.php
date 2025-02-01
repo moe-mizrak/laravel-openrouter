@@ -11,7 +11,7 @@ return [
     | You can obtain your API key from the OpenRouter dashboard.
     |
     */
-    'api_key'      => env('OPENROUTER_API_KEY'),
+    'api_key' => env('OPENROUTER_API_KEY'),
 
     /*
     |--------------------------------------------------------------------------
@@ -33,5 +33,25 @@ return [
     | Request timeout in seconds. Increase value to 120 - 180 if you use long-thinking models like openai/o1
     |
     */
-    'api_timeout'      => env('OPENROUTER_API_TIMEOUT', 20),
+    'api_timeout' => env('OPENROUTER_API_TIMEOUT', 20),
+
+    /*
+    |--------------------------------------------------------------------------
+    | OpenRouter Title
+    |--------------------------------------------------------------------------
+    |
+    | Title of your app to pass to openrouter
+    |
+    */
+    'title' => env('OPENROUTER_API_TITLE', 'laravel-openrouter'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | OpenRouter Referer
+    |--------------------------------------------------------------------------
+    |
+    | URL of your app to pass to openrouter
+    |
+    */
+    'referer' => env('OPENROUTER_API_REFERER', 'https://github.com/moe-mizrak/laravel-openrouter'),
 ];

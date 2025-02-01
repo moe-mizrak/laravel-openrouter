@@ -126,7 +126,15 @@ class ChatData extends DataTransferObject
          *
          * @var ProviderPreferencesData|null
          */
-        public ?ProviderPreferencesData $provider = null
+        public ?ProviderPreferencesData $provider = null,
+
+        /**
+         * Enable think tokens.
+         * Default: false
+         *
+         * @var bool|null
+         */
+        public ?bool $include_reasoning = false,
     )
     {
         $this->validateXorFields($this->messages, $this->prompt);
