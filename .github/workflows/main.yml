@@ -1,41 +1,60 @@
-name: Package Test Suite
+name: Main
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - master
   pull_request:
-    branches: [ main ]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: true
       matrix:
+        os: [ubuntu-latest]
         php: [8.1, 8.2, 8.3, 8.4]
-        laravel: [10, 11]
+        laravel: [10.*, 11.*]
+        dependency-version: [prefer-lowest, prefer-stable]
         exclude:
-          - laravel: 11
-            php: 8.1
+          - php: 8.1
+            laravel: 11.*
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel }}
+    name: Tests PHP${{ matrix.php }} - Laravel v${{ matrix.laravel }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-      - name: Setup PHP
+      - name: Setup PHP Environment
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip
+          extensions: dom, mbstring, zip
           coverage: none
 
-      - name: Install dependencies
+      - name: Cache Composer Dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache/files
+          key: dependencies-php-${{ matrix.php }}-L${{ matrix.laravel }}-${{ matrix.dependency-version }}-composer-${{ hashFiles('composer.json') }}
+
+      - name: Copy Environment Files
+        run: |
+          php -r "file_exists('.env.testing') || copy('.env.ci', '.env.testing');"
+          php -r "file_exists('.env') || copy('.env.ci', '.env');"
+
+      - name: Install Dependencies
         run: |
           composer require "laravel/framework:^${{ matrix.laravel }}" --no-interaction --no-update
-          composer update --prefer-dist --no-interaction --no-progress
+          composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-progress
 
-      - name: Execute tests
-        run: vendor/bin/phpunit
+      - name: Execute Tests
+        run: vendor/bin/phpunit --log-junit phpunit-report.xml
+
+      - name: Upload PHPUnit Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: PHPUnit Test Report
+          path: phpunit-report.xml
