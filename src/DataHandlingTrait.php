@@ -2,7 +2,7 @@
 
 namespace MoeMizrak\LaravelOpenrouter;
 
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\LaravelData\Data as DataTransferObject;
 
 /**
  *  The DataHandlingTrait provides utility methods for handling data.
@@ -16,6 +16,7 @@ trait DataHandlingTrait
      * Recursively filter null values from an array or DTO.
      *
      * @param array|DataTransferObject $data
+     *
      * @return array
      */
     protected function filterNullValuesRecursive(array|DataTransferObject $data): array
