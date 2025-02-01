@@ -9,20 +9,18 @@ on:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
-
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest]
-        php: [8.1, 8.2, 8.3, 8.4]
-        laravel: [10, 11]
-        dependency-version: [prefer-lowest, prefer-stable]
+        os: [ ubuntu-latest ]
+        php: [ 8.1, 8.2, 8.3, 8.4 ]
+        laravel: [ 10, 11 ]
+        dependency-version: [ prefer-lowest, prefer-stable ]
         exclude:
           - php: 8.1
             laravel: 11
 
     name: Tests PHP${{ matrix.php }} - Laravel v${{ matrix.laravel }}
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -40,21 +38,14 @@ jobs:
           path: ~/.composer/cache/files
           key: dependencies-php-${{ matrix.php }}-L${{ matrix.laravel }}-${{ matrix.dependency-version }}-composer-${{ hashFiles('composer.json') }}
 
-      - name: Copy Environment Files
-        run: |
-          php -r "file_exists('.env.testing') || copy('.env.ci', '.env.testing');"
-          php -r "file_exists('.env') || copy('.env.ci', '.env');"
+      - name: Install Composer Dependencies
+        run: composer install --no-interaction --no-scripts --no-progress --prefer-dist
 
-      - name: Install Dependencies
-        run: |
-          composer require "laravel/framework:^${{ matrix.laravel }}" --no-interaction --no-update
-          composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-progress
-
-      - name: Execute Tests
+      - name: Run PHPUnit Tests
         run: vendor/bin/phpunit --log-junit phpunit-report.xml
 
       - name: Upload PHPUnit Report
         uses: actions/upload-artifact@v4
         with:
-          name: PHPUnit Test Report
+          name: PHPUnit Test Report PHP${{ matrix.php }} - Laravel v${{ matrix.laravel }}
           path: phpunit-report.xml
