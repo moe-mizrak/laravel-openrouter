@@ -20,9 +20,9 @@
     "require": {
         "php": "^8.2",
         "ext-json": "*",
+        "spatie/laravel-data": "^4.13",
         "guzzlehttp/guzzle": "^7.9",
-        "caseyamcl/guzzle_retry_middleware": "^2.12",
-        "spatie/laravel-data": "^4.11"
+        "caseyamcl/guzzle_retry_middleware": "^2.12"
     },
     "require-dev": {
         "mockery/mockery": "^1.6",
