@@ -47,5 +47,5 @@ jobs:
       - name: Upload PHPUnit Report
         uses: actions/upload-artifact@v4
         with:
-          name: PHPUnit Test Report PHP${{ matrix.php }} - Laravel v${{ matrix.laravel }}
+          name: phpunit-report-php${{ matrix.php }}-laravel-${{ matrix.laravel }}
           path: phpunit-report.xml
