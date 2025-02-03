@@ -58,4 +58,20 @@ class ProviderPreferencesData extends DataTransferObject
     ) {
         parent::__construct(...func_get_args());
     }
+
+    /**
+     * @return array
+     */
+    public function convertToArray(): array
+    {
+        return array_filter(
+            [
+                'allow_fallbacks'    => $this->allow_fallbacks,
+                'require_parameters' => $this->require_parameters,
+                'data_collection'    => $this->data_collection,
+                'order'              => $this->order
+            ],
+            fn($value) => $value !== null
+        );
+    }
 }

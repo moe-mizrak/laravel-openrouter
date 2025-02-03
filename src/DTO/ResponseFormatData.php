@@ -34,4 +34,18 @@ class ResponseFormatData extends DataTransferObject
     ) {
         parent::__construct(...func_get_args());
     }
+
+    /**
+     * @return array
+     */
+    public function convertToArray(): array
+    {
+        return array_filter(
+            [
+                'type'        => $this->type,
+                'json_schema' => $this->json_schema,
+            ],
+            fn($value) => $value !== null
+        );
+    }
 }

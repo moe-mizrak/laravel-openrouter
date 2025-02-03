@@ -38,4 +38,19 @@ class ToolCallData extends DataTransferObject
     ) {
         parent::__construct(...func_get_args());
     }
+
+    /**
+     * @return array
+     */
+    public function convertToArray(): array
+    {
+        return array_filter(
+            [
+                'id'       => $this->id,
+                'type'     => $this->type,
+                'function' => $this->function?->convertToArray(),
+            ],
+            fn($value) => $value !== null
+        );
+    }
 }

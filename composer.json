@@ -27,8 +27,7 @@
     "require-dev": {
         "mockery/mockery": "^1.6",
         "orchestra/testbench": "^9.9",
-        "phpunit/phpunit": "^11.5",
-        "fakerphp/faker": "^1.24.1"
+        "phpunit/phpunit": "^11.5"
     },
     "autoload": {
         "psr-4": {

@@ -38,4 +38,18 @@ class ImageContentPartData extends DataTransferObject
     ) {
         parent::__construct(...func_get_args());
     }
+
+    /**
+     * @return array
+     */
+    public function convertToArray(): array
+    {
+        return array_filter(
+            [
+                'type'      => $this->type,
+                'image_url' => $this->image_url?->convertToArray(),
+            ],
+            fn($value) => $value !== null
+        );
+    }
 }

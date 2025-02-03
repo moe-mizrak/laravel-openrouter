@@ -25,8 +25,6 @@ use Psr\Http\Message\ResponseInterface;
  */
 class OpenRouterRequest extends OpenRouterAPI
 {
-    use DataHandlingTrait;
-
     // Buffer variable for incomplete streaming data.
     private static string $buffer = '';
 
@@ -52,7 +50,7 @@ class OpenRouterRequest extends OpenRouterAPI
         }
 
         // Filter null values from the chatData object and return array.
-        $chatData = $this->filterNullValuesRecursive($chatData);
+        $chatData = $chatData->convertToArray();
 
         // Options for the Guzzle request
         $options = [
@@ -87,7 +85,7 @@ class OpenRouterRequest extends OpenRouterAPI
         $chatData->stream = true;
 
         // Filter null values from the chatData object and return array.
-        $chatData = $this->filterNullValuesRecursive($chatData);
+        $chatData = $chatData->convertToArray();
 
         // Add headers for streaming.
         $headers = [

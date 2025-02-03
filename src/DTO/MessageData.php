@@ -46,4 +46,34 @@ class MessageData extends DataTransferObject
     ) {
         parent::__construct(...func_get_args());
     }
+
+    /**
+     * @return array
+     */
+    public function convertToArray(): array
+    {
+        return array_filter(
+            [
+                'content'   => is_array($this->content)
+                    ? array_map(function ($value) {
+                        if ($value instanceof TextContentData) {
+                            return $value->convertToArray();
+                        } elseif ($value instanceof ImageContentPartData) {
+                            return $value->convertToArray();
+                        } else {
+                            return $value;
+                        }
+                        }, $this->content)
+                    : $this->content,
+                'role'      => $this->role,
+                'toolCalls' => ! is_null($this->toolCalls)
+                    ? array_map(function ($value) {
+                        return $value->convertToArray();
+                        }, $this->toolCalls)
+                    : null,
+                'name'      => $this->name,
+            ],
+            fn($value) => $value !== null
+        );
+    }
 }

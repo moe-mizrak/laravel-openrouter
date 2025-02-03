@@ -2,15 +2,12 @@
 
 namespace MoeMizrak\LaravelOpenrouter\Tests;
 
-use Illuminate\Foundation\Testing\WithFaker;
 use MoeMizrak\LaravelOpenrouter\Facades\LaravelOpenRouter;
 use MoeMizrak\LaravelOpenrouter\OpenRouterServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 class TestCase extends OrchestraTestCase
 {
-    use WithFaker;
-
     /**
      * @return void
      */

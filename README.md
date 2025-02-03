@@ -39,9 +39,9 @@ This Laravel package provides an easy-to-use interface for integrating **[OpenRo
 
 - **PHP 8.2** or **higher**: Use version `v2.x.x` (latest compatible version)
     - Uses [spatie laravel-data](https://github.com/spatie/laravel-data)
-- **PHP 8.1**: Use version `v1.0.7`.
+- **PHP 8.1**: Use version `v1.0.9`.
     - Uses [spatie data-transfer-object](https://github.com/spatie/data-transfer-object)
-    - For correct way to use DTOs, refer to [v1.0.7 README](https://github.com/moe-mizrak/laravel-openrouter/tree/v1.0.7).
+    - For correct way to use DTOs, refer to [v1.0.9 README](https://github.com/moe-mizrak/laravel-openrouter/tree/v1.0.9).
 
 ## 🏁 Get Started
 
@@ -411,36 +411,36 @@ If you want to receive the response in a structured format, you can specify the 
 Additionally, it's recommended to set the `require_parameters` property for `provider` (ProviderPreferencesData) to `true` in the `ChatData` object.
 
 ```php
-$chatData = new ChatData([
-    'messages' => [
-        new MessageData([
-            'role'    => RoleType::USER,
-            'content' => 'Tell me a story about a rogue AI that falls in love with its creator.',
-        ]),
+$chatData = new ChatData(
+    messages: [
+        new MessageData(
+            role: RoleType::USER,
+            content: 'Tell me a story about a rogue AI that falls in love with its creator.',
+        ),
     ],
-    'model'           => 'mistralai/mistral-7b-instruct:free',
-    'response_format' => new ResponseFormatData([
-        'type' => 'json_object',
-    ]),
-    'provider'        => new ProviderPreferencesData([
-        'require_parameters' => true,
-    ]),
-]);
+    model: 'mistralai/mistral-7b-instruct:free',
+    response_format: new ResponseFormatData(
+        type: 'json_object',
+    ),
+    provider: new ProviderPreferencesData(
+        require_parameters: true,
+    ),
+);
 ```
 
 You can also specify the `response_format` as `json_schema` to receive the response in a specified schema format (Advisable to set `'strict' => true` in `json_schema` array for strict schema):
 ```php
-$chatData = new ChatData([
-    'messages'        => [
-        new MessageData([
-            'role'    => RoleType::USER,
-            'content' => 'Tell me a story about a rogue AI that falls in love with its creator.',
-        ]),
+$chatData = new ChatData(
+    messages: [
+        new MessageData(
+            role   : RoleType::USER,
+            content: 'Tell me a story about a rogue AI that falls in love with its creator.',
+        ),
     ],
-    'model'           => 'mistralai/mistral-7b-instruct:free',
-    'response_format' => new ResponseFormatData([
-        'type'   => 'json_schema',
-        'json_schema' => [
+    model: 'mistralai/mistral-7b-instruct:free',
+    response_format: new ResponseFormatData(
+        type: 'json_schema',
+        json_schema: [
             'name' => 'article',
             'strict' => true,
             'schema' => [
@@ -463,11 +463,11 @@ $chatData = new ChatData([
                 'additionalProperties' => false
             ]
         ],
-    ]),
-    'provider' => new ProviderPreferencesData([
-        'require_parameters' => true,
-    ]),
-]);
+    ),
+    provider: new ProviderPreferencesData(
+        require_parameters: true,
+    ),
+);
 ```
 
 > [!TIP]
@@ -480,7 +480,7 @@ $content = 'Tell me a story about a rogue AI that falls in love with its creator
 $model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
 $messageData = new MessageData(
     content: $content,
-    role: RoleType::USER,
+    role   : RoleType::USER,
 );
 
 $chatData = new ChatData(
@@ -514,7 +514,7 @@ $content = 'Tell me a story about a rogue AI that falls in love with its creator
 $model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
 $messageData = new MessageData(
     content: $content,
-    role: RoleType::USER,
+    role   : RoleType::USER,
 );
 
 $chatData = new ChatData(
@@ -535,7 +535,7 @@ $content = 'Tell me a story about a rogue AI that falls in love with its creator
 $model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
 $messageData = new MessageData(
     content: $content,
-    role: RoleType::USER,
+    role   : RoleType::USER,
 );
 
 $chatData = new ChatData(

@@ -163,4 +163,54 @@ class ChatData extends DataTransferObject
             throw new OpenRouterValidationException($validationResult->message);
         }
     }
+
+    /**
+     * @return array
+     */
+    public function convertToArray(): array
+    {
+        return array_filter(
+            [
+                'messages'           => ! is_null($this->messages)
+                    ? array_map(function ($value) {
+                        if ($value instanceof MessageData) {
+                            return $value->convertToArray();
+                        } else {
+                            return $value;
+                        }
+                        }, $this->messages)
+                    : null,
+                'prompt'             => $this->prompt,
+                'model'              => $this->model,
+                'response_format'    => $this->response_format?->convertToArray(),
+                'stop'               => $this->stop,
+                'stream'             => $this->stream,
+                'max_tokens'         => $this->max_tokens,
+                'temperature'        => $this->temperature,
+                'top_p'              => $this->top_p,
+                'top_k'              => $this->top_k,
+                'frequency_penalty'  => $this->frequency_penalty,
+                'presence_penalty'   => $this->presence_penalty,
+                'repetition_penalty' => $this->repetition_penalty,
+                'seed'               => $this->seed,
+                'tool_choice'        => $this->tool_choice,
+                'tools'              => ! is_null($this->tools)
+                    ? array_map(function ($value) {
+                        if ($value instanceof ToolCallData) {
+                            return $value->convertToArray();
+                        } else {
+                            return $value;
+                        }
+                        }, $this->tools)
+                    : null,
+                'logit_bias'         => $this->logit_bias,
+                'transforms'         => $this->transforms,
+                'models'             => $this->models,
+                'route'              => $this->route,
+                'provider'           => $this->provider?->convertToArray(),
+                'include_reasoning'  => $this->include_reasoning,
+            ],
+            fn($value) => $value !== null
+        );
+    }
 }

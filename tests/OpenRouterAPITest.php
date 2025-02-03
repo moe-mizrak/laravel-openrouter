@@ -16,13 +16,13 @@ use MoeMizrak\LaravelOpenrouter\DTO\ProviderPreferencesData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseFormatData;
 use MoeMizrak\LaravelOpenrouter\DTO\TextContentData;
-use MoeMizrak\LaravelOpenrouter\DTO\UsageData;
 use MoeMizrak\LaravelOpenrouter\Exceptions\OpenRouterValidationException;
 use MoeMizrak\LaravelOpenrouter\Facades\LaravelOpenRouter;
 use MoeMizrak\LaravelOpenrouter\OpenRouterRequest;
 use MoeMizrak\LaravelOpenrouter\Types\DataCollectionType;
 use MoeMizrak\LaravelOpenrouter\Types\RoleType;
 use MoeMizrak\LaravelOpenrouter\Types\RouteType;
+use PHPUnit\Framework\Attributes\Test;
 
 class OpenRouterAPITest extends TestCase
 {
@@ -50,6 +50,9 @@ class OpenRouterAPITest extends TestCase
         $this->api = $this->app->make(OpenRouterRequest::class);
     }
 
+    /**
+     * @return array
+     */
     private function mockBasicBody(): array
     {
         return [
@@ -68,14 +71,17 @@ class OpenRouterAPITest extends TestCase
                     'finish_reason' => 'stop',
                 ],
             ],
-            'usage' => new UsageData(
-                prompt_tokens: 23,
-                completion_tokens: 100,
-                total_tokens: 123,
-            ),
+            'usage' => [
+                'prompt_tokens' => 23,
+                'completion_tokens' => 100,
+                'total_tokens' => 123,
+            ],
         ];
     }
 
+    /**
+     * @return array[]
+     */
     private function mockBasicCostBody(): array
     {
         return [
@@ -105,6 +111,9 @@ class OpenRouterAPITest extends TestCase
         ];
     }
 
+    /**
+     * @return array[]
+     */
     private function mockBasicLimitBody(): array
     {
         return [
@@ -122,6 +131,11 @@ class OpenRouterAPITest extends TestCase
         ];
     }
 
+    /**
+     * @param array $mockBody
+     *
+     * @return void
+     */
     private function mockOpenRouter(array $mockBody): void
     {
         $mockResponse = (new Response(200, [], json_encode($mockBody)));
@@ -152,9 +166,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull(Arr::get($response->choices[0], 'finish_reason'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_makes_a_basic_chat_completion_open_route_api_request()
     {
         /* SETUP */
@@ -176,9 +188,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_makes_a_basic_chat_completion_open_route_api_request_with_historical_data()
     {
         /* SETUP */
@@ -225,9 +235,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertTrue(str_contains($content, 'Moe'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_makes_a_basic_chat_completion_stream_request()
     {
         /* SETUP */
@@ -253,9 +261,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull(Arr::get($response[0]->choices[0], 'delta'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_responds_error_data_when_stream_request_is_made_to_chat_completion_function()
     {
         /* SETUP */
@@ -276,9 +282,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertEquals('For stream chat completion please use "chatStreamRequest" method instead!', $response->message);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_makes_a_basic_prompt_chat_completion_open_route_api_request()
     {
         /* SETUP */
@@ -299,9 +303,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull(Arr::get($response->choices[0], 'text'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_xor_validation_exception_when_both_message_and_prompt_empty_in_chat_data()
     {
         /* SETUP */
@@ -314,9 +316,7 @@ class OpenRouterAPITest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_xor_validation_exception_when_both_message_and_prompt_are_provided()
     {
         /* SETUP */
@@ -333,9 +333,7 @@ class OpenRouterAPITest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_successfully_sends_text_content_in_messages_in_the_open_route_api_request()
     {
         /* SETUP */
@@ -367,9 +365,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_successfully_sends_image_and_text_content_in_messages_in_the_open_route_api_request()
     {
         /* SETUP */
@@ -410,9 +406,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_successfully_sends_multiple_text_content_in_messages_in_the_open_route_api_request()
     {
         /* SETUP */
@@ -450,9 +444,9 @@ class OpenRouterAPITest extends TestCase
     }
 
     /**
-     * @test
      * @deprecated - Please use if you set default model to a free one!
      */
+    #[Test]
     public function it_successfully_makes_a_basic_chat_completion_open_route_api_request_when_model_is_not_set()
     {
         /* SETUP */
@@ -478,15 +472,13 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_makes_a_basic_chat_completion_open_route_api_request_with_response_format_json_schema()
     {
         /* SETUP */
-        $responseFormatData = new ResponseFormatData([
-            'type' => 'json_schema',
-            'json_schema' => [
+        $responseFormatData = new ResponseFormatData(
+            type: 'json_schema',
+            json_schema: [
                 'name' => 'content',
                 'strict' => true,
                 'schema' => [
@@ -505,7 +497,7 @@ class OpenRouterAPITest extends TestCase
                     'additionalProperties' => false
                 ]
             ],
-        ]);
+        );
         $responseBody = [
             'id' => 'gen-QcWgjEtiEDNHgomV2jjoQpCZlkRZ',
             'provider' => 'HuggingFace',
@@ -525,24 +517,24 @@ class OpenRouterAPITest extends TestCase
                     'finish_reason' => 'stop',
                 ],
             ],
-            'usage' => new UsageData([
+            'usage' => [
                 'prompt_tokens' => 23,
                 'completion_tokens' => 100,
                 'total_tokens' => 123,
-            ]),
+            ],
         ];
-        $provider = new ProviderPreferencesData([
-            'require_parameters' => true,
-        ]);
-        $chatData = new ChatData([
-            'messages' => [
+        $provider = new ProviderPreferencesData(
+            require_parameters: true,
+        );
+        $chatData = new ChatData(
+            messages       : [
                 $this->messageData,
             ],
-            'model' => 'google/gemini-flash-1.5-exp',
-            'max_tokens' => $this->maxTokens,
-            'response_format' => $responseFormatData,
-            'provider' => $provider,
-        ]);
+            model          : 'google/gemini-flash-1.5-exp',
+            response_format: $responseFormatData,
+            max_tokens     : $this->maxTokens,
+            provider       : $provider,
+        );
         $this->mockOpenRouter($responseBody);
 
         /* EXECUTE */
@@ -554,9 +546,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_makes_a_basic_chat_completion_open_route_api_request_with_response_format()
     {
         /* SETUP */
@@ -582,9 +572,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_makes_a_basic_chat_completion_open_route_api_request_with_stop_parameter()
     {
         /* SETUP */
@@ -616,9 +604,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertEquals('bugs', Arr::get($response->choices[0], 'finish_reason'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_makes_cost_request_with_generation_id()
     {
         /* SETUP */
@@ -658,9 +644,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull($response->usage);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_makes_chat_completion_api_request_with_llm_parameters()
     {
         /* SETUP */
@@ -697,9 +681,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_makes_chat_completion_api_request_with_open_router_specific_parameters()
     {
         /* SETUP */
@@ -742,9 +724,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_makes_chat_completion_api_request_with_fallback_to_second_model_if_first_one_fails()
     {
         /* SETUP */
@@ -790,9 +770,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_xor_validation_exception_when_both_model_and_models_empty_in_chat_data()
     {
         /* SETUP */
@@ -807,9 +785,7 @@ class OpenRouterAPITest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_xor_validation_exception_when_both_model_and_models_are_provided()
     {
         /* SETUP */
@@ -828,9 +804,7 @@ class OpenRouterAPITest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_validation_exception_when_NOT_ALLOWED_value_is_sent_for_route()
     {
         /* SETUP */
@@ -848,9 +822,7 @@ class OpenRouterAPITest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_validation_exception_when_NOT_ALLOWED_value_is_sent_for_tool_choice()
     {
         /* SETUP */
@@ -868,9 +840,7 @@ class OpenRouterAPITest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_makes_a_limit_open_route_api_request_and_gets_rate_limit_and_credit_left_on_api_key()
     {
         /* SETUP */
@@ -891,9 +861,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull($response->rate_limit->interval);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_makes_a_open_route_api_request_by_using_facade()
     {
         /* SETUP */

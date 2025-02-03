@@ -30,4 +30,18 @@ class ImageUrlData extends DataTransferObject
     ) {
         parent::__construct(...func_get_args());
     }
+
+    /**
+     * @return array
+     */
+    public function convertToArray(): array
+    {
+        return array_filter(
+            [
+                'url'    => $this->url,
+                'detail' => $this->detail,
+            ],
+            fn($value) => $value !== null
+        );
+    }
 }

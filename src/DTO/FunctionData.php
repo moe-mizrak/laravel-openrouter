@@ -46,4 +46,20 @@ class FunctionData extends DataTransferObject
     ) {
         parent::__construct(...func_get_args());
     }
+
+    /**
+     * @return array
+     */
+    public function convertToArray(): array
+    {
+        return array_filter(
+            [
+                'name'        => $this->name,
+                'arguments'   => $this->arguments,
+                'description' => $this->description,
+                'parameters'  => $this->parameters,
+            ],
+            fn($value) => $value !== null
+        );
+    }
 }
