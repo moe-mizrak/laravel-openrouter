@@ -77,24 +77,25 @@ OPENROUTER_API_TITLE=
 OPENROUTER_API_REFERER=
 ```
 
-- OPENROUTER_API_ENDPOINT: The endpoint URL for the **OpenRouter API** (default: https://openrouter.ai/api/v1/).
-- OPENROUTER_API_KEY: Your **API key** for accessing the OpenRouter API. You can obtain this key from the [OpenRouter dashboard](https://openrouter.ai/keys).
-- OPENROUTER_API_TIMEOUT: Request timeout in seconds. Increase value to 120 - 180 if you use long-thinking models like openai/o1 (default: 20)
-- OPENROUTER_API_TITLE: Optional - Site URL for rankings on openrouter.ai
-- OPENROUTER_API_REFERER: Optional - Site referer for rankings on openrouter.ai
+> [!NOTE]
+> - `OPENROUTER_API_ENDPOINT`: The endpoint URL for the **OpenRouter API** (default: https://openrouter.ai/api/v1/).
+> - `OPENROUTER_API_KEY`: Your **API key** for accessing the OpenRouter API. You can obtain this key from the [OpenRouter dashboard](https://openrouter.ai/keys).
+> - `OPENROUTER_API_TIMEOUT`: Request timeout in seconds. Increase value to 120 - 180 if you use long-thinking models like openai/o1 (default: 20)
+> - `OPENROUTER_API_TITLE`: Optional - Site URL for rankings on openrouter.ai
+> - `OPENROUTER_API_REFERER`: Optional - Site referer for rankings on openrouter.ai
 
 ## 🎨 Usage
 This package provides two ways to interact with the OpenRouter API: 
-- Using the `LaravelOpenRouter` facade
-- Instantiating the `OpenRouterRequest` class directly.
+- Using the [`LaravelOpenRouter`](src/Facades/LaravelOpenRouter.php) facade
+- Instantiating the [`OpenRouterRequest`](src/OpenRouterRequest.php) class directly.
 
-Both methods utilize the `ChatData` DTO class to structure the data sent to the API.
+Both methods utilize the [`ChatData`](src/DTO/ChatData.php) DTO class to structure the data sent to the API.
 ### Understanding ChatData DTO
-The `ChatData` class is used to encapsulate the data required for making chat requests to the OpenRouter API. Here's a breakdown of the key properties:
-- **messages** (array|null): An array of `MessageData` objects representing the chat messages. This field is XOR-gated with the `prompt` field.
+The [`ChatData`](src/DTO/ChatData.php) class is used to **encapsulate the data** required for making chat requests to the OpenRouter API. Here's a breakdown of the key properties:
+- **messages** (array|null): An array of [`MessageData`](src/DTO/MessageData.php) objects representing the chat messages. This field is XOR-gated with the `prompt` field.
 - **prompt** (string|null): A string representing the prompt for the chat request. This field is XOR-gated with the `messages` field.
 - **model** (string|null): The name of the model to be used for the chat request. If not specified, the user's default model will be used. This field is XOR-gated with the `models` field.
-- **response_format** (ResponseFormatData|null): An instance of the `ResponseFormatData` class representing the desired format for the response.
+- **response_format** (ResponseFormatData|null): An instance of the [`ResponseFormatData`](src/DTO/ResponseFormatData.php) class representing the desired format for the response.
 - **stop** (array|string|null): A value specifying the stop sequence for the chat generation.
 - **stream** (bool|null): A boolean indicating whether streaming should be enabled or not.
 - **include_reasoning** (bool|null): Whether to return the model's reasoning.
@@ -111,14 +112,14 @@ These properties control various aspects of the generated response (more [info](
 #### Function-calling
 Only natively suported by OpenAI models. For others, we submit a YAML-formatted string with these tools at the end of the prompt.
 - **tool_choice** (string|array|null): A value specifying the tool choice for function calling (OpenAI models only).
-- **tools** (array|null): An array of `ToolCallData` objects for function calling.
+- **tools** (array|null): An array of [`ToolCallData`](src/DTO/ToolCallData.php) objects for function calling.
 #### Additional optional parameters
 - **logit_bias** (array|null): An array for modifying the likelihood of specified tokens appearing in the completion.
 #### OpenRouter-only parameters
 - **transforms** (array|null): An array for configuring prompt transforms.
 - **models** (array|null): An array of models to automatically try if the primary model is unavailable. This field is XOR-gated with the `model` field.
 - **route** (string|null): A value specifying the route type (e.g., `RouteType::FALLBACK`).
-- **provider** (ProviderPreferencesData|null): An instance of the `ProviderPreferencesData` DTO object for configuring provider preferences.
+- **provider** (ProviderPreferencesData|null): An instance of the [`ProviderPreferencesData`](src/DTO/ProviderPreferencesData.php) DTO object for configuring provider preferences.
 
 ### Creating a ChatData Instance
 This is a sample chat data instance (Refer to [spatie laravel-data](https://spatie.be/docs/laravel-data/v4/introduction) how to create, use DTOs):
@@ -176,7 +177,7 @@ $chatData = new ChatData(
 ### Using Facade
 The `LaravelOpenRouter` facade offers a convenient way to make OpenRouter API requests.
 #### Chat Request
-To send a chat request, create an instance of `ChatData` and pass it to the `chatRequest` method:
+To send a chat request, create an instance of [`ChatData`](src/DTO/ChatData.php) and pass it to the `chatRequest` method:
 ```php
 $content = 'Tell me a story about a rogue AI that falls in love with its creator.'; // Your desired prompt or content
 $model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
@@ -406,9 +407,9 @@ $content = Arr::get($response->choices[0], 'message.content');
 - #### Structured Output
 (Please also refer to [OpenRouter Document Structured Output](https://openrouter.ai/docs/structured-outputs) for models supporting structured output, also for more details)
 
-If you want to receive the response in a structured format, you can specify the `type` property for `response_format` (ResponseFormatData) as `json_object` in the `ChatData` object.
+If you want to receive the response in a structured format, you can specify the `type` property for `response_format` ([ResponseFormatData](src/DTO/ResponseFormatData.php)) as `json_object` in the [`ChatData`](src/DTO/ChatData.php) object.
 
-Additionally, it's recommended to set the `require_parameters` property for `provider` (ProviderPreferencesData) to `true` in the `ChatData` object.
+Additionally, it's recommended to set the `require_parameters` property for `provider` ([ProviderPreferencesData](src/DTO/ProviderPreferencesData.php)) to `true` in the [`ChatData`](src/DTO/ChatData.php) object.
 
 ```php
 $chatData = new ChatData(
@@ -503,12 +504,12 @@ $limitResponse = LaravelOpenRouter::limitRequest();
 ```
 
 ### Using OpenRouterRequest Class
-You can also inject the `OpenRouterRequest` class in the **constructor** of your class and use its methods directly.
+You can also inject the [`OpenRouterRequest`](src/OpenRouterRequest.php) class in the **constructor** of your class and use its methods directly.
 ```php
 public function __construct(protected OpenRouterRequest $openRouterRequest) {}
 ```
 #### Chat Request
-Similarly, to send a chat request, create an instance of `ChatData` and pass it to the `chatRequest` method:
+Similarly, to send a chat request, create an instance of [`ChatData`](src/DTO/ChatData.php) and pass it to the `chatRequest` method:
 ```php
 $content = 'Tell me a story about a rogue AI that falls in love with its creator.'; // Your desired prompt or content
 $model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
