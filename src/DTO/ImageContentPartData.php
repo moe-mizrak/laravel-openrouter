@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
@@ -10,7 +12,7 @@ use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
  * Class ImageContentPartData
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-class ImageContentPartData extends DataTransferObject
+final class ImageContentPartData extends DataTransferObject
 {
     /**
      * The allowed type for image content.

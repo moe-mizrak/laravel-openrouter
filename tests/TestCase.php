@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter\Tests;
 
 use MoeMizrak\LaravelOpenrouter\Facades\LaravelOpenRouter;
@@ -18,6 +20,7 @@ class TestCase extends OrchestraTestCase
 
     /**
      * @param $app
+     *
      * @return string[]
      */
     protected function getPackageProviders($app): array
@@ -29,6 +32,7 @@ class TestCase extends OrchestraTestCase
 
     /**
      * @param $app
+     *
      * @return string[]
      */
     protected function getPackageAliases($app): array

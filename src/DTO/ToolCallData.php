@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
@@ -9,7 +11,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * Class ToolCallData
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-class ToolCallData extends DataTransferObject
+final class ToolCallData extends DataTransferObject
 {
     /**
      * @inheritDoc

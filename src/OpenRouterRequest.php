@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter;
 
 use GuzzleHttp\ClientInterface;
@@ -23,7 +25,7 @@ use Psr\Http\Message\ResponseInterface;
  * Class OpenRouterRequest
  * @package MoeMizrak\LaravelOpenrouter
  */
-class OpenRouterRequest extends OpenRouterAPI
+final class OpenRouterRequest extends OpenRouterAPI
 {
     // Buffer variable for incomplete streaming data.
     private static string $buffer = '';
@@ -341,6 +343,6 @@ class OpenRouterRequest extends OpenRouterAPI
     private function jsonDecode(?ResponseInterface $response = null): mixed
     {
         // Get the response body or return null.
-        return ($response ? json_decode($response->getBody(), true) : null);
+        return ($response ? json_decode((string) $response->getBody(), true) : null);
     }
 }

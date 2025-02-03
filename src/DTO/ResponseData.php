@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
@@ -15,7 +17,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * Class ResponseData
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-class ResponseData extends DataTransferObject
+final class ResponseData extends DataTransferObject
 {
     /**
      * @inheritDoc

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter\Exceptions;
 
 use Exception;
@@ -10,7 +12,7 @@ use Exception;
  * Class OpenRouterValidationException
  * @package MoeMizrak\LaravelOpenrouter\Exceptions
  */
-class OpenRouterValidationException extends Exception
+final class OpenRouterValidationException extends Exception
 {
     /**
      * OpenRouterValidationException constructor.

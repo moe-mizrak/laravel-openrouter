@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
@@ -12,7 +14,7 @@ use MoeMizrak\LaravelOpenrouter\Types\DataCollectionType;
  * Class ProviderPreferencesData
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-class ProviderPreferencesData extends DataTransferObject
+final class ProviderPreferencesData extends DataTransferObject
 {
     /**
      * @inheritDoc

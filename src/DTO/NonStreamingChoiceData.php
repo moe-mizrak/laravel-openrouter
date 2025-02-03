@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
@@ -8,7 +10,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * Class NonStreamingChoiceData
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-class NonStreamingChoiceData extends ChoiceData
+final class NonStreamingChoiceData extends ChoiceData
 {
     /**
      * @inheritDoc

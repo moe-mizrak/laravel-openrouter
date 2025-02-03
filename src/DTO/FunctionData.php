@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
@@ -8,7 +10,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * Class FunctionData
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-class FunctionData extends DataTransferObject
+final class FunctionData extends DataTransferObject
 {
     /**
      * @inheritDoc

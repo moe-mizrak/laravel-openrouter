@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
@@ -10,7 +12,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * Class RateLimitData
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-class RateLimitData extends DataTransferObject
+final class RateLimitData extends DataTransferObject
 {
     /**
      * @inheritDoc

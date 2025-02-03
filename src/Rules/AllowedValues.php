@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter\Rules;
 
 use MoeMizrak\LaravelOpenrouter\Exceptions\OpenRouterValidationException;
@@ -18,9 +20,7 @@ final readonly class AllowedValues
      *
      * @param array $acceptableValues
      */
-    public function __construct(protected array $acceptableValues = [])
-    {
-    }
+    public function __construct(protected array $acceptableValues = []) {}
 
     /**
      * Validates the allowed values.

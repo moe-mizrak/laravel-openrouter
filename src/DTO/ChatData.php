@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 use MoeMizrak\LaravelOpenrouter\Exceptions\OpenRouterValidationException;
@@ -14,7 +16,7 @@ use MoeMizrak\LaravelOpenrouter\Types\ToolChoiceType;
  * Class ChatData
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-class ChatData extends DataTransferObject
+final class ChatData extends DataTransferObject
 {
     /**
      * @inheritDoc

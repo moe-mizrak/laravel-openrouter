@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter\Rules;
 
 use MoeMizrak\LaravelOpenrouter\DTO\ValidationResultData;
@@ -20,13 +22,13 @@ final readonly class XORFields
      * @param mixed $firstField
      * @param mixed $secondField
      */
-    public function __construct(protected mixed $firstField, protected mixed $secondField)
-    {}
+    public function __construct(protected mixed $firstField, protected mixed $secondField) {}
 
     /**
      * Validate XOR condition for two fields.
      *
      * @return ValidationResultData
+     * @throws \ReflectionException
      */
     public function validate(): ValidationResultData
     {

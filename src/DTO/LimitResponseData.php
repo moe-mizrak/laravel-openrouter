@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
@@ -14,7 +16,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * Class LimitResponseData
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-class LimitResponseData extends DataTransferObject
+final class LimitResponseData extends DataTransferObject
 {
     /**
      * @inheritDoc
