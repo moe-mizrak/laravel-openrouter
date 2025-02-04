@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter\Types;
 
 /**
@@ -11,7 +13,7 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
  * Class RouteType
  * @package MoeMizrak\LaravelOpenrouter\Types
  */
-class RouteType
+final readonly class RouteType
 {
     /**
      * Fallback model.

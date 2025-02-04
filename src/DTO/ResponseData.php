@@ -1,8 +1,8 @@
 <?php
 
-namespace MoeMizrak\LaravelOpenrouter\DTO;
+declare(strict_types=1);
 
-use Spatie\DataTransferObject\DataTransferObject;
+namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
  * ResponseData is the general response DTO which consists of:
@@ -17,62 +17,69 @@ use Spatie\DataTransferObject\DataTransferObject;
  * Class ResponseData
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-class ResponseData extends DataTransferObject
+final class ResponseData extends DataTransferObject
 {
     /**
-     * ID of the request which later can be used for cost request
-     *
-     * @var string
+     * @inheritDoc
      */
-    public string $id;
+    public function __construct(
+        /**
+         * ID of the request which later can be used for cost request
+         *
+         * @var string
+         */
+        public string $id,
 
-    /**
-     * Model provider e.g. HuggingFace
-     *
-     * @var string|null
-     */
-    public ?string $provider;
+        /**
+         * Model provider e.g. HuggingFace
+         *
+         * @var string|null
+         */
+        public ?string $provider = null,
 
-    /**
-     * Name of the model e.g. mistralai/mistral-7b-instruct:free
-     *
-     * @var string
-     */
-    public string $model;
+        /**
+         * Name of the model e.g. mistralai/mistral-7b-instruct:free
+         *
+         * @var string
+         */
+        public string $model,
 
-    /**
-     * e.g. 'chat.completion' | 'chat.completion.chunk'
-     *
-     * @var string
-     */
-    public string $object;
+        /**
+         * e.g. 'chat.completion' | 'chat.completion.chunk'
+         *
+         * @var string
+         */
+        public string $object,
 
-    /**
-     * Unix timestamp of created_at e.g. 1715621307
-     *
-     * @var int
-     */
-    public int $created;
+        /**
+         * Unix timestamp of created_at e.g. 1715621307
+         *
+         * @var int
+         */
+        public int $created,
 
-    /**
-     * Depending on whether you set "stream" to "true"
-     * and whether you passed in "messages" or a "prompt", you get a different output shape.
-     *
-     * @var StreamingChoiceData[]|NonStreamingChoiceData[]|NonChatChoiceData[]|null
-     */
-    public ?array $choices;
+        /**
+         * Depending on whether you set "stream" to "true"
+         * and whether you passed in "messages" or a "prompt", you get a different output shape.
+         *
+         * @var StreamingChoiceData[]|NonStreamingChoiceData[]|NonChatChoiceData[]|null
+         */
+        public ?array $choices = null,
 
-    /**
-     * If using Perplexity Sonar, will return citations
-     *
-     * @var string[]|null
-     */
-    public ?array $citations;
+        /**
+         * Usage information of api request.
+         *
+         * @var UsageData|null
+         */
+        public ?UsageData $usage = null,
 
-    /**
-     * Usage information of api request.
-     *
-     * @var UsageData|null
-     */
-    public ?UsageData $usage;
+        /**
+         * If using Perplexity Sonar, will return citations
+         *
+         * @var string[]|null
+         */
+        public ?array $citations,
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }

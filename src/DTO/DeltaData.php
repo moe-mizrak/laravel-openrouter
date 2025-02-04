@@ -1,8 +1,8 @@
 <?php
 
-namespace MoeMizrak\LaravelOpenrouter\DTO;
+declare(strict_types=1);
 
-use Spatie\DataTransferObject\DataTransferObject;
+namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
  * DTO that represents a message delta i.e. any changed fields on a message during streaming.
@@ -10,27 +10,34 @@ use Spatie\DataTransferObject\DataTransferObject;
  * Class DeltaData
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-class DeltaData extends DataTransferObject
+final class DeltaData extends DataTransferObject
 {
     /**
-     * The content of the message.
-     *
-     * @var string|null
+     * @inheritDoc
      */
-    public ?string $content;
+    public function __construct(
+        /**
+         * The content of the message.
+         *
+         * @var string|null
+         */
+        public ?string $content = null,
 
-    /**
-     * The entity that produced the message.
-     * Possible values are user, assistant, system, function, tool
-     *
-     * @var string|null
-     */
-    public ?string $role;
+        /**
+         * The entity that produced the message.
+         * Possible values are user, assistant, system, function, tool
+         *
+         * @var string|null
+         */
+        public ?string $role = null,
 
-    /**
-     * Calling tools e.g. function
-     *
-     * @var ToolCallData[]|null
-     */
-    public ?array $toolCalls;
+        /**
+         * Calling tools e.g. function
+         *
+         * @var ToolCallData[]|null
+         */
+        public ?array $toolCalls = null
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }

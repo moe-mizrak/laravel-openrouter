@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
@@ -8,12 +10,19 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * Class StreamingChoiceData
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-class StreamingChoiceData extends ChoiceData
+final class StreamingChoiceData extends ChoiceData
 {
     /**
-     * Any changed fields on a message during streaming.
-     *
-     * @var DeltaData
+     * @inheritDoc
      */
-    public DeltaData $delta;
+    public function __construct(
+        /**
+         * Any changed fields on a message during streaming.
+         *
+         * @var DeltaData
+         */
+        public DeltaData $delta
+    ) {
+        parent::__construct();
+    }
 }

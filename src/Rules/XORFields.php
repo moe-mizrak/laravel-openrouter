@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter\Rules;
 
-use Illuminate\Support\Arr;
-use Spatie\DataTransferObject\Validation\ValidationResult;
-use Spatie\DataTransferObject\Validator;
+use MoeMizrak\LaravelOpenrouter\DTO\ValidationResultData;
 
 /**
  * Validator class for XOR-gate first and second fields.
@@ -14,34 +14,47 @@ use Spatie\DataTransferObject\Validator;
  * Class XORFields
  * @package MoeMizrak\LaravelOpenrouter\Rules
  */
-class XORFields implements Validator
+final readonly class XORFields
 {
     /**
      * Constructor a new validation instance.
      *
-     * @param string $firstField
-     * @param string $secondField
+     * @param mixed $firstField
+     * @param mixed $secondField
      */
-    public function __construct(protected string $firstField, protected string $secondField)
-    {
-    }
+    public function __construct(protected mixed $firstField, protected mixed $secondField) {}
 
     /**
-     * Validates the required fields.
+     * Validate XOR condition for two fields.
      *
-     * @param mixed $params
-     * @return ValidationResult
+     * @return ValidationResultData
+     * @throws \ReflectionException
      */
-    public function validate(mixed $params): ValidationResult
+    public function validate(): ValidationResultData
     {
-        $firstFieldExists = Arr::has($params, $this->firstField);
-        $secondFieldExists = Arr::has($params, $this->secondField);
+        $isValid = (empty($this->firstField) xor empty($this->secondField));
 
-        // If XOR condition is met, return valid
-        if ($firstFieldExists xor $secondFieldExists) {
-            return ValidationResult::valid();
+        /**
+         * Set the fields that have xor relation.
+         */
+        $xorFields = [
+            ['messages', 'prompt'], // messages and prompt fields are XOR gated
+            ['model', 'models'], // model and models fields are XOR gated
+        ];
+        // e.g. "messages and prompt"
+        foreach ($xorFields as $pair) {
+            $result[] = implode(' and ', $pair);
         }
+        // e.g. "messages and prompt, model and models"
+        $stringXorFields = implode(', ', $result);
 
-        return ValidationResult::invalid("Fields " . $this->firstField . " and " . $this->secondField . " are XOR-gated, compelling the requirement of either one, but not both simultaneously.");
+        $message = $isValid
+            ? null
+            : "Fields {$stringXorFields} are XOR-gated, meaning exactly one field from each pair must be provided, but not both.";
+
+        return new ValidationResultData(
+            isValid: $isValid,
+            message: $message
+        );
     }
 }

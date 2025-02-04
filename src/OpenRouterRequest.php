@@ -1,19 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter;
 
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Promise\PromiseInterface;
+use Illuminate\Support\Arr;
 use JsonException;
 use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
 use MoeMizrak\LaravelOpenrouter\DTO\CostResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ErrorData;
 use MoeMizrak\LaravelOpenrouter\DTO\LimitResponseData;
+use MoeMizrak\LaravelOpenrouter\DTO\RateLimitData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
+use MoeMizrak\LaravelOpenrouter\DTO\UsageData;
 use Psr\Http\Message\ResponseInterface;
-use Spatie\DataTransferObject\Arr;
-use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 
 /**
  * OpenRouter request and formed response class.
@@ -23,10 +25,8 @@ use Spatie\DataTransferObject\Exceptions\UnknownProperties;
  * Class OpenRouterRequest
  * @package MoeMizrak\LaravelOpenrouter
  */
-class OpenRouterRequest extends OpenRouterAPI
+final class OpenRouterRequest extends OpenRouterAPI
 {
-    use DataHandlingTrait;
-
     // Buffer variable for incomplete streaming data.
     private static string $buffer = '';
 
@@ -36,8 +36,7 @@ class OpenRouterRequest extends OpenRouterAPI
      * @param ChatData $chatData
      *
      * @return ErrorData|ResponseData
-     * @throws GuzzleException
-     * @throws UnknownProperties
+     * @throws \ReflectionException
      */
     public function chatRequest(ChatData $chatData): ErrorData|ResponseData
     {
@@ -46,14 +45,14 @@ class OpenRouterRequest extends OpenRouterAPI
 
         // Detect if stream chat completion is requested, and return ErrorData stating that chatStreamRequest needs to be used instead.
         if ($chatData->stream) {
-            return new ErrorData([
-                'code'    => 400,
-                'message' => 'For stream chat completion please use "chatStreamRequest" method instead!',
-            ]);
+            return new ErrorData(
+                code: 400,
+                message: 'For stream chat completion please use "chatStreamRequest" method instead!',
+            );
         }
 
         // Filter null values from the chatData object and return array.
-        $chatData = $this->filterNullValuesRecursive($chatData);
+        $chatData = $chatData->convertToArray();
 
         // Options for the Guzzle request
         $options = [
@@ -88,7 +87,7 @@ class OpenRouterRequest extends OpenRouterAPI
         $chatData->stream = true;
 
         // Filter null values from the chatData object and return array.
-        $chatData = $this->filterNullValuesRecursive($chatData);
+        $chatData = $chatData->convertToArray();
 
         // Add headers for streaming.
         $headers = [
@@ -125,7 +124,7 @@ class OpenRouterRequest extends OpenRouterAPI
      * @param string $streamingResponse
      *
      * @return array
-     * @throws UnknownProperties
+     * @throws \ReflectionException
      */
     public function filterStreamingResponse(string $streamingResponse): array
     {
@@ -194,8 +193,7 @@ class OpenRouterRequest extends OpenRouterAPI
      * @param string $generationId
      *
      * @return CostResponseData
-     * @throws GuzzleException
-     * @throws UnknownProperties
+     * @throws \ReflectionException
      */
     public function costRequest(string $generationId): CostResponseData
     {
@@ -215,8 +213,6 @@ class OpenRouterRequest extends OpenRouterAPI
      * Sends limit request for the rate limit or credits left on an API key.
      *
      * @return LimitResponseData
-     * @throws GuzzleException
-     * @throws UnknownProperties
      */
     public function limitRequest(): LimitResponseData
     {
@@ -235,24 +231,33 @@ class OpenRouterRequest extends OpenRouterAPI
     /**
      * Forms the response as ResponseData including id, model, object created, choices and usage if exits.
      *
-     * @param mixed $response
+     * @param mixed|null $response
      *
      * @return ResponseData
-     * @throws UnknownProperties
+     * @throws \ReflectionException
      */
     private function formChatResponse(mixed $response = null) : ResponseData
     {
+        // Map the usage data if it exists.
+        $usageArray = Arr::get($response, 'usage');
+        $usage = new UsageData(
+            prompt_tokens: Arr::get($usageArray, 'prompt_tokens'),
+            completion_tokens: Arr::get($usageArray, 'completion_tokens'),
+            total_tokens: Arr::get($usageArray, 'total_tokens'),
+        );
+
+
         // Map the response data to ResponseData and return it.
-        return new ResponseData([
-            'id'        => Arr::get($response, 'id'),
-            'provider'  => Arr::get($response, 'provider'),
-            'model'     => Arr::get($response, 'model'),
-            'object'    => Arr::get($response, 'object'),
-            'created'   => Arr::get($response, 'created'),
-            'choices'   => Arr::get($response, 'choices'),
-            'usage'     => Arr::get($response, 'usage'),
-            'citations' => Arr::get($response, 'citations'),
-        ]);
+        return new ResponseData(
+            id: Arr::get($response, 'id'),
+            provider: Arr::get($response, 'provider'),
+            model: Arr::get($response, 'model'),
+            object: Arr::get($response, 'object'),
+            created: Arr::get($response, 'created'),
+            choices: Arr::get($response, 'choices'),
+            usage: $usage,
+            citations: Arr::get($response, 'citations'),
+        );
     }
 
     /**
@@ -262,7 +267,7 @@ class OpenRouterRequest extends OpenRouterAPI
      * @param ResponseInterface|null $response
      *
      * @return CostResponseData
-     * @throws UnknownProperties
+     * @throws \ReflectionException
      */
     private function formCostsResponse(?ResponseInterface $response = null) : CostResponseData
     {
@@ -270,29 +275,30 @@ class OpenRouterRequest extends OpenRouterAPI
         $response = $this->jsonDecode($response);
 
         // Map the response data to CostResponseData and return it.
-        return new CostResponseData([
-            'id'                       => Arr::get($response, 'data.id'),
-            'model'                    => Arr::get($response, 'data.model'),
-            'streamed'                 => Arr::get($response, 'data.streamed'),
-            'total_cost'               => Arr::get($response, 'data.total_cost'),
-            'origin'                   => Arr::get($response, 'data.origin'),
-            'cancelled'                => Arr::get($response, 'data.cancelled'),
-            'finish_reason'            => Arr::get($response, 'data.finish_reason'),
-            'generation_time'          => Arr::get($response, 'data.generation_time'),
-            'created_at'               => Arr::get($response, 'data.created_at'),
-            'provider_name'            => Arr::get($response, 'data.provider_name'),
-            'tokens_prompt'            => Arr::get($response, 'data.tokens_prompt'),
-            'tokens_completion'        => Arr::get($response, 'data.tokens_completion'),
-            'native_tokens_prompt'     => Arr::get($response, 'data.native_tokens_prompt'),
-            'native_tokens_completion' => Arr::get($response, 'data.native_tokens_completion'),
-            'num_media_prompt'         => Arr::get($response, 'data.num_media_prompt'),
-            'num_media_completion'     => Arr::get($response, 'data.num_media_completion'),
-            'app_id'                   => Arr::get($response, 'data.app_id'),
-            'latency'                  => Arr::get($response, 'data.latency'),
-            'moderation_latency'       => Arr::get($response, 'data.moderation_latency'),
-            'upstream_id'              => Arr::get($response, 'data.upstream_id'),
-            'usage'                    => Arr::get($response, 'data.usage'),
-        ]);
+        return new CostResponseData(
+            id: Arr::get($response, 'data.id'),
+            model: Arr::get($response, 'data.model'),
+            total_cost: Arr::get($response, 'data.total_cost'),
+            origin: Arr::get($response, 'data.origin'),
+            streamed: Arr::get($response, 'data.streamed'),
+            cancelled: Arr::get($response, 'data.cancelled'),
+            finish_reason: Arr::get($response, 'data.finish_reason'),
+            generation_time: Arr::get($response, 'data.generation_time'),
+            created_at: Arr::get($response, 'data.created_at'),
+            provider_name: Arr::get($response, 'data.provider_name'),
+            tokens_prompt: Arr::get($response, 'data.tokens_prompt'),
+            tokens_completion: Arr::get($response, 'data.tokens_completion'),
+            native_tokens_prompt: Arr::get($response, 'data.native_tokens_prompt'),
+            native_tokens_completion: Arr::get($response, 'data.native_tokens_completion'),
+            num_media_prompt: Arr::get($response, 'data.num_media_prompt'),
+            num_media_completion: Arr::get($response, 'data.num_media_completion'),
+            app_id: Arr::get($response, 'data.app_id'),
+            latency: Arr::get($response, 'data.latency'),
+            moderation_latency: Arr::get($response, 'data.moderation_latency'),
+            upstream_id: Arr::get($response, 'data.upstream_id'),
+            usage: Arr::get($response, 'data.usage'),
+        );
+
     }
 
     /**
@@ -302,22 +308,29 @@ class OpenRouterRequest extends OpenRouterAPI
      * @param ResponseInterface|null $response
      *
      * @return LimitResponseData
-     * @throws UnknownProperties
+     * @throws \ReflectionException
      */
     private function formLimitResponse(?ResponseInterface $response = null): LimitResponseData
     {
         // Decode the json response
         $response = $this->jsonDecode($response);
 
+        // Map the rate limit data if it exists.
+        $rateLimitArray = Arr::get($response, 'data.rate_limit');
+        $rateLimit = new RateLimitData(
+            requests: Arr::get($rateLimitArray, 'requests'),
+            interval: Arr::get($rateLimitArray, 'interval'),
+        );
+
         // Map the response data to LimitResponseData and return it.
-        return new LimitResponseData([
-            'label'           => Arr::get($response, 'data.label'),
-            'usage'           => Arr::get($response, 'data.usage'),
-            'limit'           => Arr::get($response, 'data.limit'),
-            'limit_remaining' => Arr::get($response, 'data.limit_remaining'),
-            'is_free_tier'    => Arr::get($response, 'data.is_free_tier'),
-            'rate_limit'      => Arr::get($response, 'data.rate_limit'),
-        ]);
+        return new LimitResponseData(
+            label: Arr::get($response, 'data.label'),
+            usage: Arr::get($response, 'data.usage'),
+            limit_remaining: Arr::get($response, 'data.limit_remaining'),
+            limit: Arr::get($response, 'data.limit'),
+            is_free_tier: Arr::get($response, 'data.is_free_tier'),
+            rate_limit: $rateLimit,
+        );
     }
 
     /**
@@ -330,6 +343,6 @@ class OpenRouterRequest extends OpenRouterAPI
     private function jsonDecode(?ResponseInterface $response = null): mixed
     {
         // Get the response body or return null.
-        return ($response ? json_decode($response->getBody(), true) : null);
+        return ($response ? json_decode((string) $response->getBody(), true) : null);
     }
 }

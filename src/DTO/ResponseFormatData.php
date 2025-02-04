@@ -1,8 +1,8 @@
 <?php
 
-namespace MoeMizrak\LaravelOpenrouter\DTO;
+declare(strict_types=1);
 
-use Spatie\DataTransferObject\DataTransferObject;
+namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
  * Allows to force the model to produce specific output format.
@@ -14,19 +14,40 @@ use Spatie\DataTransferObject\DataTransferObject;
  * Class ResponseFormatData
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-class ResponseFormatData extends DataTransferObject
+final class ResponseFormatData extends DataTransferObject
 {
     /**
-     * The format of the output, e.g. json, text, srt, verbose_json ...
-     *
-     * @var string
+     * @inheritDoc
      */
-    public string $type;
+    public function __construct(
+        /**
+         * The format of the output, e.g. json, text, srt, verbose_json ...
+         *
+         * @var string
+         */
+        public string $type,
+
+        /**
+         * The JSON schema for the output format.
+         *
+         * @var mixed
+         */
+        public mixed $json_schema = null
+    ) {
+        parent::__construct(...func_get_args());
+    }
 
     /**
-     * The JSON schema for the output format.
-     *
-     * @var mixed
+     * @return array
      */
-    public mixed $json_schema = null;
+    public function convertToArray(): array
+    {
+        return array_filter(
+            [
+                'type'        => $this->type,
+                'json_schema' => $this->json_schema,
+            ],
+            fn($value) => $value !== null
+        );
+    }
 }

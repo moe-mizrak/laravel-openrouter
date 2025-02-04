@@ -1,8 +1,8 @@
 <?php
 
-namespace MoeMizrak\LaravelOpenrouter\DTO;
+declare(strict_types=1);
 
-use Spatie\DataTransferObject\DataTransferObject;
+namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
  * LimitResponseData is the response DTO for rate limit or credits left which consists of:
@@ -16,45 +16,52 @@ use Spatie\DataTransferObject\DataTransferObject;
  * Class LimitResponseData
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-class LimitResponseData extends DataTransferObject
+final class LimitResponseData extends DataTransferObject
 {
     /**
-     * Label of the limit e.g. sk-or-v1-f35...ebd
-     *
-     * @var string|null
+     * @inheritDoc
      */
-    public ?string $label;
+    public function __construct(
+        /**
+         * Label of the limit e.g. sk-or-v1-f35...ebd
+         *
+         * @var string|null
+         */
+        public ?string $label = null,
 
-    /**
-     * Number of credits used.
-     *
-     * @var float|null
-     */
-    public ?float $usage;
+        /**
+         * Number of credits used.
+         *
+         * @var float|null
+         */
+        public ?float $usage = null,
 
-    /**
-     * @var float|null
-     */
-    public ?float $limit_remaining;
+        /**
+         * @var float|null
+         */
+        public ?float $limit_remaining = null,
 
-    /**
-     * Credit limit for the key, or null if unlimited.
-     *
-     * @var int|null
-     */
-    public ?int $limit;
+        /**
+         * Credit limit for the key, or null if unlimited.
+         *
+         * @var int|null
+         */
+        public ?int $limit = null,
 
-    /**
-     * Whether the user has paid for credits before.
-     *
-     * @var bool|null
-     */
-    public ?bool $is_free_tier;
+        /**
+         * Whether the user has paid for credits before.
+         *
+         * @var bool|null
+         */
+        public ?bool $is_free_tier = null,
 
-    /**
-     * Rate limit DTO data.
-     *
-     * @var RateLimitData|null
-     */
-    public ?RateLimitData $rate_limit;
+        /**
+         * Rate limit DTO data.
+         *
+         * @var RateLimitData|null
+         */
+        public ?RateLimitData $rate_limit = null
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }

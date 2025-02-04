@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
@@ -8,10 +10,17 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * Class NonChatChoiceData
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-class NonChatChoiceData extends ChoiceData
+final class NonChatChoiceData extends ChoiceData
 {
     /**
-     * @var string
+     * @inheritDoc
      */
-    public string $text;
+    public function __construct(
+        /**
+         * The text of the choice
+         */
+        public string $text
+    ) {
+        parent::__construct();
+    }
 }

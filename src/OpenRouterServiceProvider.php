@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MoeMizrak\LaravelOpenrouter;
 
 use GuzzleHttp\Client;
@@ -10,7 +12,7 @@ use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 use MoeMizrak\LaravelOpenrouter\Facades\LaravelOpenRouter;
 
-class OpenRouterServiceProvider extends ServiceProvider
+final class OpenRouterServiceProvider extends ServiceProvider
 {
     /**
      * The default timeout for the Guzzle client.

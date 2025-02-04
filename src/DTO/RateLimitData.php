@@ -1,8 +1,8 @@
 <?php
 
-namespace MoeMizrak\LaravelOpenrouter\DTO;
+declare(strict_types=1);
 
-use Spatie\DataTransferObject\DataTransferObject;
+namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
  * RateLimitData is the response DTO for rate limit which consists of:
@@ -12,19 +12,26 @@ use Spatie\DataTransferObject\DataTransferObject;
  * Class RateLimitData
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-class RateLimitData extends DataTransferObject
+final class RateLimitData extends DataTransferObject
 {
     /**
-     * Number of requests allowed.
-     *
-     * @var int|null
+     * @inheritDoc
      */
-    public ?int $requests;
+    public function __construct(
+        /**
+         * Number of requests allowed.
+         *
+         * @var int|null
+         */
+        public ?int $requests = null,
 
-    /**
-     * In this interval, e.g. "10s"
-     *
-     * @var string|null
-     */
-    public ?string $interval;
+        /**
+         * In this interval, e.g. "10s"
+         *
+         * @var string|null
+         */
+        public ?string $interval = null
+    ) {
+        parent::__construct(...func_get_args());
+    }
 }
