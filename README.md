@@ -3,7 +3,7 @@
 
 <br />
 
-[![Latest Version on Packagist](https://img.shields.io/badge/packagist-v1.0-blue)](https://packagist.org/packages/moe-mizrak/laravel-openrouter)
+[![Latest Version on Packagist](https://img.shields.io/badge/packagist-v2.0-blue)](https://packagist.org/packages/moe-mizrak/laravel-openrouter)
 [![OpenRouter Discord](https://img.shields.io/badge/OpenRouter-5865F2?logo=discord&logoColor=white)](https://discord.gg/3TbKAakhGb)
 <br />
 
