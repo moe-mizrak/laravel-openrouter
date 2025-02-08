@@ -411,6 +411,15 @@ If you want to receive the response in a structured format, you can specify the 
 
 Additionally, it's recommended to set the `require_parameters` property for `provider` ([ProviderPreferencesData](src/DTO/ProviderPreferencesData.php)) to `true` in the [`ChatData`](src/DTO/ChatData.php) object.
 
+> [!CAUTION]
+> When using structured outputs, you may encounter these scenarios:
+> - Model doesn’t support structured outputs
+> - Invalid schema
+>
+> Also: If you face an error, remove `require_parameters` property of `provider` to see the result.
+> 
+> Check out [Requiring Providers to Support All Parameters](https://openrouter.ai/docs/features/provider-routing#requiring-providers-to-support-all-parameters-beta) for more details.
+
 ```php
 $chatData = new ChatData(
     messages: [
