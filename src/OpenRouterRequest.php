@@ -236,7 +236,7 @@ final class OpenRouterRequest extends OpenRouterAPI
      * @return ResponseData
      * @throws \ReflectionException
      */
-    private function formChatResponse(mixed $response = null) : ResponseData
+    private function formChatResponse(mixed $response = null): ResponseData
     {
         // Map the usage data if it exists.
         $usageArray = Arr::get($response, 'usage');
@@ -244,6 +244,7 @@ final class OpenRouterRequest extends OpenRouterAPI
             prompt_tokens: Arr::get($usageArray, 'prompt_tokens'),
             completion_tokens: Arr::get($usageArray, 'completion_tokens'),
             total_tokens: Arr::get($usageArray, 'total_tokens'),
+            cost: Arr::get($usageArray, 'cost'),
         );
 
 
@@ -269,7 +270,7 @@ final class OpenRouterRequest extends OpenRouterAPI
      * @return CostResponseData
      * @throws \ReflectionException
      */
-    private function formCostsResponse(?ResponseInterface $response = null) : CostResponseData
+    private function formCostsResponse(?ResponseInterface $response = null): CostResponseData
     {
         // Decode the json response
         $response = $this->jsonDecode($response);
@@ -298,7 +299,6 @@ final class OpenRouterRequest extends OpenRouterAPI
             upstream_id: Arr::get($response, 'data.upstream_id'),
             usage: Arr::get($response, 'data.usage'),
         );
-
     }
 
     /**

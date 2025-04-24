@@ -35,7 +35,14 @@ final class UsageData extends DataTransferObject
          *
          * @var int|null
          */
-        public ?int $total_tokens = null
+        public ?int $total_tokens = null,
+
+        /**
+         * Credit usage of the request
+         *
+         * @var int|null
+         */
+        public ?int $cost = null
     ) {
         parent::__construct(...func_get_args());
     }

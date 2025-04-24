@@ -54,6 +54,16 @@ final class ChatData extends DataTransferObject
         public ?ResponseFormatData $response_format = null,
 
         /**
+         * Include usage information in the response.
+         * This feature provides detailed information about token counts, costs, and caching status directly in your API responses
+         * (Default value is false, enabling usage accounting will add a few hundred milliseconds to the last response as the API calculates token counts and costs)
+         * See: https://openrouter.ai/docs/use-cases/usage-accounting
+         *
+         * @var bool
+         */
+        public bool $usage = false,
+
+        /**
          * Stop generation immediately if the model encounters any token specified in the stop array|string.
          *
          * @var array|string|null
@@ -137,8 +147,7 @@ final class ChatData extends DataTransferObject
          * @var bool|null
          */
         public ?bool $include_reasoning = false,
-    )
-    {
+    ) {
         $this->validateXorFields($this->messages, $this->prompt);
         $this->validateXorFields($this->model, $this->models);
 
@@ -180,11 +189,12 @@ final class ChatData extends DataTransferObject
                         } else {
                             return $value;
                         }
-                        }, $this->messages)
+                    }, $this->messages)
                     : null,
                 'prompt'             => $this->prompt,
                 'model'              => $this->model,
                 'response_format'    => $this->response_format?->convertToArray(),
+                'usage'              => $this->usage ? ['include' => true] : null,
                 'stop'               => $this->stop,
                 'stream'             => $this->stream,
                 'max_tokens'         => $this->max_tokens,
@@ -203,7 +213,7 @@ final class ChatData extends DataTransferObject
                         } else {
                             return $value;
                         }
-                        }, $this->tools)
+                    }, $this->tools)
                     : null,
                 'logit_bias'         => $this->logit_bias,
                 'transforms'         => $this->transforms,

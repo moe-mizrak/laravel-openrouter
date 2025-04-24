@@ -30,7 +30,7 @@ jobs:
           coverage: none
 
       - name: Cache Composer Dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: ~/.composer/cache/files
           key: dependencies-php-${{ matrix.php }}-L${{ matrix.laravel }}-${{ matrix.dependency-version }}-composer-${{ hashFiles('composer.json') }}
