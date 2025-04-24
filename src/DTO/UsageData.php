@@ -35,7 +35,7 @@ final class UsageData extends DataTransferObject
          *
          * @var int|null
          */
-        public ?int $total_tokens = null
+        public ?int $total_tokens = null,
 
         /**
          * Credit usage of the request
