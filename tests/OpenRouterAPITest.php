@@ -75,6 +75,7 @@ class OpenRouterAPITest extends TestCase
                 'prompt_tokens' => 23,
                 'completion_tokens' => 100,
                 'total_tokens' => 123,
+                'cost' => 0.2,
             ],
         ];
     }
@@ -162,6 +163,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull($response->usage->prompt_tokens);
         $this->assertNotNull($response->usage->completion_tokens);
         $this->assertNotNull($response->usage->total_tokens);
+        $this->assertIsFloat($response->usage->cost);
         $this->assertNotNull($response->choices);
         $this->assertNotNull(Arr::get($response->choices[0], 'finish_reason'));
     }
@@ -521,19 +523,20 @@ class OpenRouterAPITest extends TestCase
                 'prompt_tokens' => 23,
                 'completion_tokens' => 100,
                 'total_tokens' => 123,
+                'cost' => 0.2,
             ],
         ];
         $provider = new ProviderPreferencesData(
             require_parameters: true,
         );
         $chatData = new ChatData(
-            messages       : [
+            messages: [
                 $this->messageData,
             ],
-            model          : 'google/gemini-flash-1.5-exp',
+            model: 'google/gemini-flash-1.5-exp',
             response_format: $responseFormatData,
-            max_tokens     : $this->maxTokens,
-            provider       : $provider,
+            max_tokens: $this->maxTokens,
+            provider: $provider,
         );
         $this->mockOpenRouter($responseBody);
 
@@ -719,6 +722,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull($response->usage->prompt_tokens);
         $this->assertNotNull($response->usage->completion_tokens);
         $this->assertNotNull($response->usage->total_tokens);
+        $this->assertIsFloat($response->usage->cost);
         $this->assertNotNull($response->choices);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
@@ -764,6 +768,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull($response->usage->prompt_tokens);
         $this->assertNotNull($response->usage->completion_tokens);
         $this->assertNotNull($response->usage->total_tokens);
+        $this->assertIsFloat($response->usage->cost);
         $this->assertNotNull($response->choices);
         $this->assertNotNull(Arr::get($response->choices[0], 'finish_reason'));
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
