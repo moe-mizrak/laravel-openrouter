@@ -105,6 +105,7 @@ The [`ChatData`](src/DTO/ChatData.php) class is used to **encapsulate the data**
 - **prompt** (string|null): A string representing the prompt for the chat request. This field is XOR-gated with the `messages` field.
 - **model** (string|null): The name of the model to be used for the chat request. If not specified, the user's default model will be used. This field is XOR-gated with the `models` field.
 - **response_format** (ResponseFormatData|null): An instance of the [`ResponseFormatData`](src/DTO/ResponseFormatData.php) class representing the desired format for the response.
+- **usage** (bool|null): A boolean indicating whether to include usage information in the response. Default is `false` because enabling usage accounting will add a few hundred milliseconds to the response as the API calculates token counts and costs.
 - **stop** (array|string|null): A value specifying the stop sequence for the chat generation.
 - **stream** (bool|null): A boolean indicating whether streaming should be enabled or not.
 - **include_reasoning** (bool|null): Whether to return the model's reasoning.
@@ -167,6 +168,7 @@ $chatData = new ChatData(
     response_format: new ResponseFormatData(
         type: 'json_object',
     ),
+    usage: true,
     stop: ['stop_token'],
     stream: true,
     include_reasoning: true,
@@ -224,6 +226,7 @@ $chatResponse = LaravelOpenRouter::chatRequest($chatData);
 ```
 
 - #### Stream Chat Request
+
   Streaming chat request is also supported and can be used as following by using **chatStreamRequest** function:
 
 ```php
@@ -315,7 +318,7 @@ data: {"id":"gen-eWgGaEbIzFq4ziGGIsIjyRtLda54","model":"mistralai/mistral-7b-ins
 
 : OPENROUTER PROCESSING\n
 \n
-data: {"id":"gen-C6Xym94jZcvJv2vVpxYSyw2tV1fR","model":"mistralai/mistral-7b-instruct:free","object":"chat.completion.chunk","created":1718887189,"choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}],"usage":{"prompt_tokens":23,"completion_tokens":100,"total_tokens":123,"cost":0.2}}\n
+data: {"id":"gen-C6Xym94jZcvJv2vVpxYSyw2tV1fR","model":"mistralai/mistral-7b-instruct:free","object":"chat.completion.chunk","created":1718887189,"choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}],"usage":{"prompt_tokens":23,"completion_tokens":100,"total_tokens":123,"cost":197}}\n
 \n
 data: [DONE]\n
 ```
@@ -381,7 +384,7 @@ This is the sample response after filterStreamingResponse:
             prompt_tokens: 23,
             completion_tokens: 100,
             total_tokens: 123,
-            cost: 0.2
+            cost: 197
         ),
     ),
 ]
@@ -390,6 +393,7 @@ This is the sample response after filterStreamingResponse:
 </details>
 
 - #### Maintaining Conversation Continuity
+
   If you want to maintain **conversation continuity** meaning that historical chat will be remembered and considered for your new chat request, you need to send historical messages along with the new message:
 
 ```php
@@ -443,6 +447,7 @@ $content = Arr::get($response->choices[0], 'message.content');
 ```
 
 - #### Structured Output
+
   (Please also refer to [OpenRouter Document Structured Output](https://openrouter.ai/docs/structured-outputs) for models supporting structured output, also for more details)
 
 If you want to receive the response in a structured format, you can specify the `type` property for `response_format` ([ResponseFormatData](src/DTO/ResponseFormatData.php)) as `json_object` in the [`ChatData`](src/DTO/ChatData.php) object.
