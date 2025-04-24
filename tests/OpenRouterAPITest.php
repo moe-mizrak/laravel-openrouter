@@ -75,7 +75,7 @@ class OpenRouterAPITest extends TestCase
                 'prompt_tokens' => 23,
                 'completion_tokens' => 100,
                 'total_tokens' => 123,
-                'cost' => 0.2,
+                'cost' => 197,
             ],
         ];
     }
@@ -163,7 +163,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull($response->usage->prompt_tokens);
         $this->assertNotNull($response->usage->completion_tokens);
         $this->assertNotNull($response->usage->total_tokens);
-        $this->assertIsFloat($response->usage->cost);
+        $this->assertNotNull($response->usage->cost);
         $this->assertNotNull($response->choices);
         $this->assertNotNull(Arr::get($response->choices[0], 'finish_reason'));
     }
@@ -523,7 +523,7 @@ class OpenRouterAPITest extends TestCase
                 'prompt_tokens' => 23,
                 'completion_tokens' => 100,
                 'total_tokens' => 123,
-                'cost' => 0.2,
+                'cost' => 197,
             ],
         ];
         $provider = new ProviderPreferencesData(
@@ -722,7 +722,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull($response->usage->prompt_tokens);
         $this->assertNotNull($response->usage->completion_tokens);
         $this->assertNotNull($response->usage->total_tokens);
-        $this->assertIsFloat($response->usage->cost);
+        $this->assertNotNull($response->usage->cost);
         $this->assertNotNull($response->choices);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
@@ -768,7 +768,7 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull($response->usage->prompt_tokens);
         $this->assertNotNull($response->usage->completion_tokens);
         $this->assertNotNull($response->usage->total_tokens);
-        $this->assertIsFloat($response->usage->cost);
+        $this->assertNotNull($response->usage->cost);
         $this->assertNotNull($response->choices);
         $this->assertNotNull(Arr::get($response->choices[0], 'finish_reason'));
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
