@@ -137,8 +137,7 @@ final class ChatData extends DataTransferObject
          * @var bool|null
          */
         public ?bool $include_reasoning = false,
-    )
-    {
+    ) {
         $this->validateXorFields($this->messages, $this->prompt);
         $this->validateXorFields($this->model, $this->models);
 
@@ -171,7 +170,7 @@ final class ChatData extends DataTransferObject
      */
     public function convertToArray(): array
     {
-        return array_filter(
+        $array = array_filter(
             [
                 'messages'           => ! is_null($this->messages)
                     ? array_map(function ($value) {
@@ -180,7 +179,7 @@ final class ChatData extends DataTransferObject
                         } else {
                             return $value;
                         }
-                        }, $this->messages)
+                    }, $this->messages)
                     : null,
                 'prompt'             => $this->prompt,
                 'model'              => $this->model,
@@ -203,7 +202,7 @@ final class ChatData extends DataTransferObject
                         } else {
                             return $value;
                         }
-                        }, $this->tools)
+                    }, $this->tools)
                     : null,
                 'logit_bias'         => $this->logit_bias,
                 'transforms'         => $this->transforms,
@@ -214,5 +213,11 @@ final class ChatData extends DataTransferObject
             ],
             fn($value) => $value !== null
         );
+
+        if (config('laravel-openrouter.api_usage', true)) {
+            $array['usage'] = ['include' => true];
+        }
+
+        return $array;
     }
 }

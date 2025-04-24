@@ -54,4 +54,15 @@ return [
     |
     */
     'referer' => env('OPENROUTER_API_REFERER', 'https://github.com/moe-mizrak/laravel-openrouter'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | OpenRouter Usage Accounting
+    |--------------------------------------------------------------------------
+    |
+    | This feature provides detailed information about token counts, costs, and caching status directly in your API responses
+    | See: https://openrouter.ai/docs/use-cases/usage-accounting
+    |
+    */
+    'usage' => env('OPENROUTER_API_USAGE', true),
 ];
