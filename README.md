@@ -6,6 +6,10 @@
 [![OpenRouter Discord](https://img.shields.io/badge/OpenRouter-5865F2?logo=discord&logoColor=white)](https://discord.gg/3TbKAakhGb)
 <br />
 
+<a href="https://reboosty-reboosty.vercel.app/api?repo_url=https://github.com/moe-mizrak/laravel-openrouter" target="_blank">
+  <img src="https://reboosty-reboosty.vercel.app/api?repo_url=https://github.com/moe-mizrak/laravel-openrouter" alt="reboosty" />
+</a>
+
 This Laravel package provides an easy-to-use interface for integrating **[OpenRouter](https://openrouter.ai/)** into your Laravel applications. **OpenRouter** is a unified interface for Large Language Models (LLMs) that allows you to interact with various **[AI models](https://openrouter.ai/docs#models)** through a single API.
 
 ## Table of Contents
