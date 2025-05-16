@@ -322,7 +322,7 @@ data: {"id":"gen-eWgGaEbIzFq4ziGGIsIjyRtLda54","model":"mistralai/mistral-7b-ins
 
 : OPENROUTER PROCESSING\n
 \n
-data: {"id":"gen-C6Xym94jZcvJv2vVpxYSyw2tV1fR","model":"mistralai/mistral-7b-instruct:free","object":"chat.completion.chunk","created":1718887189,"choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}],"usage":{"prompt_tokens":23,"completion_tokens":100,"total_tokens":123,"cost":197}}\n
+data: {"id":"gen-C6Xym94jZcvJv2vVpxYSyw2tV1fR","model":"mistralai/mistral-7b-instruct:free","object":"chat.completion.chunk","created":1718887189,"choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}],"usage":{"prompt_tokens":23,"completion_tokens":100,"total_tokens":123,"cost":0.00000114}}\n
 \n
 data: [DONE]\n
 ```
@@ -388,7 +388,7 @@ This is the sample response after filterStreamingResponse:
             prompt_tokens: 23,
             completion_tokens: 100,
             total_tokens: 123,
-            cost: 197
+            cost: 0.00000114
         ),
     ),
 ]

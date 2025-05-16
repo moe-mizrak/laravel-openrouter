@@ -75,7 +75,7 @@ class OpenRouterAPITest extends TestCase
                 'prompt_tokens' => 23,
                 'completion_tokens' => 100,
                 'total_tokens' => 123,
-                'cost' => 197,
+                'cost' => 0.00000114,
             ],
         ];
     }
@@ -523,7 +523,7 @@ class OpenRouterAPITest extends TestCase
                 'prompt_tokens' => 23,
                 'completion_tokens' => 100,
                 'total_tokens' => 123,
-                'cost' => 197,
+                'cost' => 0.00000114,
             ],
         ];
         $provider = new ProviderPreferencesData(
