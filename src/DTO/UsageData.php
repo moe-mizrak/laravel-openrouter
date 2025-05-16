@@ -40,9 +40,9 @@ final class UsageData extends DataTransferObject
         /**
          * Credit usage of the request
          *
-         * @var int|null
+         * @var float|null
          */
-        public ?int $cost = null
+        public ?float $cost = null
     ) {
         parent::__construct(...func_get_args());
     }
