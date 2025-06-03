@@ -7,10 +7,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 /**
  * ResponseData is the general response DTO which consists of:
  * - id
- * - provider
  * - model
  * - object
  * - created
+ * - provider
+ * - citations
  * - choices (DTO object)
  * - usage (DTO object)
  *
@@ -29,13 +30,6 @@ final class ResponseData extends DataTransferObject
          * @var string
          */
         public string $id,
-
-        /**
-         * Model provider e.g. HuggingFace
-         *
-         * @var string|null
-         */
-        public ?string $provider = null,
 
         /**
          * Name of the model e.g. mistralai/mistral-7b-instruct:free
@@ -59,6 +53,20 @@ final class ResponseData extends DataTransferObject
         public int $created,
 
         /**
+         * Model provider e.g. HuggingFace
+         *
+         * @var string|null
+         */
+        public ?string $provider = null,
+
+        /**
+         * If using Perplexity Sonar, will return citations
+         *
+         * @var string[]|null
+         */
+        public ?array $citations,
+
+        /**
          * Depending on whether you set "stream" to "true"
          * and whether you passed in "messages" or a "prompt", you get a different output shape.
          *
@@ -72,13 +80,6 @@ final class ResponseData extends DataTransferObject
          * @var UsageData|null
          */
         public ?UsageData $usage = null,
-
-        /**
-         * If using Perplexity Sonar, will return citations
-         *
-         * @var string[]|null
-         */
-        public ?array $citations,
     ) {
         parent::__construct(...func_get_args());
     }
