@@ -11,10 +11,10 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  *  - streamed
  *  - total_cost
  *  - origin
+ *  - created_at
  *  - cancelled
  *  - finish_reason
  *  - generation_time
- *  - created_at
  *  - provider_name
  *  - tokens_prompt
  *  - tokens_completion
@@ -29,6 +29,7 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  *  - usage
  *
  * Class CostResponseData
+ *
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class CostResponseData extends DataTransferObject
@@ -66,6 +67,13 @@ final class CostResponseData extends DataTransferObject
         public string $origin,
 
         /**
+         * Creation timestamp of the request
+         *
+         * @var string
+         */
+        public string $created_at,
+
+        /**
          * Whether the response was streamed
          *
          * @var bool|null
@@ -92,13 +100,6 @@ final class CostResponseData extends DataTransferObject
          * @var int|null
          */
         public ?int $generation_time = null,
-
-        /**
-         * Creation timestamp of the request
-         *
-         * @var string
-         */
-        public string $created_at,
 
         /**
          * Name of the provider
