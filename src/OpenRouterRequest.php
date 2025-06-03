@@ -247,17 +247,16 @@ final class OpenRouterRequest extends OpenRouterAPI
             cost: Arr::get($usageArray, 'cost'),
         );
 
-
         // Map the response data to ResponseData and return it.
         return new ResponseData(
             id: Arr::get($response, 'id'),
-            provider: Arr::get($response, 'provider'),
             model: Arr::get($response, 'model'),
             object: Arr::get($response, 'object'),
             created: Arr::get($response, 'created'),
+            provider: Arr::get($response, 'provider'),
+            citations: Arr::get($response, 'citations'),
             choices: Arr::get($response, 'choices'),
             usage: $usage,
-            citations: Arr::get($response, 'citations'),
         );
     }
 
@@ -281,11 +280,11 @@ final class OpenRouterRequest extends OpenRouterAPI
             model: Arr::get($response, 'data.model'),
             total_cost: Arr::get($response, 'data.total_cost'),
             origin: Arr::get($response, 'data.origin'),
+            created_at: Arr::get($response, 'data.created_at'),
             streamed: Arr::get($response, 'data.streamed'),
             cancelled: Arr::get($response, 'data.cancelled'),
             finish_reason: Arr::get($response, 'data.finish_reason'),
             generation_time: Arr::get($response, 'data.generation_time'),
-            created_at: Arr::get($response, 'data.created_at'),
             provider_name: Arr::get($response, 'data.provider_name'),
             tokens_prompt: Arr::get($response, 'data.tokens_prompt'),
             tokens_completion: Arr::get($response, 'data.tokens_completion'),
