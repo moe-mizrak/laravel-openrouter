@@ -10,7 +10,7 @@
   <img src="https://reboosty-reboosty.vercel.app/api?repo_url=https://github.com/moe-mizrak/laravel-openrouter" alt="reboosty" />
 </a>
 
-This Laravel package provides an easy-to-use interface for integrating **[OpenRouter](https://openrouter.ai/)** into your Laravel applications. **OpenRouter** is a unified interface for Large Language Models (LLMs) that allows you to interact with various **[AI models](https://openrouter.ai/docs#models)** through a single API.
+This Laravel package provides an easy-to-use interface for integrating **[OpenRouter](https://openrouter.ai/)** into your Laravel applications. **OpenRouter** is a unified interface for Large Language Models (LLMs) that allows you to interact with various **[AI models](https://openrouter.ai/models)** through a single API.
 
 ## Table of Contents
 
@@ -87,7 +87,7 @@ OPENROUTER_API_REFERER=
 > [!NOTE]
 >
 > - `OPENROUTER_API_ENDPOINT`: The endpoint URL for the **OpenRouter API** (default: https://openrouter.ai/api/v1/).
-> - `OPENROUTER_API_KEY`: Your **API key** for accessing the OpenRouter API. You can obtain this key from the [OpenRouter dashboard](https://openrouter.ai/keys).
+> - `OPENROUTER_API_KEY`: Your **API key** for accessing the OpenRouter API. You can obtain this key from the [OpenRouter dashboard](https://openrouter.ai/settings/keys).
 > - `OPENROUTER_API_TIMEOUT`: Request timeout in seconds. Increase value to 120 - 180 if you use long-thinking models like openai/o1 (default: 20)
 > - `OPENROUTER_API_TITLE`: Optional - Site URL for rankings on openrouter.ai
 > - `OPENROUTER_API_REFERER`: Optional - Site referer for rankings on openrouter.ai
@@ -116,7 +116,7 @@ The [`ChatData`](src/DTO/ChatData.php) class is used to **encapsulate the data**
 
 #### LLM Parameters
 
-These properties control various aspects of the generated response (more [info](https://openrouter.ai/docs#parameters)):
+These properties control various aspects of the generated response (more [info](https://openrouter.ai/docs/api-reference/parameters)):
 
 - **max_tokens** (int|null): The maximum number of tokens that can be generated in the completion. Default is 1024.
 - **temperature** (float|null): A value between 0 and 2 controlling the randomness of the output.
@@ -212,7 +212,7 @@ To send a chat request, create an instance of [`ChatData`](src/DTO/ChatData.php)
 
 ```php
 $content = 'Tell me a story about a rogue AI that falls in love with its creator.'; // Your desired prompt or content
-$model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
+$model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/models)
 $messageData = new MessageData(
     content: $content,
     role: RoleType::USER,
@@ -235,7 +235,7 @@ $chatResponse = LaravelOpenRouter::chatRequest($chatData);
 
 ```php
 $content = 'Tell me a story about a rogue AI that falls in love with its creator.'; // Your desired prompt or content
-$model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
+$model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/models)
 $messageData = new MessageData(
     content: $content,
     role: RoleType::USER,
@@ -452,7 +452,7 @@ $content = Arr::get($response->choices[0], 'message.content');
 
 - #### Structured Output
 
-  (Please also refer to [OpenRouter Document Structured Output](https://openrouter.ai/docs/structured-outputs) for models supporting structured output, also for more details)
+  (Please also refer to [OpenRouter Document Structured Output](https://openrouter.ai/docs/features/structured-outputs) for models supporting structured output, also for more details)
 
 If you want to receive the response in a structured format, you can specify the `type` property for `response_format` ([ResponseFormatData](src/DTO/ResponseFormatData.php)) as `json_object` in the [`ChatData`](src/DTO/ChatData.php) object.
 
@@ -538,7 +538,7 @@ To retrieve the cost of a generation, first make a `chat request` and obtain the
 
 ```php
 $content = 'Tell me a story about a rogue AI that falls in love with its creator.'; // Your desired prompt or content
-$model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
+$model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/models)
 $messageData = new MessageData(
     content: $content,
     role   : RoleType::USER,
@@ -580,7 +580,7 @@ Similarly, to send a chat request, create an instance of [`ChatData`](src/DTO/Ch
 
 ```php
 $content = 'Tell me a story about a rogue AI that falls in love with its creator.'; // Your desired prompt or content
-$model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
+$model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/models)
 $messageData = new MessageData(
     content: $content,
     role   : RoleType::USER,
@@ -603,7 +603,7 @@ Similarly, to retrieve the cost of a generation, create a `chat request` to obta
 
 ```php
 $content = 'Tell me a story about a rogue AI that falls in love with its creator.';
-$model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/docs#models)
+$model = 'mistralai/mistral-7b-instruct:free'; // The OpenRouter model you want to use (https://openrouter.ai/models)
 $messageData = new MessageData(
     content: $content,
     role   : RoleType::USER,
