@@ -680,6 +680,46 @@ class OpenRouterAPITest extends TestCase
     }
 
     #[Test]
+    public function it_tests_if_to_array_for_cost_request_works_as_expected()
+    {
+        /* SETUP */
+        $chatData = new ChatData(
+            messages: [
+                $this->messageData,
+            ],
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
+        $this->mockOpenRouter($this->mockBasicBody());
+        $chatResponse = $this->api->chatRequest($chatData);
+        $generationId = $chatResponse->id;
+        $this->mockOpenRouter($this->mockBasicCostBody());
+
+        /* EXECUTE */
+        $response = $this->api->costRequest($generationId);
+
+        /* ASSERT */
+        $this->assertInstanceOf(CostResponseData::class, $response);
+        $responseArray = $response->toArray();
+        $this->assertArrayHasKey('id', $responseArray);
+        $this->assertArrayHasKey('model', $responseArray);
+        $this->assertArrayHasKey('total_cost', $responseArray);
+        $this->assertArrayHasKey('origin', $responseArray);
+        $this->assertArrayHasKey('streamed', $responseArray);
+        $this->assertArrayHasKey('created_at', $responseArray);
+        $this->assertArrayHasKey('cancelled', $responseArray);
+        $this->assertArrayHasKey('generation_time', $responseArray);
+        $this->assertArrayHasKey('provider_name', $responseArray);
+        $this->assertArrayHasKey('tokens_prompt', $responseArray);
+        $this->assertArrayHasKey('tokens_completion', $responseArray);
+        $this->assertArrayHasKey('native_tokens_prompt', $responseArray);
+        $this->assertArrayHasKey('native_tokens_completion', $responseArray);
+        $this->assertArrayHasKey('app_id', $responseArray);
+        $this->assertArrayHasKey('latency', $responseArray);
+        $this->assertArrayHasKey('usage', $responseArray);
+    }
+
+    #[Test]
     public function it_makes_chat_completion_api_request_with_llm_parameters()
     {
         /* SETUP */

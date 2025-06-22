@@ -72,12 +72,12 @@ final class LimitResponseData extends DataTransferObject
     {
         return array_filter(
             [
-                'label' => $this->label,
-                'usage' => $this->usage,
+                'label'           => $this->label,
+                'usage'           => $this->usage,
                 'limit_remaining' => $this->limit_remaining,
-                'limit' => $this->limit,
-                'is_free_tier' => $this->is_free_tier,
-                'rate_limit' => $this->rate_limit?->toArray(),
+                'limit'           => $this->limit,
+                'is_free_tier'    => $this->is_free_tier,
+                'rate_limit'      => $this->rate_limit?->toArray(),
             ],
             fn($value) => $value !== null
         );
