@@ -83,4 +83,24 @@ final class ResponseData extends DataTransferObject
     ) {
         parent::__construct(...func_get_args());
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function toArray(): array
+    {
+        return array_filter(
+            [
+                'id'        => $this->id,
+                'model'     => $this->model,
+                'object'    => $this->object,
+                'created'   => $this->created,
+                'provider'  => $this->provider,
+                'citations' => $this->citations,
+                'choices'   => $this->choices,
+                'usage'     => $this->usage?->toArray(),
+            ],
+            fn($value) => $value !== null
+        );
+    }
 }

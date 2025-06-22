@@ -306,6 +306,38 @@ class OpenRouterAPITest extends TestCase
     }
 
     #[Test]
+    public function it_tests_if_response_to_array_is_converting_dto_to_array_successfully()
+    {
+        /* SETUP */
+        $chatData = new ChatData(
+            messages: [
+                $this->messageData,
+            ],
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
+        $this->mockOpenRouter($this->mockBasicBody());
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->generalTestAssertions($response);
+        $responseArray = $response->toArray();
+        $this->assertArrayHasKey('id', $responseArray);
+        $this->assertArrayHasKey('model', $responseArray);
+        $this->assertArrayHasKey('object', $responseArray);
+        $this->assertArrayHasKey('created', $responseArray);
+        $this->assertArrayHasKey('provider', $responseArray);
+        $this->assertArrayHasKey('choices', $responseArray);
+        $this->assertIsArray($responseArray['choices']);
+        $this->assertNotEmpty($responseArray['choices']);
+        $this->assertArrayHasKey('usage', $responseArray);
+        $this->assertIsArray($responseArray['usage']);
+        $this->assertNotEmpty($responseArray['usage']);
+    }
+
+    #[Test]
     public function it_throws_xor_validation_exception_when_both_message_and_prompt_empty_in_chat_data()
     {
         /* SETUP */
