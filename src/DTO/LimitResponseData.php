@@ -64,4 +64,22 @@ final class LimitResponseData extends DataTransferObject
     ) {
         parent::__construct(...func_get_args());
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function toArray(): array
+    {
+        return array_filter(
+            [
+                'label'           => $this->label,
+                'usage'           => $this->usage,
+                'limit_remaining' => $this->limit_remaining,
+                'limit'           => $this->limit,
+                'is_free_tier'    => $this->is_free_tier,
+                'rate_limit'      => $this->rate_limit?->toArray(),
+            ],
+            fn($value) => $value !== null
+        );
+    }
 }

@@ -187,4 +187,37 @@ final class CostResponseData extends DataTransferObject
     ) {
         parent::__construct(...func_get_args());
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function toArray(): array
+    {
+        return array_filter(
+            [
+                'id'                       => $this->id,
+                'model'                    => $this->model,
+                'streamed'                 => $this->streamed,
+                'total_cost'               => $this->total_cost,
+                'origin'                   => $this->origin,
+                'created_at'               => $this->created_at,
+                'cancelled'                => $this->cancelled,
+                'finish_reason'            => $this->finish_reason,
+                'generation_time'          => $this->generation_time,
+                'provider_name'            => $this->provider_name,
+                'tokens_prompt'            => $this->tokens_prompt,
+                'tokens_completion'        => $this->tokens_completion,
+                'native_tokens_prompt'     => $this->native_tokens_prompt,
+                'native_tokens_completion' => $this->native_tokens_completion,
+                'num_media_prompt'         => $this->num_media_prompt,
+                'num_media_completion'     => $this->num_media_completion,
+                'app_id'                   => $this->app_id,
+                'latency'                  => $this->latency,
+                'moderation_latency'       => $this->moderation_latency,
+                'upstream_id'              => $this->upstream_id,
+                'usage'                    => $this->usage,
+            ],
+            fn($value) => $value !== null
+        );
+    }
 }

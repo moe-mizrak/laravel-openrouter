@@ -306,6 +306,38 @@ class OpenRouterAPITest extends TestCase
     }
 
     #[Test]
+    public function it_tests_if_response_to_array_is_converting_dto_to_array_successfully()
+    {
+        /* SETUP */
+        $chatData = new ChatData(
+            messages: [
+                $this->messageData,
+            ],
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
+        $this->mockOpenRouter($this->mockBasicBody());
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->generalTestAssertions($response);
+        $responseArray = $response->toArray();
+        $this->assertArrayHasKey('id', $responseArray);
+        $this->assertArrayHasKey('model', $responseArray);
+        $this->assertArrayHasKey('object', $responseArray);
+        $this->assertArrayHasKey('created', $responseArray);
+        $this->assertArrayHasKey('provider', $responseArray);
+        $this->assertArrayHasKey('choices', $responseArray);
+        $this->assertIsArray($responseArray['choices']);
+        $this->assertNotEmpty($responseArray['choices']);
+        $this->assertArrayHasKey('usage', $responseArray);
+        $this->assertIsArray($responseArray['usage']);
+        $this->assertNotEmpty($responseArray['usage']);
+    }
+
+    #[Test]
     public function it_throws_xor_validation_exception_when_both_message_and_prompt_empty_in_chat_data()
     {
         /* SETUP */
@@ -648,6 +680,46 @@ class OpenRouterAPITest extends TestCase
     }
 
     #[Test]
+    public function it_tests_if_to_array_for_cost_request_works_as_expected()
+    {
+        /* SETUP */
+        $chatData = new ChatData(
+            messages: [
+                $this->messageData,
+            ],
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
+        $this->mockOpenRouter($this->mockBasicBody());
+        $chatResponse = $this->api->chatRequest($chatData);
+        $generationId = $chatResponse->id;
+        $this->mockOpenRouter($this->mockBasicCostBody());
+
+        /* EXECUTE */
+        $response = $this->api->costRequest($generationId);
+
+        /* ASSERT */
+        $this->assertInstanceOf(CostResponseData::class, $response);
+        $responseArray = $response->toArray();
+        $this->assertArrayHasKey('id', $responseArray);
+        $this->assertArrayHasKey('model', $responseArray);
+        $this->assertArrayHasKey('total_cost', $responseArray);
+        $this->assertArrayHasKey('origin', $responseArray);
+        $this->assertArrayHasKey('streamed', $responseArray);
+        $this->assertArrayHasKey('created_at', $responseArray);
+        $this->assertArrayHasKey('cancelled', $responseArray);
+        $this->assertArrayHasKey('generation_time', $responseArray);
+        $this->assertArrayHasKey('provider_name', $responseArray);
+        $this->assertArrayHasKey('tokens_prompt', $responseArray);
+        $this->assertArrayHasKey('tokens_completion', $responseArray);
+        $this->assertArrayHasKey('native_tokens_prompt', $responseArray);
+        $this->assertArrayHasKey('native_tokens_completion', $responseArray);
+        $this->assertArrayHasKey('app_id', $responseArray);
+        $this->assertArrayHasKey('latency', $responseArray);
+        $this->assertArrayHasKey('usage', $responseArray);
+    }
+
+    #[Test]
     public function it_makes_chat_completion_api_request_with_llm_parameters()
     {
         /* SETUP */
@@ -864,6 +936,28 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull($response->rate_limit);
         $this->assertNotNull($response->rate_limit->requests);
         $this->assertNotNull($response->rate_limit->interval);
+    }
+
+    #[Test]
+    public function it_tests_if_to_array_for_limit_request_working_as_expected()
+    {
+        /* SETUP */
+        $this->mockOpenRouter($this->mockBasicLimitBody());
+
+        /* EXECUTE */
+        $response = $this->api->limitRequest();
+
+        /* ASSERT */
+        $this->assertInstanceOf(LimitResponseData::class, $response);
+        $responseArray = $response->toArray();
+        $this->assertIsArray($responseArray);
+        $this->assertArrayHasKey('label', $responseArray);
+        $this->assertArrayHasKey('usage', $responseArray);
+        $this->assertArrayHasKey('is_free_tier', $responseArray);
+        $this->assertArrayHasKey('limit', $responseArray);
+        $this->assertArrayHasKey('limit_remaining', $responseArray);
+        $this->assertArrayHasKey('rate_limit', $responseArray);
+        $this->assertIsArray($responseArray['rate_limit']);
     }
 
     #[Test]

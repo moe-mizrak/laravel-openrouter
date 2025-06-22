@@ -11,6 +11,7 @@ use GuzzleRetry\GuzzleRetryMiddleware;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 use MoeMizrak\LaravelOpenrouter\Facades\LaravelOpenRouter;
+use MoeMizrak\LaravelOpenrouter\Helpers\OpenRouterHelper;
 
 final class OpenRouterServiceProvider extends ServiceProvider
 {
@@ -45,7 +46,9 @@ final class OpenRouterServiceProvider extends ServiceProvider
         });
 
         $this->app->bind('laravel-openrouter', function () {
-            return new OpenRouterRequest();
+            return new OpenRouterRequest(
+                new OpenRouterHelper(),
+            );
         });
 
         $this->app->bind(OpenRouterRequest::class, function () {

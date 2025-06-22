@@ -46,4 +46,20 @@ final class UsageData extends DataTransferObject
     ) {
         parent::__construct(...func_get_args());
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function toArray(): array
+    {
+        return array_filter(
+            [
+                'prompt_tokens'     => $this->prompt_tokens,
+                'completion_tokens' => $this->completion_tokens,
+                'total_tokens'      => $this->total_tokens,
+                'cost'              => $this->cost,
+            ],
+            fn($value) => $value !== null
+        );
+    }
 }

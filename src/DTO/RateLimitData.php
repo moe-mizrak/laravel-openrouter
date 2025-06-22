@@ -34,4 +34,18 @@ final class RateLimitData extends DataTransferObject
     ) {
         parent::__construct(...func_get_args());
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function toArray(): array
+    {
+        return array_filter(
+            [
+                'requests' => $this->requests,
+                'interval' => $this->interval,
+            ],
+            fn($value) => $value !== null
+        );
+    }
 }
