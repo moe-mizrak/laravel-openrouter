@@ -899,6 +899,28 @@ class OpenRouterAPITest extends TestCase
     }
 
     #[Test]
+    public function it_tests_if_to_array_for_limit_request_working_as_expected()
+    {
+        /* SETUP */
+        $this->mockOpenRouter($this->mockBasicLimitBody());
+
+        /* EXECUTE */
+        $response = $this->api->limitRequest();
+
+        /* ASSERT */
+        $this->assertInstanceOf(LimitResponseData::class, $response);
+        $responseArray = $response->toArray();
+        $this->assertIsArray($responseArray);
+        $this->assertArrayHasKey('label', $responseArray);
+        $this->assertArrayHasKey('usage', $responseArray);
+        $this->assertArrayHasKey('is_free_tier', $responseArray);
+        $this->assertArrayHasKey('limit', $responseArray);
+        $this->assertArrayHasKey('limit_remaining', $responseArray);
+        $this->assertArrayHasKey('rate_limit', $responseArray);
+        $this->assertIsArray($responseArray['rate_limit']);
+    }
+
+    #[Test]
     public function it_makes_a_open_route_api_request_by_using_facade()
     {
         /* SETUP */
