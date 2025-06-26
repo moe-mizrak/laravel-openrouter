@@ -64,7 +64,7 @@ final class ResponseData extends DataTransferObject
          *
          * @var string[]|null
          */
-        public ?array $citations,
+        public ?array $citations = null,
 
         /**
          * Depending on whether you set "stream" to "true"
