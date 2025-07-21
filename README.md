@@ -109,7 +109,8 @@ The [`ChatData`](src/DTO/ChatData.php) class is used to **encapsulate the data**
 - **usage** (bool|null): A boolean indicating whether to include usage information in the response. Default is `false` because enabling usage accounting will add a few hundred milliseconds to the response as the API calculates token counts and costs.
 - **stop** (array|string|null): A value specifying the stop sequence for the chat generation.
 - **stream** (bool|null): A boolean indicating whether streaming should be enabled or not.
-- **include_reasoning** (bool|null): Whether to return the model's reasoning.
+- **include_reasoning** (bool|null): Whether to return the model's reasoning (Note: this parameter is **deprecated**, use `reasoning` parameter instead. For backward compatibility, package still supports the `include_reasoning` parameter)
+- **reasoning** (ReasoningData|null): An instance of the [`ReasoningData`](src/DTO/ReasoningData.php) class for reasoning configuration. It provides a transparent look into the reasoning steps taken by a model.
 
 #### LLM Parameters
 
@@ -172,7 +173,10 @@ $chatData = new ChatData(
     usage: true,
     stop: ['stop_token'],
     stream: true,
-    include_reasoning: true,
+    reasoning: new ReasoningData(
+        effort: EffortType::HIGH,
+        exclude: false,
+    ),
     max_tokens: 1024,
     temperature: 0.7,
     top_p: 0.9,

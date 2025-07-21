@@ -142,14 +142,28 @@ final class ChatData extends DataTransferObject
 
         /**
          * Enable think tokens.
-         * Default: false
+         * Note: This parameter is the legacy parameter and will be removed in the future.
          *
          * @var bool|null
+         * @deprecated Use '$reasoning' parameter instead (it is backward compatible with the old parameter).
          */
         public ?bool $include_reasoning = false,
+
+        /**
+         * For models that support it, the OpenRouter API can return Reasoning Tokens, also known as thinking tokens.
+         * See: https://openrouter.ai/docs/use-cases/reasoning-tokens
+         *
+         * @var ReasoningData|null
+         */
+        public ?ReasoningData $reasoning = null,
     ) {
         $this->validateXorFields($this->messages, $this->prompt);
         $this->validateXorFields($this->model, $this->models);
+
+        // Legacy mapping: only if no explicit reasoning provided
+        if ($this->reasoning === null && $this->include_reasoning !== null) {
+            $this->reasoning = new ReasoningData(exclude: ! $this->include_reasoning);
+        }
 
         parent::__construct(...func_get_args());
     }
@@ -220,7 +234,7 @@ final class ChatData extends DataTransferObject
                 'models'             => $this->models,
                 'route'              => $this->route,
                 'provider'           => $this->provider?->convertToArray(),
-                'include_reasoning'  => $this->include_reasoning,
+                'reasoning'          => $this->reasoning?->convertToArray(),
             ],
             fn($value) => $value !== null
         );

@@ -13,6 +13,7 @@ use MoeMizrak\LaravelOpenrouter\DTO\ImageUrlData;
 use MoeMizrak\LaravelOpenrouter\DTO\LimitResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\MessageData;
 use MoeMizrak\LaravelOpenrouter\DTO\ProviderPreferencesData;
+use MoeMizrak\LaravelOpenrouter\DTO\ReasoningData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseFormatData;
 use MoeMizrak\LaravelOpenrouter\DTO\TextContentData;
@@ -20,6 +21,7 @@ use MoeMizrak\LaravelOpenrouter\Exceptions\OpenRouterValidationException;
 use MoeMizrak\LaravelOpenrouter\Facades\LaravelOpenRouter;
 use MoeMizrak\LaravelOpenrouter\OpenRouterRequest;
 use MoeMizrak\LaravelOpenrouter\Types\DataCollectionType;
+use MoeMizrak\LaravelOpenrouter\Types\EffortType;
 use MoeMizrak\LaravelOpenrouter\Types\RoleType;
 use MoeMizrak\LaravelOpenrouter\Types\RouteType;
 use PHPUnit\Framework\Attributes\Test;
@@ -67,6 +69,37 @@ class OpenRouterAPITest extends TestCase
                     'message' => [
                         'role' => RoleType::ASSISTANT,
                         'content' => 'Some random content',
+                    ],
+                    'finish_reason' => 'stop',
+                ],
+            ],
+            'usage' => [
+                'prompt_tokens' => 23,
+                'completion_tokens' => 100,
+                'total_tokens' => 123,
+                'cost' => 0.00000114,
+            ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function mockReasoning(): array
+    {
+        return [
+            'id' => 'gen-QcWgjEtiEDNHgomV2jjoQpCZlkRZ',
+            'provider' => 'HuggingFace',
+            'model' => $this->model,
+            'object' => 'chat.completion',
+            'created' => 1718888436,
+            'choices' => [
+                [
+                    'index' => 0,
+                    'message' => [
+                        'role' => RoleType::ASSISTANT,
+                        'content' => 'Some random content',
+                        'reasoning' => 'The reasoning behind the answer is...',
                     ],
                     'finish_reason' => 'stop',
                 ],
@@ -188,6 +221,71 @@ class OpenRouterAPITest extends TestCase
         $this->generalTestAssertions($response);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
+    }
+
+    #[Test]
+    public function it_makes_a_basic_chat_completion_open_route_api_request_with_reasoning_param()
+    {
+        /* SETUP */
+        $chatData = new ChatData(
+            messages: [
+                $this->messageData,
+            ],
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+            reasoning: new ReasoningData(
+                effort: EffortType::HIGH,
+                exclude: false, // Reasoning should not be excluded
+            ),
+        );
+        $this->mockOpenRouter($this->mockReasoning());
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+        /* ASSERT */
+        $this->generalTestAssertions($response);
+        $this->assertNotNull(Arr::get($response->choices[0], 'message.reasoning'));
+    }
+
+    #[Test]
+    public function it_tests_chat_data_with_legacy_include_reasoning_param_if_mapping_to_reasoning()
+    {
+        /* SETUP */
+        // Legacy parameter `include_reasoning` is set to true, so it should be mapped to reasoning
+        $firstChatData = new ChatData(
+            messages: [
+                $this->messageData,
+            ],
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+            include_reasoning: true, // Legacy parameter
+        );
+        // neither include_reasoning nor reasoning is set, so it should not be mapped to reasoning
+        $secondChatData = new ChatData(
+            messages: [
+                $this->messageData,
+            ],
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
+        // reasoning is set, so it should ignore legacy parameter
+        $thirdChatData = new ChatData(
+            messages: [
+                $this->messageData,
+            ],
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+            include_reasoning: false,
+            reasoning: new ReasoningData(
+                effort: EffortType::HIGH,
+                exclude: false,
+            ),
+        );
+
+        /* ASSERT */
+        $this->assertFalse($firstChatData->reasoning->exclude);
+        $this->assertTrue($secondChatData->reasoning->exclude);
+        $this->assertFalse($thirdChatData->reasoning->exclude);
     }
 
     #[Test]
