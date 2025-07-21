@@ -32,6 +32,18 @@ final class MessageData extends DataTransferObject
         public ?string $role = null,
 
         /**
+         * @var string|null
+         */
+        public ?string $refusal = null,
+
+        /**
+         * Reasoning for the message.
+         *
+         * @var string|null
+         */
+        public ?string $reasoning = null,
+
+        /**
          * Calling tools e.g. function
          *
          * @var ToolCallData[]|null
