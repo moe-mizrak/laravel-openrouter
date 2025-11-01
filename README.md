@@ -29,6 +29,7 @@ This Laravel package provides an easy-to-use interface for integrating **[OpenRo
       - [Stream Chat Request](#stream-chat-request)
       - [Maintaining Conversation Continuity](#maintaining-conversation-continuity)
       - [Structured Output](#structured-output)
+      - [Audio Inputs](#audio-inputs)
     - [Cost Request](#cost-request)
     - [Limit Request](#limit-request)
   - [Using OpenRouterRequest Class](#using-openrouterrequest-class)
@@ -535,6 +536,51 @@ $chatData = new ChatData(
 
 > [!TIP]
 > You can also use **prompt engineering** to obtain structured output and control the format of responses.
+
+- ####  Audio Inputs
+  (Please also refer to [OpenRouter Document Audio Inputs](https://openrouter.ai/docs/features/multimodal/audio) for models supporting audio inputs, also for more details)
+
+Audio input is supported by some models in OpenRouter. You can provide audio input by using the `AudioContentData` DTO class as following:
+
+```php
+$model = 'mistralai/voxtral-small-24b-2507'; // Audio input supported models: https://openrouter.ai/models?fmt=cards&input_modalities=audio
+$data = base64_encode('path/of/audio/file.mp3'); // Base64-encoded audio data
+
+$audioContentData = new AudioContentData(
+    type: AudioContentData::ALLOWED_TYPE, // it can only take input_audio for audio content
+    input_audio: new InputAudioData(
+        data: $data,
+        format: AudioFormatType::MP3, // Supported formats: mp3, wav
+    ),
+);
+
+$textContentData = new TextContentData(
+    type: TextContentData::ALLOWED_TYPE,
+    text: 'Please transcribe this audio file.',
+);
+
+$messageData = new MessageData(
+    content: [
+        $textContentData,
+        $audioContentData,
+    ],
+    role: RoleType::USER,
+);
+
+$chatData = new ChatData(
+    messages: [
+        $messageData,
+    ],
+    model: $model,
+);
+
+$response = LaravelOpenRouter::chatRequest($chatData);
+```
+
+> [!NOTE]
+> Only `mp3` and `wav` formats are supported for audio inputs.
+> 
+> And make sure to provide valid `base64-encoded` audio data.
 
 #### Cost Request
 
