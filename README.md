@@ -552,8 +552,14 @@ $audioContentData = new AudioContentData(
     ),
 );
 
+$textContentData = new TextContentData(
+    type: TextContentData::ALLOWED_TYPE,
+    text: 'Please transcribe this audio file.',
+);
+
 $messageData = new MessageData(
     content: [
+        $textContentData,
         $audioContentData,
     ],
     role: RoleType::USER,
