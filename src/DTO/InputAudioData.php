@@ -41,7 +41,7 @@ final class InputAudioData extends DataTransferObject
     {
         return array_filter(
             [
-                'data'    => $this->data,
+                'data' => $this->data,
                 'format' => $this->format,
             ],
             fn($value) => $value !== null
