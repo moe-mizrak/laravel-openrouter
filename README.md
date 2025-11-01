@@ -536,6 +536,42 @@ $chatData = new ChatData(
 > [!TIP]
 > You can also use **prompt engineering** to obtain structured output and control the format of responses.
 
+- ####  Audio Inputs
+  (Please also refer to [OpenRouter Document Audio Inputs](https://openrouter.ai/docs/features/multimodal/audio) for models supporting audio inputs, also for more details)
+  Audio input is supported by some models in OpenRouter. You can provide audio input by using the `AudioContentPartData` class within the `content` array of a `MessageData` object.
+
+```php
+$model = 'mistralai/voxtral-small-24b-2507'; // Audio input supported models: https://openrouter.ai/models?fmt=cards&input_modalities=audio
+$data = base64_encode('path/of/audio/file.mp3'); // Base64-encoded audio data
+
+$audioContentData = new AudioContentData(
+    type: AudioContentData::ALLOWED_TYPE, // it can only take input_audio for audio content
+    input_audio: new InputAudioData(
+        data: $data,
+        format: AudioFormatType::MP3, // Supported formats: mp3, wav
+    ),
+);
+
+$messageData = new MessageData(
+    content: [
+        $audioContentData,
+    ],
+    role: RoleType::USER,
+);
+
+$chatData = new ChatData(
+    messages: [
+        $messageData,
+    ],
+    model: $model,
+);
+```
+
+> [!NOTE]
+> Only `mp3` and `wav` formats are supported for audio inputs.
+> 
+> And make sure to provide valid `base64-encoded` audio data.
+
 #### Cost Request
 
 To retrieve the cost of a generation, first make a `chat request` and obtain the `generationId`. Then, pass the generationId to the `costRequest` method:
