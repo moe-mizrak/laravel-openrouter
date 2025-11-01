@@ -573,6 +573,8 @@ $chatData = new ChatData(
     ],
     model: $model,
 );
+
+$response = LaravelOpenRouter::chatRequest($chatData);
 ```
 
 > [!NOTE]
