@@ -6,10 +6,12 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Arr;
 use Mockery\MockInterface;
+use MoeMizrak\LaravelOpenrouter\DTO\AudioContentData;
 use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
 use MoeMizrak\LaravelOpenrouter\DTO\CostResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ImageContentPartData;
 use MoeMizrak\LaravelOpenrouter\DTO\ImageUrlData;
+use MoeMizrak\LaravelOpenrouter\DTO\InputAudioData;
 use MoeMizrak\LaravelOpenrouter\DTO\LimitResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\MessageData;
 use MoeMizrak\LaravelOpenrouter\DTO\ProviderPreferencesData;
@@ -20,6 +22,7 @@ use MoeMizrak\LaravelOpenrouter\DTO\TextContentData;
 use MoeMizrak\LaravelOpenrouter\Exceptions\OpenRouterValidationException;
 use MoeMizrak\LaravelOpenrouter\Facades\LaravelOpenRouter;
 use MoeMizrak\LaravelOpenrouter\OpenRouterRequest;
+use MoeMizrak\LaravelOpenrouter\Types\AudioFormatType;
 use MoeMizrak\LaravelOpenrouter\Types\DataCollectionType;
 use MoeMizrak\LaravelOpenrouter\Types\EffortType;
 use MoeMizrak\LaravelOpenrouter\Types\RoleType;
@@ -518,6 +521,43 @@ class OpenRouterAPITest extends TestCase
                 $textContentData,
                 $imageContentPartData,
             ], // image content is only for user role
+            role: RoleType::USER,
+        );
+        $chatData = new ChatData(
+            messages: [
+                $messageData,
+            ],
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+        );
+        $this->mockOpenRouter($this->mockBasicBody());
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->generalTestAssertions($response);
+        $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
+        $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
+    }
+
+    // test for the audio content
+    #[Test]
+    public function it_successfully_sends_audio_in_content_in_messages_in_the_open_route_api_request()
+    {
+        /* SETUP */
+        $data = base64_encode('fake-audio-data'); // Simulated base64 audio data
+        $audioContentData = new AudioContentData(
+            type: AudioContentData::ALLOWED_TYPE, // it can only take input_audio for audio content
+            input_audio: new InputAudioData(
+                data: $data,
+                format: AudioFormatType::MP3,
+            ),
+        );
+        $messageData = new MessageData(
+            content: [
+                $audioContentData,
+            ],
             role: RoleType::USER,
         );
         $chatData = new ChatData(
