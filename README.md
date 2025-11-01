@@ -538,7 +538,8 @@ $chatData = new ChatData(
 
 - ####  Audio Inputs
   (Please also refer to [OpenRouter Document Audio Inputs](https://openrouter.ai/docs/features/multimodal/audio) for models supporting audio inputs, also for more details)
-  Audio input is supported by some models in OpenRouter. You can provide audio input by using the `AudioContentPartData` class within the `content` array of a `MessageData` object.
+
+Audio input is supported by some models in OpenRouter. You can provide audio input by using the `AudioContentData` DTO class as following:
 
 ```php
 $model = 'mistralai/voxtral-small-24b-2507'; // Audio input supported models: https://openrouter.ai/models?fmt=cards&input_modalities=audio
