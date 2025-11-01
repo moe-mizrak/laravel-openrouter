@@ -29,6 +29,7 @@ This Laravel package provides an easy-to-use interface for integrating **[OpenRo
       - [Stream Chat Request](#stream-chat-request)
       - [Maintaining Conversation Continuity](#maintaining-conversation-continuity)
       - [Structured Output](#structured-output)
+      - [Audio Inputs](#audio-inputs)
     - [Cost Request](#cost-request)
     - [Limit Request](#limit-request)
   - [Using OpenRouterRequest Class](#using-openrouterrequest-class)
