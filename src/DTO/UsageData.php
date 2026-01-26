@@ -42,7 +42,21 @@ final class UsageData extends DataTransferObject
          *
          * @var float|null
          */
-        public ?float $cost = null
+        public ?float $cost = null,
+
+        /**
+         * Detailed breakdown of prompt tokens (cached, audio, video)
+         *
+         * @var PromptTokensDetailsData|null
+         */
+        public ?PromptTokensDetailsData $prompt_tokens_details = null,
+
+        /**
+         * Detailed breakdown of completion tokens (reasoning, image)
+         *
+         * @var CompletionTokensDetailsData|null
+         */
+        public ?CompletionTokensDetailsData $completion_tokens_details = null
     ) {
         parent::__construct(...func_get_args());
     }
@@ -54,10 +68,12 @@ final class UsageData extends DataTransferObject
     {
         return array_filter(
             [
-                'prompt_tokens'     => $this->prompt_tokens,
-                'completion_tokens' => $this->completion_tokens,
-                'total_tokens'      => $this->total_tokens,
-                'cost'              => $this->cost,
+                'prompt_tokens'             => $this->prompt_tokens,
+                'completion_tokens'         => $this->completion_tokens,
+                'total_tokens'              => $this->total_tokens,
+                'cost'                      => $this->cost,
+                'prompt_tokens_details'     => $this->prompt_tokens_details?->toArray(),
+                'completion_tokens_details' => $this->completion_tokens_details?->toArray(),
             ],
             fn($value) => $value !== null
         );

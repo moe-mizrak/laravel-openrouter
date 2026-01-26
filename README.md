@@ -462,7 +462,20 @@ This is the sample response after filterStreamingResponse:
             prompt_tokens: 23,
             completion_tokens: 100,
             total_tokens: 123,
-            cost: 0.00000114
+            cost: 0.00000114,
+            prompt_tokens_details: new PromptTokensDetailsData(
+                cached_tokens: 10,
+                cache_write_tokens: 15,
+                audio_tokens: 0,
+                video_tokens: 0,
+            ),
+            completion_tokens_details: new CompletionTokensDetailsData(
+                reasoning_tokens: 30,
+                audio_tokens: 0,
+                image_tokens: 0,
+                accepted_prediction_tokens: 90,
+                rejected_prediction_tokens: 0,
+            ),
         ),
     ),
 ]

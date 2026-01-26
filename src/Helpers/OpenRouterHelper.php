@@ -11,6 +11,8 @@ use MoeMizrak\LaravelOpenrouter\DTO\LimitResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\RateLimitData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\UsageData;
+use MoeMizrak\LaravelOpenrouter\DTO\PromptTokensDetailsData;
+use MoeMizrak\LaravelOpenrouter\DTO\CompletionTokensDetailsData;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionException;
 
@@ -36,11 +38,37 @@ final class OpenRouterHelper
     {
         // Map the usage data if it exists.
         $usageArray = Arr::get($response, 'usage');
+
+        // Map the prompt tokens details if it exists.
+        $promptDetailsData = Arr::get($usageArray, 'prompt_tokens_details');
+        $promptTokensDetails = $promptDetailsData
+            ? new PromptTokensDetailsData(
+                cached_tokens: Arr::get($promptDetailsData, 'cached_tokens'),
+                cache_write_tokens: Arr::get($promptDetailsData, 'cache_write_tokens'),
+                audio_tokens: Arr::get($promptDetailsData, 'audio_tokens'),
+                video_tokens: Arr::get($promptDetailsData, 'video_tokens'),
+            )
+            : null;
+
+        // Map the completion tokens details if it exists.
+        $completionDetailsData = Arr::get($usageArray, 'completion_tokens_details');
+        $completionTokensDetails = $completionDetailsData
+            ? new CompletionTokensDetailsData(
+                reasoning_tokens: Arr::get($completionDetailsData, 'reasoning_tokens'),
+                audio_tokens: Arr::get($completionDetailsData, 'audio_tokens'),
+                image_tokens: Arr::get($completionDetailsData, 'image_tokens'),
+                accepted_prediction_tokens: Arr::get($completionDetailsData, 'accepted_prediction_tokens'),
+                rejected_prediction_tokens: Arr::get($completionDetailsData, 'rejected_prediction_tokens'),
+            )
+            : null;
+
         $usage = new UsageData(
             prompt_tokens: Arr::get($usageArray, 'prompt_tokens'),
             completion_tokens: Arr::get($usageArray, 'completion_tokens'),
             total_tokens: Arr::get($usageArray, 'total_tokens'),
             cost: Arr::get($usageArray, 'cost'),
+            prompt_tokens_details: $promptTokensDetails,
+            completion_tokens_details: $completionTokensDetails,
         );
 
         // Map the response data to ResponseData and return it.

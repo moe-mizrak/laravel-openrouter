@@ -26,6 +26,8 @@ use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseFormatData;
 use MoeMizrak\LaravelOpenrouter\DTO\TextContentData;
 use MoeMizrak\LaravelOpenrouter\DTO\ToolCallData;
+use MoeMizrak\LaravelOpenrouter\DTO\PromptTokensDetailsData;
+use MoeMizrak\LaravelOpenrouter\DTO\CompletionTokensDetailsData;
 use MoeMizrak\LaravelOpenrouter\Exceptions\OpenRouterValidationException;
 use MoeMizrak\LaravelOpenrouter\Facades\LaravelOpenRouter;
 use MoeMizrak\LaravelOpenrouter\OpenRouterRequest;
@@ -89,6 +91,19 @@ class OpenRouterAPITest extends TestCase
                 'completion_tokens' => 100,
                 'total_tokens' => 123,
                 'cost' => 0.00000114,
+                'prompt_tokens_details' => [
+                    'cached_tokens' => 10,
+                    'cache_write_tokens' => 15,
+                    'audio_tokens' => 0,
+                    'video_tokens' => 0,
+                ],
+                'completion_tokens_details' => [
+                    'reasoning_tokens' => 30,
+                    'audio_tokens' => 0,
+                    'image_tokens' => 0,
+                    'accepted_prediction_tokens' => 90,
+                    'rejected_prediction_tokens' => 0,
+                ],
             ],
         ];
     }
@@ -120,6 +135,19 @@ class OpenRouterAPITest extends TestCase
                 'completion_tokens' => 100,
                 'total_tokens' => 123,
                 'cost' => 0.00000114,
+                'prompt_tokens_details' => [
+                    'cached_tokens' => 10,
+                    'cache_write_tokens' => 15,
+                    'audio_tokens' => 0,
+                    'video_tokens' => 0,
+                ],
+                'completion_tokens_details' => [
+                    'reasoning_tokens' => 30,
+                    'audio_tokens' => 0,
+                    'image_tokens' => 0,
+                    'accepted_prediction_tokens' => 90,
+                    'rejected_prediction_tokens' => 0,
+                ],
             ],
         ];
     }
@@ -208,6 +236,12 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotNull($response->usage->completion_tokens);
         $this->assertNotNull($response->usage->total_tokens);
         $this->assertNotNull($response->usage->cost);
+        // Validate prompt_tokens_details nested DTO
+        $this->assertInstanceOf(PromptTokensDetailsData::class, $response->usage->prompt_tokens_details);
+        $this->assertNotNull($response->usage->prompt_tokens_details->cached_tokens);
+        // Validate completion_tokens_details nested DTO
+        $this->assertInstanceOf(CompletionTokensDetailsData::class, $response->usage->completion_tokens_details);
+        $this->assertNotNull($response->usage->completion_tokens_details->reasoning_tokens);
         $this->assertNotNull($response->choices);
         $this->assertNotNull(Arr::get($response->choices[0], 'finish_reason'));
     }
@@ -869,6 +903,19 @@ class OpenRouterAPITest extends TestCase
                 'completion_tokens' => 100,
                 'total_tokens' => 123,
                 'cost' => 0.00000114,
+                'prompt_tokens_details' => [
+                    'cached_tokens' => 10,
+                    'cache_write_tokens' => 15,
+                    'audio_tokens' => 0,
+                    'video_tokens' => 0,
+                ],
+                'completion_tokens_details' => [
+                    'reasoning_tokens' => 30,
+                    'audio_tokens' => 0,
+                    'image_tokens' => 0,
+                    'accepted_prediction_tokens' => 90,
+                    'rejected_prediction_tokens' => 0,
+                ],
             ],
         ];
         $provider = new ProviderPreferencesData(
