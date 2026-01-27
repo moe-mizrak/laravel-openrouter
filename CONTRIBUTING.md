@@ -152,8 +152,8 @@ class MessageData extends DataTransferObject { ... }
 // Type class naming: use descriptive names with "Type" suffix
 final readonly class RoleType
 {
-    public const USER = 'user';
-    public const ASSISTANT = 'assistant';
+    const USER = 'user';
+    const ASSISTANT = 'assistant';
     ...
 }
 ```
