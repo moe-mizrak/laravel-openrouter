@@ -145,13 +145,17 @@ When in doubt, prioritize consistency with:
 
 ```php
 // DTO naming: use descriptive names with "Data" suffix
-class ResponseData extends Data { ... }
-class ChatData extends Data { ... }
-class MessageData extends Data { ... }
+class ResponseData extends DataTransferObject { ... }
+class ChatData extends DataTransferObject { ... }
+class MessageData extends DataTransferObject { ... }
 
-// Type/Enum naming: use descriptive names with "Type" suffix
-enum RoleType: string { ... }
-enum RouteType: string { ... }
+// Type class naming: use descriptive names with "Type" suffix
+final readonly class RoleType
+{
+    public const USER = 'user';
+    public const ASSISTANT = 'assistant';
+    ...
+}
 ```
 
 ## Documentation
