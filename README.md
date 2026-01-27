@@ -974,6 +974,8 @@ $limitResponse = $this->openRouterRequest->limitRequest();
 
 > **We welcome contributions!** If you'd like to improve this package, simply create a pull request with your changes. Your efforts help enhance its functionality and documentation.
 
+Please read our **[Contributing Guide](CONTRIBUTING.md)** for details on our development process, commit conventions, and how to submit pull requests.
+
 ## 📜 License
 
 Laravel OpenRouter is an open-sourced software licensed under the **[MIT license](LICENSE)**.
