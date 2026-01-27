@@ -2,18 +2,6 @@
 
 Thank you for considering contributing to Laravel OpenRouter! Your contributions help make this package better for everyone.
 
-## Table of Contents
-
-- [Getting Started](#getting-started)
-- [Development Setup](#development-setup)
-- [Commit Messages](#commit-messages)
-- [Testing Guidelines](#testing-guidelines)
-- [Pull Request Guidelines](#pull-request-guidelines)
-- [Naming Conventions](#naming-conventions)
-- [Documentation](#documentation)
-- [Security](#security)
-- [Code of Conduct](#code-of-conduct)
-
 ## Getting Started
 
 1. Fork the repository
@@ -36,16 +24,6 @@ Thank you for considering contributing to Laravel OpenRouter! Your contributions
 
 Use **Conventional Commits** for all commit messages. This helps maintain a clear and consistent commit history.
 
-### Format
-
-```
-<type>: <description>
-
-[optional body]
-
-[optional footer(s)]
-```
-
 ### Types
 
 - `feat`: A new feature (e.g., `feat: add new UsageData fields`)
@@ -55,18 +33,6 @@ Use **Conventional Commits** for all commit messages. This helps maintain a clea
 - `refactor`: Code changes that neither fix bugs nor add features (e.g., `refactor: simplify API request handling`)
 - `chore`: Maintenance tasks (e.g., `chore: update dependencies`)
 - `style`: Code style changes (formatting, semicolons, etc.)
-
-### Examples
-
-```
-feat: add support for audio inputs
-
-fix: handle empty response in chatRequest
-
-docs: add file/document inputs section to README
-
-test: add unit tests for PluginData DTO
-```
 
 ## Testing Guidelines
 
@@ -114,14 +80,6 @@ vendor/bin/phpunit
 3. Fill out the PR template completely
 4. Reference any related issues
 
-### PR Checklist
-
-- [ ] Tests added/updated for code changes
-- [ ] Documentation updated (if applicable)
-- [ ] Follows existing code style
-- [ ] Commits use Conventional Commits format
-- [ ] PR focuses on a single concern
-
 ## Naming Conventions
 
 ### Follow Existing Patterns
@@ -140,23 +98,6 @@ Request/response field names should align with:
 When in doubt, prioritize consistency with:
 - Existing DTOs in the package
 - Official OpenRouter API documentation
-
-### Examples
-
-```php
-// DTO naming: use descriptive names with "Data" suffix
-class ResponseData extends DataTransferObject { ... }
-class ChatData extends DataTransferObject { ... }
-class MessageData extends DataTransferObject { ... }
-
-// Type class naming: use descriptive names with "Type" suffix
-final readonly class RoleType
-{
-    const USER = 'user';
-    const ASSISTANT = 'assistant';
-    ...
-}
-```
 
 ## Documentation
 
@@ -177,22 +118,9 @@ Update the README.md if your changes affect:
 
 ## Security
 
-### Never Commit Sensitive Data
-
 - **Never commit or expose API keys** or other sensitive credentials
 - Use environment variables for all sensitive configuration
 - Review your changes before committing to ensure no secrets are included
-
-### Reporting Security Issues
-
-If you discover a security vulnerability, please report it responsibly by contacting the maintainers directly rather than opening a public issue.
-
-## Code of Conduct
-
-- Be respectful and inclusive
-- Provide constructive feedback
-- Help others learn and grow
-- Follow the project's coding standards
 
 ---
 
