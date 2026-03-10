@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 use Mockery\MockInterface;
 use MoeMizrak\LaravelOpenrouter\DTO\AudioContentData;
 use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
+use MoeMizrak\LaravelOpenrouter\DTO\CompletionTokensDetailsData;
 use MoeMizrak\LaravelOpenrouter\DTO\CostResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ErrorData;
 use MoeMizrak\LaravelOpenrouter\DTO\FileContentData;
@@ -18,22 +19,26 @@ use MoeMizrak\LaravelOpenrouter\DTO\ImageContentPartData;
 use MoeMizrak\LaravelOpenrouter\DTO\ImageUrlData;
 use MoeMizrak\LaravelOpenrouter\DTO\InputAudioData;
 use MoeMizrak\LaravelOpenrouter\DTO\LimitResponseData;
+use MoeMizrak\LaravelOpenrouter\DTO\MaxPriceData;
 use MoeMizrak\LaravelOpenrouter\DTO\MessageData;
+use MoeMizrak\LaravelOpenrouter\DTO\PercentileData;
 use MoeMizrak\LaravelOpenrouter\DTO\PluginData;
+use MoeMizrak\LaravelOpenrouter\DTO\PromptTokensDetailsData;
 use MoeMizrak\LaravelOpenrouter\DTO\ProviderPreferencesData;
+use MoeMizrak\LaravelOpenrouter\DTO\ProviderSortData;
 use MoeMizrak\LaravelOpenrouter\DTO\ReasoningData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseFormatData;
 use MoeMizrak\LaravelOpenrouter\DTO\TextContentData;
 use MoeMizrak\LaravelOpenrouter\DTO\ToolCallData;
-use MoeMizrak\LaravelOpenrouter\DTO\PromptTokensDetailsData;
-use MoeMizrak\LaravelOpenrouter\DTO\CompletionTokensDetailsData;
 use MoeMizrak\LaravelOpenrouter\Exceptions\OpenRouterValidationException;
 use MoeMizrak\LaravelOpenrouter\Facades\LaravelOpenRouter;
 use MoeMizrak\LaravelOpenrouter\OpenRouterRequest;
 use MoeMizrak\LaravelOpenrouter\Types\AudioFormatType;
 use MoeMizrak\LaravelOpenrouter\Types\DataCollectionType;
 use MoeMizrak\LaravelOpenrouter\Types\EffortType;
+use MoeMizrak\LaravelOpenrouter\Types\ProviderSortType;
+use MoeMizrak\LaravelOpenrouter\Types\QuantizationType;
 use MoeMizrak\LaravelOpenrouter\Types\RoleType;
 use MoeMizrak\LaravelOpenrouter\Types\RouteType;
 use MoeMizrak\LaravelOpenrouter\Types\ToolChoiceType;
@@ -1522,5 +1527,188 @@ class OpenRouterAPITest extends TestCase
         $this->assertArrayHasKey('provider_name', $response->metadata);
         $this->assertEquals('Together', $response->metadata['provider_name']);
         $this->assertArrayHasKey('raw', $response->metadata);
+    }
+
+    #[Test]
+    public function it_creates_provider_preferences_with_all_extended_parameters()
+    {
+        /* SETUP */
+        $provider = new ProviderPreferencesData(
+            allow_fallbacks: true,
+            require_parameters: true,
+            data_collection: DataCollectionType::DENY,
+            order: ['openai', 'anthropic'],
+            zdr: true,
+            enforce_distillable_text: false,
+            only: ['openai'],
+            ignore: ['anthropic'],
+            quantizations: [QuantizationType::FP16, QuantizationType::BF16],
+            sort: ProviderSortType::PRICE,
+            preferred_min_throughput: 100.0,
+            preferred_max_latency: 2.5,
+            max_price: new MaxPriceData(
+                prompt: 0.001,
+                completion: 0.002,
+            ),
+        );
+
+        /* ASSERT */
+        $array = $provider->convertToArray();
+        $this->assertTrue($array['allow_fallbacks']);
+        $this->assertTrue($array['require_parameters']);
+        $this->assertEquals('deny', $array['data_collection']);
+        $this->assertEquals(['openai', 'anthropic'], $array['order']);
+        $this->assertTrue($array['zdr']);
+        $this->assertFalse($array['enforce_distillable_text']);
+        $this->assertEquals(['openai'], $array['only']);
+        $this->assertEquals(['anthropic'], $array['ignore']);
+        $this->assertEquals([QuantizationType::FP16, QuantizationType::BF16], $array['quantizations']);
+        $this->assertEquals('price', $array['sort']);
+        $this->assertEquals(100.0, $array['preferred_min_throughput']);
+        $this->assertEquals(2.5, $array['preferred_max_latency']);
+        $this->assertEquals(['prompt' => 0.001, 'completion' => 0.002], $array['max_price']);
+    }
+
+    #[Test]
+    public function it_creates_provider_preferences_with_sort_object()
+    {
+        /* SETUP */
+        $provider = new ProviderPreferencesData(
+            sort: new ProviderSortData(
+                by: ProviderSortType::THROUGHPUT,
+                partition: true,
+            ),
+        );
+
+        /* ASSERT */
+        $array = $provider->convertToArray();
+        $this->assertEquals(['by' => 'throughput', 'partition' => true], $array['sort']);
+    }
+
+    #[Test]
+    public function it_creates_provider_preferences_with_percentile_throughput_and_latency()
+    {
+        /* SETUP */
+        $provider = new ProviderPreferencesData(
+            preferred_min_throughput: new PercentileData(
+                p50: 100.0,
+                p90: 50.0,
+            ),
+            preferred_max_latency: new PercentileData(
+                p50: 1.0,
+                p75: 2.0,
+                p90: 3.0,
+                p99: 5.0,
+            ),
+        );
+
+        /* ASSERT */
+        $array = $provider->convertToArray();
+        $this->assertEquals(['p50' => 100.0, 'p90' => 50.0], $array['preferred_min_throughput']);
+        $this->assertEquals(['p50' => 1.0, 'p75' => 2.0, 'p90' => 3.0, 'p99' => 5.0], $array['preferred_max_latency']);
+    }
+
+    #[Test]
+    public function it_creates_max_price_data_and_filters_null_values()
+    {
+        /* SETUP */
+        $maxPrice = new MaxPriceData(
+            prompt: 0.001,
+            image: 0.05,
+        );
+
+        /* ASSERT */
+        $array = $maxPrice->convertToArray();
+        $this->assertEquals(0.001, $array['prompt']);
+        $this->assertEquals(0.05, $array['image']);
+        $this->assertArrayNotHasKey('completion', $array);
+        $this->assertArrayNotHasKey('request', $array);
+    }
+
+    #[Test]
+    public function it_throws_validation_exception_when_NOT_ALLOWED_value_is_sent_for_sort()
+    {
+        /* SETUP */
+        $this->expectException(OpenRouterValidationException::class);
+
+        /* EXECUTE */
+        new ProviderPreferencesData(
+            sort: 'invalid_sort_value',
+        );
+    }
+
+    #[Test]
+    public function it_throws_validation_exception_when_NOT_ALLOWED_value_is_sent_for_data_collection()
+    {
+        /* SETUP */
+        $this->expectException(OpenRouterValidationException::class);
+
+        /* EXECUTE */
+        new ProviderPreferencesData(
+            data_collection: 'invalid_value',
+        );
+    }
+
+    #[Test]
+    public function it_makes_chat_completion_with_extended_provider_preferences()
+    {
+        /* SETUP */
+        $provider = new ProviderPreferencesData(
+            allow_fallbacks: true,
+            require_parameters: true,
+            data_collection: DataCollectionType::ALLOW,
+            ignore: ['anthropic'],
+            quantizations: [QuantizationType::FP16],
+            sort: ProviderSortType::PRICE,
+            preferred_max_latency: 5.0,
+            max_price: new MaxPriceData(
+                prompt: 0.001,
+                completion: 0.002,
+            ),
+        );
+        $chatData = new ChatData(
+            messages: [
+                $this->messageData,
+            ],
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+            provider: $provider,
+        );
+        $this->mockOpenRouter($this->mockBasicBody());
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->generalTestAssertions($response);
+        $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
+        $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
+    }
+
+    #[Test]
+    public function it_filters_null_values_in_provider_preferences_convert_to_array()
+    {
+        /* SETUP */
+        $provider = new ProviderPreferencesData(
+            allow_fallbacks: true,
+            zdr: true,
+        );
+
+        /* ASSERT */
+        $array = $provider->convertToArray();
+        $this->assertCount(2, $array);
+        $this->assertArrayHasKey('allow_fallbacks', $array);
+        $this->assertArrayHasKey('zdr', $array);
+        $this->assertArrayNotHasKey('require_parameters', $array);
+        $this->assertArrayNotHasKey('data_collection', $array);
+        $this->assertArrayNotHasKey('order', $array);
+        $this->assertArrayNotHasKey('ignore', $array);
+        $this->assertArrayNotHasKey('only', $array);
+        $this->assertArrayNotHasKey('enforce_distillable_text', $array);
+        $this->assertArrayNotHasKey('quantizations', $array);
+        $this->assertArrayNotHasKey('sort', $array);
+        $this->assertArrayNotHasKey('preferred_min_throughput', $array);
+        $this->assertArrayNotHasKey('preferred_max_latency', $array);
+        $this->assertArrayNotHasKey('max_price', $array);
     }
 }

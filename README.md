@@ -23,6 +23,7 @@ This Laravel package provides an easy-to-use interface for integrating **[OpenRo
     - [Tool Calling Parameters](#tool-calling-parameters)
     - [Additional Optional Parameters](#additional-optional-parameters)
     - [OpenRouter-only Parameters](#openrouter-only-parameters)
+    - [Provider Preferences](#provider-preferences)
   - [Creating a ChatData Instance](#creating-a-chatdata-instance)
   - [Using Facade](#using-facade)
     - [Chat Request](#chat-request)
@@ -147,7 +148,63 @@ Only natively suported by OpenAI models. For others, we submit a YAML-formatted 
 - **web_search_options** (WebSearchOptionsData|null): An instance of the [`WebSearchOptionsData`](src/DTO/WebSearchOptionsData.php) DTO object for configuring web search (e.g. `search_context_size: SearchContextSizeType::LOW`).
 - **models** (array|null): An array of models to automatically try if the primary model is unavailable. This field is XOR-gated with the `model` field.
 - **route** (string|null): A value specifying the route type (e.g., `RouteType::FALLBACK`).
-- **provider** (ProviderPreferencesData|null): An instance of the [`ProviderPreferencesData`](src/DTO/ProviderPreferencesData.php) DTO object for configuring provider preferences.
+- **provider** (ProviderPreferencesData|null): An instance of the [`ProviderPreferencesData`](src/DTO/ProviderPreferencesData.php) DTO object for configuring provider preferences (see [Provider Preferences](#provider-preferences)).
+
+#### Provider Preferences
+
+The [`ProviderPreferencesData`](src/DTO/ProviderPreferencesData.php) DTO allows fine-grained control over provider routing. For more details, see [OpenRouter Provider Selection](https://openrouter.ai/docs/guides/routing/provider-selection).
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `allow_fallbacks` | `bool\|null` | Whether to allow backup providers when the primary is unavailable (default: `true`). |
+| `require_parameters` | `bool\|null` | Only use providers that support all parameters in your request. |
+| `data_collection` | `string\|null` | `DataCollectionType::ALLOW` (default) or `DataCollectionType::DENY`. |
+| `order` | `array\|null` | Ordered list of provider slugs to prefer. |
+| `zdr` | `bool\|null` | Restrict routing to only Zero Data Retention endpoints. |
+| `enforce_distillable_text` | `bool\|null` | Restrict routing to only models that allow text distillation. |
+| `only` | `array\|null` | List of provider slugs to allow for this request. |
+| `ignore` | `array\|null` | List of provider slugs to skip for this request. |
+| `quantizations` | `array\|null` | Filter by quantization levels (see `QuantizationType`). |
+| `sort` | `string\|ProviderSortData\|null` | Sort providers by `"price"`, `"throughput"`, or `"latency"`. Can also be a `ProviderSortData` object with `by` and `partition` fields. |
+| `preferred_min_throughput` | `float\|PercentileData\|null` | Preferred minimum throughput (tokens/sec). Can be a number or `PercentileData` with percentile cutoffs (`p50`, `p75`, `p90`, `p99`). |
+| `preferred_max_latency` | `float\|PercentileData\|null` | Preferred maximum latency (seconds). Can be a number or `PercentileData` with percentile cutoffs. |
+| `max_price` | `MaxPriceData\|null` | Maximum acceptable pricing with `prompt`, `completion`, `request`, and `image` fields (in USD). |
+
+**Example with advanced provider preferences:**
+
+```php
+$provider = new ProviderPreferencesData(
+    allow_fallbacks: true,
+    require_parameters: true,
+    data_collection: DataCollectionType::DENY,
+    only: ['openai', 'anthropic'],
+    quantizations: [QuantizationType::FP16, QuantizationType::BF16],
+    sort: new ProviderSortData(
+        by: ProviderSortType::PRICE,
+        partition: true,
+    ),
+    preferred_min_throughput: new PercentileData(
+        p50: 100.0,
+        p90: 50.0,
+    ),
+    preferred_max_latency: 2.5,
+    max_price: new MaxPriceData(
+        prompt: 0.001,
+        completion: 0.002,
+    ),
+);
+
+$chatData = new ChatData(
+    messages: [
+        new MessageData(
+            role: RoleType::USER,
+            content: 'Hello!',
+        ),
+    ],
+    model: 'openai/gpt-4o',
+    provider: $provider,
+);
+```
 
 ### Creating a ChatData Instance
 
@@ -215,6 +272,13 @@ $chatData = new ChatData(
         allow_fallbacks: true,
         require_parameters: true,
         data_collection: DataCollectionType::ALLOW,
+        ignore: ['anthropic'],
+        quantizations: [QuantizationType::FP16, QuantizationType::BF16],
+        sort: ProviderSortType::PRICE,
+        max_price: new MaxPriceData(
+            prompt: 0.001,
+            completion: 0.002,
+        ),
     ),
     modalities: ['image', 'text'],
     image_config: new ImageConfigData(
