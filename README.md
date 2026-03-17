@@ -2,8 +2,9 @@
 
 <br />
 
-[![Latest Version on Packagist](https://img.shields.io/badge/packagist-v2.0-blue)](https://packagist.org/packages/moe-mizrak/laravel-openrouter)
+[![Latest Version on Packagist](https://img.shields.io/badge/packagist-v2-blue)](https://packagist.org/packages/moe-mizrak/laravel-openrouter)
 [![OpenRouter Discord](https://img.shields.io/badge/OpenRouter-5865F2?logo=discord&logoColor=white)](https://discord.gg/3TbKAakhGb)
+[![Total Downloads](https://img.shields.io/packagist/dt/moe-mizrak/laravel-openrouter.svg?style=flat-square)](https://packagist.org/packages/moe-mizrak/laravel-openrouter)
 <br />
 
 <a href="https://reboosty-reboosty.vercel.app/api?repo_url=https://github.com/moe-mizrak/laravel-openrouter" target="_blank">
