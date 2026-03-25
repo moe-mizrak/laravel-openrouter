@@ -35,6 +35,7 @@ This Laravel package provides an easy-to-use interface for integrating **[OpenRo
       - [Web Search](#web-search)
       - [File/Document Inputs](#filedocument-inputs)
       - [Audio Inputs](#audio-inputs)
+      - [Prompt caching](#prompt-caching)
     - [Cost Request](#cost-request)
     - [Limit Request](#limit-request)
   - [Using OpenRouterRequest Class](#using-openrouterrequest-class)
@@ -117,6 +118,7 @@ The [`ChatData`](src/DTO/ChatData.php) class is used to **encapsulate the data**
 - **stream** (bool|null): A boolean indicating whether streaming should be enabled or not.
 - **include_reasoning** (bool|null): Whether to return the model's reasoning (Note: this parameter is **deprecated**, use `reasoning` parameter instead. For backward compatibility, package still supports the `include_reasoning` parameter)
 - **reasoning** (ReasoningData|null): An instance of the [`ReasoningData`](src/DTO/ReasoningData.php) class for reasoning configuration. It provides a transparent look into the reasoning steps taken by a model.
+- **cache_control** (`[CacheControlData](src/DTO/CacheControlData.php)`|null): Controls **prompt caching** on supported providers/models. You can set it at the **top-level** of the request (recommended for multi-turn conversations) or as an explicit **breakpoint** on large text blocks via `TextContentData::$cache_control`. For details and provider-specific behavior, see `[OpenRouter Prompt Caching](https://openrouter.ai/docs/guides/best-practices/prompt-caching)`.
 
 #### LLM Parameters
 
@@ -971,6 +973,69 @@ $response = LaravelOpenRouter::chatRequest($chatData);
 > Only `mp3` and `wav` formats are supported for audio inputs.
 > 
 > And make sure to provide valid `base64-encoded` audio data.
+
+- #### Prompt caching
+
+OpenRouter supports prompt caching on supported providers/models to decrease cost and latency on repeated requests. This package supports both approaches described in OpenRouter docs:
+
+- **Top-level caching** (recommended for multi-turn conversations): set `ChatData::$cache_control`.
+- **Explicit cache breakpoint** (fine-grained control): set `TextContentData::$cache_control` on the *large* text block(s) you want to cache (e.g. RAG data, CSV data, long instructions, etc).
+
+OpenRouter docs: [Prompt Caching](https://openrouter.ai/docs/guides/best-practices/prompt-caching)
+
+**Top-level example (automatic caching):**
+
+```php
+use MoeMizrak\LaravelOpenrouter\DTO\CacheControlData;
+use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
+use MoeMizrak\LaravelOpenrouter\DTO\MessageData;
+use MoeMizrak\LaravelOpenrouter\Types\RoleType;
+
+$chatData = new ChatData(
+    messages: [
+        new MessageData(
+            role: RoleType::USER,
+            content: 'What triggered the collapse?',
+        ),
+    ],
+    model: 'anthropic/claude-sonnet-4.6',
+    cache_control: new CacheControlData(
+        type: CacheControlData::ALLOWED_TYPE, // "ephemeral"
+        ttl: '1h', // optional
+    ),
+);
+```
+
+**Explicit breakpoint example (cache a large text block):**
+
+```php
+use MoeMizrak\LaravelOpenrouter\DTO\CacheControlData;
+use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
+use MoeMizrak\LaravelOpenrouter\DTO\MessageData;
+use MoeMizrak\LaravelOpenrouter\DTO\TextContentData;
+use MoeMizrak\LaravelOpenrouter\Types\RoleType;
+
+$chatData = new ChatData(
+    messages: [
+        new MessageData(
+            role: RoleType::USER,
+            content: [
+                new TextContentData(
+                    text: 'Given the book below:',
+                ),
+                new TextContentData(
+                    text: 'HUGE TEXT BODY',
+                    cache_control: new CacheControlData(), // {"type":"ephemeral"}
+                ),
+                new TextContentData(
+                    text: 'What triggered the collapse?',
+                ),
+            ],
+        ),
+    ],
+    model: 'anthropic/claude-sonnet-4.6',
+);
+```
 
 #### Cost Request
 

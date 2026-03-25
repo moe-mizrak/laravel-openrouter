@@ -189,6 +189,16 @@ final class ChatData extends DataTransferObject
          * @var ImageConfigData|null
          */
         public ?ImageConfigData $image_config = null,
+
+        /**
+         * Prompt caching control.
+         * Can be passed at the top-level of the request (recommended for multi-turn conversations)
+         * or as a breakpoint inside individual content blocks (see TextContentData).
+         * See: https://openrouter.ai/docs/guides/best-practices/prompt-caching
+         *
+         * @var CacheControlData|null
+         */
+        public ?CacheControlData $cache_control = null,
     ) {
         $this->validateXorFields($this->messages, $this->prompt);
         $this->validateXorFields($this->model, $this->models);
@@ -280,6 +290,7 @@ final class ChatData extends DataTransferObject
                 'modalities'         => $this->modalities,
                 'image_config'       => $this->image_config?->convertToArray(),
                 'reasoning'          => $this->reasoning?->convertToArray(),
+                'cache_control'      => $this->cache_control?->convertToArray(),
             ],
             fn($value) => $value !== null
         );
