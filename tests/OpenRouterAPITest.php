@@ -7,6 +7,7 @@ use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Arr;
 use Mockery\MockInterface;
 use MoeMizrak\LaravelOpenrouter\DTO\AudioContentData;
+use MoeMizrak\LaravelOpenrouter\DTO\CacheControlData;
 use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
 use MoeMizrak\LaravelOpenrouter\DTO\CompletionTokensDetailsData;
 use MoeMizrak\LaravelOpenrouter\DTO\CostResponseData;
@@ -1710,5 +1711,34 @@ class OpenRouterAPITest extends TestCase
         $this->assertArrayNotHasKey('preferred_min_throughput', $array);
         $this->assertArrayNotHasKey('preferred_max_latency', $array);
         $this->assertArrayNotHasKey('max_price', $array);
+    }
+
+    #[Test]
+    public function it_sends_cache_control_in_request_body()
+    {
+        /* SETUP */
+        $chatData = new ChatData(
+            messages: [
+                $this->messageData,
+            ],
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+            cache_control: new CacheControlData(
+                type: CacheControlData::ALLOWED_TYPE,
+                ttl: '1h',
+            )
+        );
+
+        $payload = $chatData->convertToArray();
+
+        $this->mockOpenRouter($this->mockBasicBody());
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->assertArrayHasKey('cache_control', $payload);
+        $this->assertEquals(['type' => 'ephemeral', 'ttl' => '1h'], $payload['cache_control']);
+        $this->generalTestAssertions($response);
     }
 }

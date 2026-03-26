@@ -37,6 +37,16 @@ final class TextContentData extends DataTransferObject
          * @var string
          */
         public string $text,
+
+        /**
+         * Optional cache breakpoint for this content block.
+         * Useful for explicit caching (e.g. caching a large reference text).
+         *
+         * Docs: https://openrouter.ai/docs/guides/best-practices/prompt-caching
+         *
+         * @var CacheControlData|null
+         */
+        public ?CacheControlData $cache_control = null,
     ) {
         parent::__construct(...func_get_args());
     }
@@ -50,6 +60,7 @@ final class TextContentData extends DataTransferObject
             [
                 'type' => $this->type,
                 'text' => $this->text,
+                'cache_control' => $this->cache_control?->convertToArray(),
             ],
             fn($value) => $value !== null
         );
