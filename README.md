@@ -118,7 +118,7 @@ The [`ChatData`](src/DTO/ChatData.php) class is used to **encapsulate the data**
 - **stream** (bool|null): A boolean indicating whether streaming should be enabled or not.
 - **include_reasoning** (bool|null): Whether to return the model's reasoning (Note: this parameter is **deprecated**, use `reasoning` parameter instead. For backward compatibility, package still supports the `include_reasoning` parameter)
 - **reasoning** (ReasoningData|null): An instance of the [`ReasoningData`](src/DTO/ReasoningData.php) class for reasoning configuration. It provides a transparent look into the reasoning steps taken by a model.
-- **cache_control** ([`CacheControlData`](src/DTO/CacheControlData.php)|null): Controls **prompt caching** on supported providers/models. You can set it at the **top-level** of the request (recommended for multi-turn conversations) or as an explicit **breakpoint** on large text blocks via `TextContentData::$cache_control`. For details and provider-specific behavior, see `[OpenRouter Prompt Caching](https://openrouter.ai/docs/guides/best-practices/prompt-caching)`.
+- **cache_control** ([`CacheControlData`](src/DTO/CacheControlData.php)|null): Controls **prompt caching** on supported providers/models. You can set it at the **top-level** of the request (recommended for multi-turn conversations) or as an explicit **breakpoint** on large text blocks via `TextContentData::$cache_control`. For details and provider-specific behavior, see [OpenRouter Prompt Caching](https://openrouter.ai/docs/guides/best-practices/prompt-caching).
 
 #### LLM Parameters
 
