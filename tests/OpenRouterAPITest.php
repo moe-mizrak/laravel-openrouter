@@ -1730,8 +1730,6 @@ class OpenRouterAPITest extends TestCase
         );
 
         $payload = $chatData->convertToArray();
-        $this->assertArrayHasKey('cache_control', $payload);
-        $this->assertEquals(['type' => 'ephemeral', 'ttl' => '1h'], $payload['cache_control']);
 
         $this->mockOpenRouter($this->mockBasicBody());
 
@@ -1739,6 +1737,8 @@ class OpenRouterAPITest extends TestCase
         $response = $this->api->chatRequest($chatData);
 
         /* ASSERT */
+        $this->assertArrayHasKey('cache_control', $payload);
+        $this->assertEquals(['type' => 'ephemeral', 'ttl' => '1h'], $payload['cache_control']);
         $this->generalTestAssertions($response);
     }
 }

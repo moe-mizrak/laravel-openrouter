@@ -1025,7 +1025,10 @@ $chatData = new ChatData(
                 ),
                 new TextContentData(
                     text: 'HUGE TEXT BODY',
-                    cache_control: new CacheControlData(), // {"type":"ephemeral"}
+                    cache_control: new CacheControlData(
+                        type: CacheControlData::ALLOWED_TYPE, // "ephemeral"
+                        ttl: '1h', // optional
+                    ),
                 ),
                 new TextContentData(
                     text: 'What triggered the collapse?',
