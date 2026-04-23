@@ -11,6 +11,7 @@ use MoeMizrak\LaravelOpenrouter\DTO\CacheControlData;
 use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
 use MoeMizrak\LaravelOpenrouter\DTO\CompletionTokensDetailsData;
 use MoeMizrak\LaravelOpenrouter\DTO\CostResponseData;
+use MoeMizrak\LaravelOpenrouter\DTO\DebugData;
 use MoeMizrak\LaravelOpenrouter\DTO\ErrorData;
 use MoeMizrak\LaravelOpenrouter\DTO\FileContentData;
 use MoeMizrak\LaravelOpenrouter\DTO\FileUrlData;
@@ -1739,6 +1740,60 @@ class OpenRouterAPITest extends TestCase
         /* ASSERT */
         $this->assertArrayHasKey('cache_control', $payload);
         $this->assertEquals(['type' => 'ephemeral', 'ttl' => '1h'], $payload['cache_control']);
+        $this->generalTestAssertions($response);
+    }
+
+    #[Test]
+    public function it_sends_session_id_in_request_body()
+    {
+        /* SETUP */
+        $chatData = new ChatData(
+            messages: [
+                $this->messageData,
+            ],
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+            session_id: 'test-session-id'
+        );
+
+        $payload = $chatData->convertToArray();
+
+        $this->mockOpenRouter($this->mockBasicBody());
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->assertArrayHasKey('session_id', $payload);
+        $this->assertEquals('test-session-id', $payload['session_id']);
+        $this->generalTestAssertions($response);
+    }
+
+    #[Test]
+    public function it_sends_debug_id_in_request_body()
+    {
+        /* SETUP */
+        $chatData = new ChatData(
+            messages: [
+                $this->messageData,
+            ],
+            model: $this->model,
+            max_tokens: $this->maxTokens,
+            debug: new DebugData(
+                echo_upstream_body: true
+            )
+        );
+
+        $payload = $chatData->convertToArray();
+
+        $this->mockOpenRouter($this->mockBasicBody());
+
+        /* EXECUTE */
+        $response = $this->api->chatRequest($chatData);
+
+        /* ASSERT */
+        $this->assertArrayHasKey('debug', $payload);
+        $this->assertEquals(['echo_upstream_body' => true], $payload['debug']);
         $this->generalTestAssertions($response);
     }
 }
