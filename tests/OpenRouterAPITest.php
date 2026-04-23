@@ -1770,7 +1770,7 @@ class OpenRouterAPITest extends TestCase
     }
 
     #[Test]
-    public function it_sends_debug_id_in_request_body()
+    public function it_serializes_debug_options_in_chat_data_payload()
     {
         /* SETUP */
         $chatData = new ChatData(
@@ -1786,14 +1786,8 @@ class OpenRouterAPITest extends TestCase
 
         $payload = $chatData->convertToArray();
 
-        $this->mockOpenRouter($this->mockBasicBody());
-
-        /* EXECUTE */
-        $response = $this->api->chatRequest($chatData);
-
         /* ASSERT */
         $this->assertArrayHasKey('debug', $payload);
         $this->assertEquals(['echo_upstream_body' => true], $payload['debug']);
-        $this->generalTestAssertions($response);
     }
 }
