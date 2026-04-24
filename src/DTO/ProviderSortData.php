@@ -12,12 +12,11 @@ use MoeMizrak\LaravelOpenrouter\Types\ProviderSortType;
  * For more info: https://openrouter.ai/docs/guides/routing/provider-selection
  *
  * Class ProviderSortData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class ProviderSortData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**
@@ -45,7 +44,7 @@ final class ProviderSortData extends DataTransferObject
     {
         return array_filter(
             [
-                'by'        => $this->by,
+                'by' => $this->by,
                 'partition' => $this->partition,
             ],
             fn($value) => $value !== null

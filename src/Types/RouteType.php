@@ -11,7 +11,6 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
  * For more info: https://openrouter.ai/docs#model-routing
  *
  * Class RouteType
- * @package MoeMizrak\LaravelOpenrouter\Types
  */
 final readonly class RouteType
 {

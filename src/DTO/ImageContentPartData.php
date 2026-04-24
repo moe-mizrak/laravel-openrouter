@@ -10,7 +10,6 @@ use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
  * DTO for the image contents.
  *
  * Class ImageContentPartData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class ImageContentPartData extends DataTransferObject
 {
@@ -20,7 +19,7 @@ final class ImageContentPartData extends DataTransferObject
     public const ALLOWED_TYPE = 'image_url';
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**
@@ -48,7 +47,7 @@ final class ImageContentPartData extends DataTransferObject
     {
         return array_filter(
             [
-                'type'      => $this->type,
+                'type' => $this->type,
                 'image_url' => $this->image_url?->convertToArray(),
             ],
             fn($value) => $value !== null

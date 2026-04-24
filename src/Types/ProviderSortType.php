@@ -9,7 +9,6 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
  * For more info: https://openrouter.ai/docs/guides/routing/provider-selection
  *
  * Class ProviderSortType
- * @package MoeMizrak\LaravelOpenrouter\Types
  */
 final readonly class ProviderSortType
 {

@@ -9,12 +9,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * For more info: https://openrouter.ai/docs/guides/routing/provider-selection
  *
  * Class MaxPriceData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class MaxPriceData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**
@@ -55,10 +54,10 @@ final class MaxPriceData extends DataTransferObject
     {
         return array_filter(
             [
-                'prompt'     => $this->prompt,
+                'prompt' => $this->prompt,
                 'completion' => $this->completion,
-                'request'    => $this->request,
-                'image'      => $this->image,
+                'request' => $this->request,
+                'image' => $this->image,
             ],
             fn($value) => $value !== null
         );

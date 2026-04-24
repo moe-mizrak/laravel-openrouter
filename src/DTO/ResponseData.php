@@ -16,12 +16,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * - usage (DTO object)
  *
  * Class ResponseData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class ResponseData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**
@@ -85,20 +84,20 @@ final class ResponseData extends DataTransferObject
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function toArray(): array
     {
         return array_filter(
             [
-                'id'        => $this->id,
-                'model'     => $this->model,
-                'object'    => $this->object,
-                'created'   => $this->created,
-                'provider'  => $this->provider,
+                'id' => $this->id,
+                'model' => $this->model,
+                'object' => $this->object,
+                'created' => $this->created,
+                'provider' => $this->provider,
                 'citations' => $this->citations,
-                'choices'   => $this->choices,
-                'usage'     => $this->usage?->toArray(),
+                'choices' => $this->choices,
+                'usage' => $this->usage?->toArray(),
             ],
             fn($value) => $value !== null
         );

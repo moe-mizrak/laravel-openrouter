@@ -8,12 +8,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * ChoiceData is the DTO for the choices of the api call.
  *
  * Class ChoiceData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 class ChoiceData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**

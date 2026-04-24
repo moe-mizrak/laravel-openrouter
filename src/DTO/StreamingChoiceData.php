@@ -8,12 +8,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * StreamingChoiceData is the DTO choice type for streaming responses
  *
  * Class StreamingChoiceData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class StreamingChoiceData extends ChoiceData
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**

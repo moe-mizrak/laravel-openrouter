@@ -10,7 +10,6 @@ use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
  * DTO for the audio contents.
  *
  * Class AudioContentData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class AudioContentData extends DataTransferObject
 {
@@ -20,7 +19,7 @@ final class AudioContentData extends DataTransferObject
     public const ALLOWED_TYPE = 'input_audio';
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**

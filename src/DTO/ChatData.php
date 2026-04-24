@@ -14,11 +14,11 @@ use MoeMizrak\LaravelOpenrouter\Types\ToolChoiceType;
  * DTO for the chat completion request.
  *
  * Class ChatData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-final class ChatData extends DataTransferObject {
+final class ChatData extends DataTransferObject
+{
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**
@@ -160,6 +160,7 @@ final class ChatData extends DataTransferObject {
          * Note: This parameter is the legacy parameter and will be removed in the future.
          *
          * @var bool|null
+         *
          * @deprecated Use '$reasoning' parameter instead (it is backward compatible with the old parameter).
          */
         public ?bool $include_reasoning = false,
@@ -204,20 +205,18 @@ final class ChatData extends DataTransferObject {
          * This parameter is for debugging purposes and will not be sent to the model. It can be used to pass any additional information that you want to include in the request for debugging purposes.
          * Debug options for inspecting request transformations (streaming only)
          * See: https://openrouter.ai/docs/api/api-reference/chat/send-chat-completion-request#request.body.debug
-         * 
+         *
          * @var DebugData|null
          */
-
         public ?DebugData $debug = null,
 
         /**
          * Session ID.
          * A unique identifier for grouping related requests (e.g., a conversation or agent workflow) for observability. If provided in both the request body and the x-session-id header, the body value takes precedence. Maximum of 256 characters.
          * See: https://openrouter.ai/docs/api/api-reference/chat/send-chat-completion-request#request.body.session_id
-         * 
+         *
          * @var string|null
          */
-
         public ?string $session_id = null,
     ) {
         $this->validateXorFields($this->messages, $this->prompt);
@@ -238,9 +237,11 @@ final class ChatData extends DataTransferObject {
      * @param mixed $secondField
      *
      * @return void
+     *
      * @throws OpenRouterValidationException
      */
-    private function validateXorFields(mixed $firstField, mixed $secondField): void {
+    private function validateXorFields(mixed $firstField, mixed $secondField): void
+    {
         // Validate XOR fields
         $xorFields = new XORFields($firstField, $secondField);
         $validationResult = $xorFields->validate();
@@ -254,10 +255,11 @@ final class ChatData extends DataTransferObject {
     /**
      * @return array
      */
-    public function convertToArray(): array {
+    public function convertToArray(): array
+    {
         return array_filter(
             [
-                'messages'           => ! is_null($this->messages)
+                'messages' => ! is_null($this->messages)
                     ? array_map(function ($value) {
                         if ($value instanceof MessageData) {
                             return $value->convertToArray();
@@ -266,22 +268,22 @@ final class ChatData extends DataTransferObject {
                         }
                     }, $this->messages)
                     : null,
-                'prompt'             => $this->prompt,
-                'model'              => $this->model,
-                'response_format'    => $this->response_format?->convertToArray(),
-                'usage'              => $this->usage ? ['include' => true] : null,
-                'stop'               => $this->stop,
-                'stream'             => $this->stream,
-                'max_tokens'         => $this->max_tokens,
-                'temperature'        => $this->temperature,
-                'top_p'              => $this->top_p,
-                'top_k'              => $this->top_k,
-                'frequency_penalty'  => $this->frequency_penalty,
-                'presence_penalty'   => $this->presence_penalty,
+                'prompt' => $this->prompt,
+                'model' => $this->model,
+                'response_format' => $this->response_format?->convertToArray(),
+                'usage' => $this->usage ? ['include' => true] : null,
+                'stop' => $this->stop,
+                'stream' => $this->stream,
+                'max_tokens' => $this->max_tokens,
+                'temperature' => $this->temperature,
+                'top_p' => $this->top_p,
+                'top_k' => $this->top_k,
+                'frequency_penalty' => $this->frequency_penalty,
+                'presence_penalty' => $this->presence_penalty,
                 'repetition_penalty' => $this->repetition_penalty,
-                'seed'               => $this->seed,
-                'tool_choice'        => $this->tool_choice,
-                'tools'              => ! is_null($this->tools)
+                'seed' => $this->seed,
+                'tool_choice' => $this->tool_choice,
+                'tools' => ! is_null($this->tools)
                     ? array_map(function ($value) {
                         if ($value instanceof ToolCallData) {
                             return $value->convertToArray();
@@ -290,9 +292,9 @@ final class ChatData extends DataTransferObject {
                         }
                     }, $this->tools)
                     : null,
-                'logit_bias'         => $this->logit_bias,
-                'transforms'         => $this->transforms,
-                'plugins'            => ! is_null($this->plugins)
+                'logit_bias' => $this->logit_bias,
+                'transforms' => $this->transforms,
+                'plugins' => ! is_null($this->plugins)
                     ? array_map(function ($value) {
                         if ($value instanceof PluginData) {
                             return $value->convertToArray();
@@ -302,15 +304,15 @@ final class ChatData extends DataTransferObject {
                     }, $this->plugins)
                     : null,
                 'web_search_options' => $this->web_search_options?->convertToArray(),
-                'models'             => $this->models,
-                'route'              => $this->route,
-                'provider'           => $this->provider?->convertToArray(),
-                'modalities'         => $this->modalities,
-                'image_config'       => $this->image_config?->convertToArray(),
-                'reasoning'          => $this->reasoning?->convertToArray(),
-                'cache_control'      => $this->cache_control?->convertToArray(),
-                'debug'              => $this->debug?->convertToArray(),
-                'session_id'         => $this->session_id,
+                'models' => $this->models,
+                'route' => $this->route,
+                'provider' => $this->provider?->convertToArray(),
+                'modalities' => $this->modalities,
+                'image_config' => $this->image_config?->convertToArray(),
+                'reasoning' => $this->reasoning?->convertToArray(),
+                'cache_control' => $this->cache_control?->convertToArray(),
+                'debug' => $this->debug?->convertToArray(),
+                'session_id' => $this->session_id,
             ],
             fn($value) => $value !== null
         );

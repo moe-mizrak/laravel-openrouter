@@ -8,12 +8,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * DTO for the input audio which are data and format for the audio.
  *
  * Class InputAudioData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class InputAudioData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**

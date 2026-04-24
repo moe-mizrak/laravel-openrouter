@@ -9,12 +9,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * Contains whether the validation is successful and an optional message for failure.
  *
  * Class ValidationResultData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class ValidationResultData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**

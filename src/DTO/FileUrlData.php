@@ -9,13 +9,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * Supports both direct URLs and base64 data URIs for documents.
  *
  * Class FileUrlData
- *
- * @package MoeMizrak\LaravelOpenRouter\DTO
  */
 final class FileUrlData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**

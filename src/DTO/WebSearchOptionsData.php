@@ -12,12 +12,11 @@ use MoeMizrak\LaravelOpenrouter\Types\SearchContextSizeType;
  * For more info: https://openrouter.ai/docs/guides/features/web-search
  *
  * Class WebSearchOptionsData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class WebSearchOptionsData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**

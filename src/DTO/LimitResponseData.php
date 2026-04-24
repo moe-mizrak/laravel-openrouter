@@ -14,12 +14,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  *  - rate_limit (DTO object)
  *
  * Class LimitResponseData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class LimitResponseData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**
@@ -66,18 +65,18 @@ final class LimitResponseData extends DataTransferObject
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function toArray(): array
     {
         return array_filter(
             [
-                'label'           => $this->label,
-                'usage'           => $this->usage,
+                'label' => $this->label,
+                'usage' => $this->usage,
                 'limit_remaining' => $this->limit_remaining,
-                'limit'           => $this->limit,
-                'is_free_tier'    => $this->is_free_tier,
-                'rate_limit'      => $this->rate_limit?->toArray(),
+                'limit' => $this->limit,
+                'is_free_tier' => $this->is_free_tier,
+                'rate_limit' => $this->rate_limit?->toArray(),
             ],
             fn($value) => $value !== null
         );

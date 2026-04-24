@@ -12,13 +12,11 @@ use MoeMizrak\LaravelOpenrouter\Types\EffortType;
  * For more info: https://openrouter.ai/docs/use-cases/reasoning-tokens
  *
  * Class ReasoningData
- *
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class ReasoningData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**
@@ -62,10 +60,10 @@ final class ReasoningData extends DataTransferObject
     {
         return array_filter(
             [
-                'effort'     => $this->effort,
+                'effort' => $this->effort,
                 'max_tokens' => $this->max_tokens,
-                'exclude'    => $this->exclude,
-                'enabled'    => $this->enabled,
+                'exclude' => $this->exclude,
+                'enabled' => $this->enabled,
             ],
             fn($value) => $value !== null
         );

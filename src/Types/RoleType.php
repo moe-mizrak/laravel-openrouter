@@ -9,7 +9,6 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
  * No validation for the role parameter will be performed because it may differ for various models.
  *
  * Class RoleType
- * @package MoeMizrak\LaravelOpenrouter\Types
  */
 final readonly class RoleType
 {

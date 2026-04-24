@@ -11,7 +11,6 @@ use Spatie\LaravelData\Data;
  * DataTransferObject is the base class for all DTOs.
  *
  * Class DataTransferObject
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 abstract class DataTransferObject extends Data
 {
@@ -31,6 +30,7 @@ abstract class DataTransferObject extends Data
      * Handle property validations.
      *
      * @return void
+     *
      * @throws \ReflectionException
      */
     private function handlePropertyValidations(): void

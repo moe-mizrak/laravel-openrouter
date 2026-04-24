@@ -8,12 +8,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * Function tool that is called.
  *
  * Class FunctionData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class FunctionData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**
@@ -56,10 +55,10 @@ final class FunctionData extends DataTransferObject
     {
         return array_filter(
             [
-                'name'        => $this->name,
-                'arguments'   => $this->arguments,
+                'name' => $this->name,
+                'arguments' => $this->arguments,
                 'description' => $this->description,
-                'parameters'  => $this->parameters,
+                'parameters' => $this->parameters,
             ],
             fn($value) => $value !== null
         );

@@ -9,12 +9,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * These can be associated with one of three types of tools: code_interpreter, file_search, or function.
  *
  * Class ToolCallData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class ToolCallData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**
@@ -48,8 +47,8 @@ final class ToolCallData extends DataTransferObject
     {
         return array_filter(
             [
-                'id'       => $this->id,
-                'type'     => $this->type,
+                'id' => $this->id,
+                'type' => $this->type,
                 'function' => $this->function?->convertToArray(),
             ],
             fn($value) => $value !== null

@@ -47,7 +47,7 @@ final class OpenRouterServiceProvider extends ServiceProvider
 
         $this->app->bind('laravel-openrouter', function () {
             return new OpenRouterRequest(
-                new OpenRouterHelper(),
+                new OpenRouterHelper,
             );
         });
 
@@ -98,15 +98,15 @@ final class OpenRouterServiceProvider extends ServiceProvider
     /**
      * Configure the Guzzle client.
      *
-     * @return \GuzzleHttp\Client
+     * @return Client
      */
     private function configureClient(): Client
     {
         // Set the default configuration for retrying requests
         $retryOptions = [
             'max_retry_attempts' => 5,
-            'retry_on_status'    => [429, 500, 502, 503, 504],
-            'retry_on_timeout'   => true,
+            'retry_on_status' => [429, 500, 502, 503, 504],
+            'retry_on_timeout' => true,
         ];
 
         // Create a handler stack with the retry middleware.
@@ -121,13 +121,13 @@ final class OpenRouterServiceProvider extends ServiceProvider
          */
         return new Client([
             'base_uri' => config('laravel-openrouter.api_endpoint'),
-            'timeout'  => config('laravel-openrouter.api_timeout', self::DEFAULT_TIMEOUT),
-            'handler'  => $handlerStack,
-            'headers'  => [
+            'timeout' => config('laravel-openrouter.api_timeout', self::DEFAULT_TIMEOUT),
+            'handler' => $handlerStack,
+            'headers' => [
                 'Authorization' => 'Bearer ' . config('laravel-openrouter.api_key'),
-                'HTTP-Referer'  => config('laravel-openrouter.referer'),
-                'X-Title'       => config('laravel-openrouter.title'),
-                'Content-Type'  => 'application/json',
+                'HTTP-Referer' => config('laravel-openrouter.referer'),
+                'X-Title' => config('laravel-openrouter.title'),
+                'Content-Type' => 'application/json',
             ],
         ]);
     }

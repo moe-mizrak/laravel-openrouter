@@ -10,12 +10,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  *  - interval
  *
  * Class RateLimitData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class RateLimitData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**
@@ -36,7 +35,7 @@ final class RateLimitData extends DataTransferObject
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function toArray(): array
     {

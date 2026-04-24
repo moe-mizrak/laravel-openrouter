@@ -6,13 +6,13 @@ namespace MoeMizrak\LaravelOpenrouter\Helpers;
 
 use Illuminate\Support\Arr;
 use JsonException;
+use MoeMizrak\LaravelOpenrouter\DTO\CompletionTokensDetailsData;
 use MoeMizrak\LaravelOpenrouter\DTO\CostResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\LimitResponseData;
+use MoeMizrak\LaravelOpenrouter\DTO\PromptTokensDetailsData;
 use MoeMizrak\LaravelOpenrouter\DTO\RateLimitData;
 use MoeMizrak\LaravelOpenrouter\DTO\ResponseData;
 use MoeMizrak\LaravelOpenrouter\DTO\UsageData;
-use MoeMizrak\LaravelOpenrouter\DTO\PromptTokensDetailsData;
-use MoeMizrak\LaravelOpenrouter\DTO\CompletionTokensDetailsData;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionException;
 
@@ -32,6 +32,7 @@ final class OpenRouterHelper
      * @param mixed|null $response
      *
      * @return ResponseData
+     *
      * @throws ReflectionException
      */
     public function formChatResponse(mixed $response = null): ResponseData
@@ -91,6 +92,7 @@ final class OpenRouterHelper
      * @param ResponseInterface|null $response
      *
      * @return CostResponseData
+     *
      * @throws ReflectionException
      */
     public function formCostsResponse(?ResponseInterface $response = null): CostResponseData
@@ -131,6 +133,7 @@ final class OpenRouterHelper
      * @param ResponseInterface|null $response
      *
      * @return LimitResponseData
+     *
      * @throws ReflectionException
      */
     public function formLimitResponse(?ResponseInterface $response = null): LimitResponseData
@@ -166,7 +169,7 @@ final class OpenRouterHelper
     public function jsonDecode(?ResponseInterface $response = null): mixed
     {
         // Get the response body or return null.
-        return ($response ? json_decode((string) $response->getBody(), true) : null);
+        return $response ? json_decode((string) $response->getBody(), true) : null;
     }
 
     /**
@@ -175,6 +178,7 @@ final class OpenRouterHelper
      * @param string $streamingResponse
      *
      * @return array
+     *
      * @throws ReflectionException
      */
     public function filterStreamingResponse(string $streamingResponse): array
@@ -206,9 +210,10 @@ final class OpenRouterHelper
                 } catch (JsonException $e) {
                     // If JSON decoding fails, buffer the line and continue
                     self::$buffer = $line;
+
                     continue;
                 }
-            } else if (trim($line) === '' && ! empty(self::$buffer)) {
+            } elseif (trim($line) === '' && ! empty(self::$buffer)) {
                 // If the line is empty and there's something in the buffer, try to process the buffer
                 try {
                     // Attempt to decode the JSON data
@@ -219,7 +224,7 @@ final class OpenRouterHelper
                     // If JSON decoding fails, retain the buffer for next iteration
                     continue;
                 }
-            } else if (! str_starts_with($line, 'data: ') && ! empty(trim($line))) {
+            } elseif (! str_starts_with($line, 'data: ') && ! empty(trim($line))) {
                 // If the line doesn't start with 'data: ', it might be part of a multiline JSON or a partial line
                 if (! $firstLineComplete) {
                     // If it's the first line and not complete, assume it's part of the first JSON object

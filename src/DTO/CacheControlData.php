@@ -12,7 +12,6 @@ use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
  * Docs: https://openrouter.ai/docs/guides/best-practices/prompt-caching
  *
  * Class CacheControlData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class CacheControlData extends DataTransferObject
 {
@@ -22,7 +21,7 @@ final class CacheControlData extends DataTransferObject
     public const ALLOWED_TYPE = 'ephemeral';
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**
@@ -52,7 +51,7 @@ final class CacheControlData extends DataTransferObject
         return array_filter(
             [
                 'type' => $this->type,
-                'ttl'  => $this->ttl,
+                'ttl' => $this->ttl,
             ],
             fn($value) => $value !== null
         );
