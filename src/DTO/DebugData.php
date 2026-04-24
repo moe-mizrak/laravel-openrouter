@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace MoeMizrak\LaravelOpenrouter\DTO;
 
-use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
-
 /**
  * DTO for the debug options.
  *
@@ -16,11 +14,6 @@ use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
  */
 final class DebugData extends DataTransferObject {
   /**
-   * The allowed debug type value.
-   */
-  public const ALLOWED_TYPE = [false, true];
-
-  /**
    * @inheritDoc
    */
   public function __construct(
@@ -30,7 +23,6 @@ final class DebugData extends DataTransferObject {
      *
      * @var bool
      */
-    #[AllowedValues(self::ALLOWED_TYPE)]
     public bool $echo_upstream_body = false,
   ) {
     parent::__construct(...func_get_args());
