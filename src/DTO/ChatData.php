@@ -16,8 +16,7 @@ use MoeMizrak\LaravelOpenrouter\Types\ToolChoiceType;
  * Class ChatData
  * @package MoeMizrak\LaravelOpenrouter\DTO
  */
-final class ChatData extends DataTransferObject
-{
+final class ChatData extends DataTransferObject {
     /**
      * @inheritDoc
      */
@@ -199,6 +198,27 @@ final class ChatData extends DataTransferObject
          * @var CacheControlData|null
          */
         public ?CacheControlData $cache_control = null,
+
+        /**
+         * Debug.
+         * This parameter is for debugging purposes and will not be sent to the model. It can be used to pass any additional information that you want to include in the request for debugging purposes.
+         * Debug options for inspecting request transformations (streaming only)
+         * See: https://openrouter.ai/docs/api/api-reference/chat/send-chat-completion-request#request.body.debug
+         * 
+         * @var DebugData|null
+         */
+
+        public ?DebugData $debug = null,
+
+        /**
+         * Session ID.
+         * A unique identifier for grouping related requests (e.g., a conversation or agent workflow) for observability. If provided in both the request body and the x-session-id header, the body value takes precedence. Maximum of 256 characters.
+         * See: https://openrouter.ai/docs/api/api-reference/chat/send-chat-completion-request#request.body.session_id
+         * 
+         * @var string|null
+         */
+
+        public ?string $session_id = null,
     ) {
         $this->validateXorFields($this->messages, $this->prompt);
         $this->validateXorFields($this->model, $this->models);
@@ -220,8 +240,7 @@ final class ChatData extends DataTransferObject
      * @return void
      * @throws OpenRouterValidationException
      */
-    private function validateXorFields(mixed $firstField, mixed $secondField): void
-    {
+    private function validateXorFields(mixed $firstField, mixed $secondField): void {
         // Validate XOR fields
         $xorFields = new XORFields($firstField, $secondField);
         $validationResult = $xorFields->validate();
@@ -235,8 +254,7 @@ final class ChatData extends DataTransferObject
     /**
      * @return array
      */
-    public function convertToArray(): array
-    {
+    public function convertToArray(): array {
         return array_filter(
             [
                 'messages'           => ! is_null($this->messages)
@@ -291,6 +309,8 @@ final class ChatData extends DataTransferObject
                 'image_config'       => $this->image_config?->convertToArray(),
                 'reasoning'          => $this->reasoning?->convertToArray(),
                 'cache_control'      => $this->cache_control?->convertToArray(),
+                'debug'              => $this->debug?->convertToArray(),
+                'session_id'         => $this->session_id,
             ],
             fn($value) => $value !== null
         );

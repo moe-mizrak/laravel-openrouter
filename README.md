@@ -119,6 +119,8 @@ The [`ChatData`](src/DTO/ChatData.php) class is used to **encapsulate the data**
 - **include_reasoning** (bool|null): Whether to return the model's reasoning (Note: this parameter is **deprecated**, use `reasoning` parameter instead. For backward compatibility, package still supports the `include_reasoning` parameter)
 - **reasoning** (ReasoningData|null): An instance of the [`ReasoningData`](src/DTO/ReasoningData.php) class for reasoning configuration. It provides a transparent look into the reasoning steps taken by a model.
 - **cache_control** ([`CacheControlData`](src/DTO/CacheControlData.php)|null): Controls **prompt caching** on supported providers/models. You can set it at the **top-level** of the request (recommended for multi-turn conversations) or as an explicit **breakpoint** on large text blocks via `TextContentData::$cache_control`. For details and provider-specific behavior, see [OpenRouter Prompt Caching](https://openrouter.ai/docs/guides/best-practices/prompt-caching).
+- **session_id** (string|null): A string representing the session ID for maintaining conversation continuity across multiple requests. When provided, OpenRouter will attempt to route the request to the same provider and model used in previous interactions with the same session ID, helping to maintain context and coherence in multi-turn conversations. For more details, see [OpenRouter Broadcast](https://openrouter.ai/docs/guides/features/broadcast/overview).
+- **debug** (DebugData|null): An instance of the [`DebugData`](src/DTO/DebugData.php) class for debugging options (e.g., `echo_upstream_body` to include raw upstream responses in the output for troubleshooting).
 
 #### LLM Parameters
 
