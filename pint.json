@@ -1,0 +1,26 @@
+{
+  "preset": "laravel",
+  "exclude": [
+    "tests/"
+  ],
+  "rules": {
+    "declare_strict_types": true,
+    "no_superfluous_phpdoc_tags": false,
+    "phpdoc_separation": {
+      "groups": [
+        ["param"],
+        ["return"]
+      ]
+    },
+    "phpdoc_align": {
+      "align": "left"
+    },
+    "concat_space": {
+      "spacing": "one"
+    },
+    "strict_comparison": true,
+    "align_multiline_comment": true,
+    "fully_qualified_strict_types": true,
+    "function_declaration": false
+  }
+}
