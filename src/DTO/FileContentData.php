@@ -10,8 +10,6 @@ use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
  * DTO for file/document content in messages.
  *
  * Class FileContentData
- *
- * @package MoeMizrak\LaravelOpenRouter\DTO
  */
 final class FileContentData extends DataTransferObject
 {
@@ -21,7 +19,7 @@ final class FileContentData extends DataTransferObject
     public const ALLOWED_TYPE = 'file';
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**

@@ -10,7 +10,6 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
  * none, auto or ToolCallData (in OpenAI it is set as 'required', it means the model must call one or more tools.)
  *
  * Class ToolChoiceType
- * @package MoeMizrak\LaravelOpenrouter\Types
  */
 final readonly class ToolChoiceType
 {

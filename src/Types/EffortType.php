@@ -9,7 +9,6 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
  * See: https://openrouter.ai/docs/use-cases/reasoning-tokens
  *
  * Class EffortType
- * @package MoeMizrak\LaravelOpenrouter\Types
  */
 final readonly class EffortType
 {

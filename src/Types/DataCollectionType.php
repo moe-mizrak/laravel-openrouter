@@ -8,7 +8,6 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
  * This class keeps data collection setting types.
  *
  * Class DataCollectionType
- * @package MoeMizrak\LaravelOpenrouter\Types
  */
 final readonly class DataCollectionType
 {

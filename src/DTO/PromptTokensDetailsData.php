@@ -8,12 +8,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * PromptTokensDetailsData is the DTO for the detailed breakdown of prompt tokens.
  *
  * Class PromptTokensDetailsData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class PromptTokensDetailsData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**
@@ -48,16 +47,16 @@ final class PromptTokensDetailsData extends DataTransferObject
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function toArray(): array
     {
         return array_filter(
             [
-                'cached_tokens'      => $this->cached_tokens,
+                'cached_tokens' => $this->cached_tokens,
                 'cache_write_tokens' => $this->cache_write_tokens,
-                'audio_tokens'       => $this->audio_tokens,
-                'video_tokens'       => $this->video_tokens,
+                'audio_tokens' => $this->audio_tokens,
+                'video_tokens' => $this->video_tokens,
             ],
             fn($value) => $value !== null
         );

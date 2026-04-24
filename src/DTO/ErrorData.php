@@ -8,12 +8,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * DTO for error messages.
  *
  * Class ErrorData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class ErrorData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**

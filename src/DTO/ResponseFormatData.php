@@ -12,12 +12,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  *  https://openrouter.ai/docs#provider-routing
  *
  * Class ResponseFormatData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class ResponseFormatData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**
@@ -44,7 +43,7 @@ final class ResponseFormatData extends DataTransferObject
     {
         return array_filter(
             [
-                'type'        => $this->type,
+                'type' => $this->type,
                 'json_schema' => $this->json_schema,
             ],
             fn($value) => $value !== null

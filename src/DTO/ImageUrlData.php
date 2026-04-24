@@ -8,12 +8,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * DTO for the image url which are url and optional detail.
  *
  * Class ImageUrlData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class ImageUrlData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**
@@ -40,7 +39,7 @@ final class ImageUrlData extends DataTransferObject
     {
         return array_filter(
             [
-                'url'    => $this->url,
+                'url' => $this->url,
                 'detail' => $this->detail,
             ],
             fn($value) => $value !== null

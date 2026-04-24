@@ -10,7 +10,6 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
  * For more info: https://openrouter.ai/docs/guides/features/plugins/web-search#specifying-search-context-size
  *
  * Class SearchContextSizeType
- * @package MoeMizrak\LaravelOpenrouter\Types
  */
 final readonly class SearchContextSizeType
 {

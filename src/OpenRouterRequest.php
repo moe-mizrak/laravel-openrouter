@@ -22,7 +22,6 @@ use ReflectionException;
  * OpenRouter doc: https://openrouter.ai/docs
  *
  * Class OpenRouterRequest
- * @package MoeMizrak\LaravelOpenrouter
  */
 final class OpenRouterRequest extends OpenRouterAPI
 {
@@ -32,6 +31,7 @@ final class OpenRouterRequest extends OpenRouterAPI
      * @param ChatData $chatData
      *
      * @return ErrorData|ResponseData
+     *
      * @throws ReflectionException|GuzzleException
      */
     public function chatRequest(ChatData $chatData): ErrorData|ResponseData
@@ -75,7 +75,7 @@ final class OpenRouterRequest extends OpenRouterAPI
         if (Arr::get($decoded, 'error')) {
             return new ErrorData(
                 code: Arr::get($decoded, 'error.code', 500),
-                message:Arr::get($decoded, 'error.message', 'Unknown error from OpenRouter API.'),
+                message: Arr::get($decoded, 'error.message', 'Unknown error from OpenRouter API.'),
                 metadata: Arr::get($decoded, 'error.metadata'),
             );
         }
@@ -103,14 +103,14 @@ final class OpenRouterRequest extends OpenRouterAPI
         // Add headers for streaming.
         $headers = [
             'Content-Type' => 'text/event-stream',
-            'Cache-Control' => 'no-cache'
+            'Cache-Control' => 'no-cache',
         ];
 
         // Options for the Guzzle request
         $options = [
-            'json'    => $chatData,
+            'json' => $chatData,
             'headers' => $headers,
-            'stream' => true
+            'stream' => true,
         ];
 
         // Send POST request to the OpenRouter API chat completion endpoint and get the streaming response.
@@ -136,6 +136,7 @@ final class OpenRouterRequest extends OpenRouterAPI
      * @param string $generationId
      *
      * @return CostResponseData
+     *
      * @throws ReflectionException|GuzzleException
      */
     public function costRequest(string $generationId): CostResponseData
@@ -156,6 +157,7 @@ final class OpenRouterRequest extends OpenRouterAPI
      * Sends limit request for the rate limit or credits left on an API key.
      *
      * @return LimitResponseData
+     *
      * @throws ReflectionException|GuzzleException
      */
     public function limitRequest(): LimitResponseData
@@ -176,6 +178,7 @@ final class OpenRouterRequest extends OpenRouterAPI
      * Filters streaming response string and maps it into an array of ResponseData.
      *
      * @param string $streamingResponse
+     *
      * @return array
      */
     public function filterStreamingResponse(string $streamingResponse): array

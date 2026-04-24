@@ -14,12 +14,11 @@ use MoeMizrak\LaravelOpenrouter\Types\ProviderSortType;
  * For more info: https://openrouter.ai/docs/guides/routing/provider-selection
  *
  * Class ProviderPreferencesData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class ProviderPreferencesData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**
@@ -124,7 +123,7 @@ final class ProviderPreferencesData extends DataTransferObject
         // Validate sort string value manually since AllowedValues attribute cannot handle union types (string|ProviderSortData).
         if (is_string($this->sort) && ! in_array($this->sort, [ProviderSortType::PRICE, ProviderSortType::THROUGHPUT, ProviderSortType::LATENCY])) {
             throw new OpenRouterValidationException(
-                "Value is NOT allowed: " . $this->sort . " - Allowed values: " . implode(', ', [ProviderSortType::PRICE, ProviderSortType::THROUGHPUT, ProviderSortType::LATENCY])
+                'Value is NOT allowed: ' . $this->sort . ' - Allowed values: ' . implode(', ', [ProviderSortType::PRICE, ProviderSortType::THROUGHPUT, ProviderSortType::LATENCY])
             );
         }
 
@@ -138,25 +137,25 @@ final class ProviderPreferencesData extends DataTransferObject
     {
         return array_filter(
             [
-                'allow_fallbacks'          => $this->allow_fallbacks,
-                'require_parameters'       => $this->require_parameters,
-                'data_collection'          => $this->data_collection,
-                'order'                    => $this->order,
-                'zdr'                      => $this->zdr,
+                'allow_fallbacks' => $this->allow_fallbacks,
+                'require_parameters' => $this->require_parameters,
+                'data_collection' => $this->data_collection,
+                'order' => $this->order,
+                'zdr' => $this->zdr,
                 'enforce_distillable_text' => $this->enforce_distillable_text,
-                'only'                     => $this->only,
-                'ignore'                   => $this->ignore,
-                'quantizations'            => $this->quantizations,
-                'sort'                     => $this->sort instanceof ProviderSortData
+                'only' => $this->only,
+                'ignore' => $this->ignore,
+                'quantizations' => $this->quantizations,
+                'sort' => $this->sort instanceof ProviderSortData
                     ? ($this->sort->convertToArray() ?: null)
                     : $this->sort,
-                'preferred_min_throughput'  => $this->preferred_min_throughput instanceof PercentileData
+                'preferred_min_throughput' => $this->preferred_min_throughput instanceof PercentileData
                     ? ($this->preferred_min_throughput->convertToArray() ?: null)
                     : $this->preferred_min_throughput,
-                'preferred_max_latency'    => $this->preferred_max_latency instanceof PercentileData
+                'preferred_max_latency' => $this->preferred_max_latency instanceof PercentileData
                     ? ($this->preferred_max_latency->convertToArray() ?: null)
                     : $this->preferred_max_latency,
-                'max_price'                => $this->max_price?->convertToArray(),
+                'max_price' => $this->max_price?->convertToArray(),
             ],
             fn($value) => $value !== null
         );

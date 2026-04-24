@@ -9,12 +9,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * For more info: https://openrouter.ai/docs/guides/routing/provider-selection
  *
  * Class PercentileData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class PercentileData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**

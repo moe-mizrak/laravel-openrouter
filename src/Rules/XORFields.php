@@ -12,7 +12,6 @@ use MoeMizrak\LaravelOpenrouter\DTO\ValidationResultData;
  * If both firstField and secondField exist, or both are NOT exist, the output is FALSE -> validation failed.
  *
  * Class XORFields
- * @package MoeMizrak\LaravelOpenrouter\Rules
  */
 final readonly class XORFields
 {
@@ -28,6 +27,7 @@ final readonly class XORFields
      * Validate XOR condition for two fields.
      *
      * @return ValidationResultData
+     *
      * @throws \ReflectionException
      */
     public function validate(): ValidationResultData

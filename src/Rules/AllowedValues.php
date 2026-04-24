@@ -10,7 +10,6 @@ use MoeMizrak\LaravelOpenrouter\Exceptions\OpenRouterValidationException;
  * Validator class for checking whether the value is in allowed value list.
  *
  * Class AllowedValues
- * @package MoeMizrak\LaravelOpenrouter\Rules
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_PARAMETER)]
 final readonly class AllowedValues
@@ -28,6 +27,7 @@ final readonly class AllowedValues
      * @param mixed $value
      *
      * @return void
+     *
      * @throws OpenRouterValidationException
      */
     public function handle(mixed $value): void
@@ -37,7 +37,7 @@ final readonly class AllowedValues
         }
 
         throw new OpenRouterValidationException(
-            "Value is NOT allowed: " . $value . " - Allowed values: " . implode(', ', $this->acceptableValues)
+            'Value is NOT allowed: ' . $value . ' - Allowed values: ' . implode(', ', $this->acceptableValues)
         );
     }
 }

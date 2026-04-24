@@ -10,8 +10,6 @@ use MoeMizrak\LaravelOpenrouter\Helpers\OpenRouterHelper;
  * This abstract class forms the response from OpenRouter
  *
  * Class OpenRouterAPI
- *
- * @package MoeMizrak\LaravelOpenrouter
  */
 abstract class OpenRouterAPI
 {

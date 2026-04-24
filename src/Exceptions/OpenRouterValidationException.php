@@ -10,7 +10,6 @@ use Exception;
  * This exception is thrown when a validation rule fails.
  *
  * Class OpenRouterValidationException
- * @package MoeMizrak\LaravelOpenrouter\Exceptions
  */
 final class OpenRouterValidationException extends Exception
 {

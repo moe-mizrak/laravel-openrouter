@@ -8,12 +8,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * DTO that represents a message delta i.e. any changed fields on a message during streaming.
  *
  * Class DeltaData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class DeltaData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**

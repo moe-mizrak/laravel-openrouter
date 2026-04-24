@@ -9,7 +9,6 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
  * See: https://openrouter.ai/docs/features/multimodal/audio
  *
  * Class AudioFormatType
- * @package MoeMizrak\LaravelOpenrouter\Types
  */
 final readonly class AudioFormatType
 {

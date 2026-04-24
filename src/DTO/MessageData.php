@@ -8,12 +8,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * DTO that represents a message i.e. any changed fields on a message.
  *
  * Class MessageData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class MessageData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**
@@ -76,7 +75,7 @@ final class MessageData extends DataTransferObject
     {
         return array_filter(
             [
-                'content'   => is_array($this->content)
+                'content' => is_array($this->content)
                     ? array_map(function ($value) {
                         if (
                             $value instanceof TextContentData
@@ -90,17 +89,16 @@ final class MessageData extends DataTransferObject
                         }
                     }, $this->content)
                     : $this->content,
-                'role'      => $this->role,
+                'role' => $this->role,
                 'tool_calls' => ! is_null($this->tool_calls)
                     ? array_map(function ($value) {
                         return $value->convertToArray();
                     }, $this->tool_calls)
                     : null,
                 'tool_call_id' => $this->tool_call_id,
-                'name'      => $this->name,
+                'name' => $this->name,
             ],
             fn($value) => $value !== null
         );
     }
 }
-

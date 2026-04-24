@@ -11,12 +11,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * Also check https://openrouter.ai/docs/guides/overview/multimodal/pdfs
  *
  * Class PluginData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class PluginData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**

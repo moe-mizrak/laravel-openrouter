@@ -10,12 +10,11 @@ use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
  * DTO for image configuration in chat completion requests.
  *
  * Class ImageConfigData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class ImageConfigData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**

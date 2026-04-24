@@ -8,12 +8,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * NonStreamingChoiceData is the DTO choice type for non-streaming responses.
  *
  * Class NonStreamingChoiceData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class NonStreamingChoiceData extends ChoiceData
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**

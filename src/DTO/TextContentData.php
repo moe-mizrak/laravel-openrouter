@@ -10,7 +10,6 @@ use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
  * DTO for the contents.
  *
  * Class TextContentData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class TextContentData extends DataTransferObject
 {
@@ -20,7 +19,7 @@ final class TextContentData extends DataTransferObject
     public const ALLOWED_TYPE = 'text';
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**

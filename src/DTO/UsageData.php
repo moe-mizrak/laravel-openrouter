@@ -8,12 +8,11 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  * UsageData is the DTO for the usage info of the api call.
  *
  * Class UsageData
- * @package MoeMizrak\LaravelOpenrouter\DTO
  */
 final class UsageData extends DataTransferObject
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __construct(
         /**
@@ -62,17 +61,17 @@ final class UsageData extends DataTransferObject
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function toArray(): array
     {
         return array_filter(
             [
-                'prompt_tokens'             => $this->prompt_tokens,
-                'completion_tokens'         => $this->completion_tokens,
-                'total_tokens'              => $this->total_tokens,
-                'cost'                      => $this->cost,
-                'prompt_tokens_details'     => $this->prompt_tokens_details?->toArray(),
+                'prompt_tokens' => $this->prompt_tokens,
+                'completion_tokens' => $this->completion_tokens,
+                'total_tokens' => $this->total_tokens,
+                'cost' => $this->cost,
+                'prompt_tokens_details' => $this->prompt_tokens_details?->toArray(),
                 'completion_tokens_details' => $this->completion_tokens_details?->toArray(),
             ],
             fn($value) => $value !== null
