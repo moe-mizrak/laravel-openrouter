@@ -21,6 +21,7 @@
     "strict_comparison": true,
     "align_multiline_comment": true,
     "fully_qualified_strict_types": true,
-    "function_declaration": false
+    "function_declaration": false,
+    "no_unreachable_default_argument_value": false
   }
 }
