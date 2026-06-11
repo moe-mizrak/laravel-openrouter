@@ -7,8 +7,6 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
 /**
  * Audio can be provided in different formats for now: mp3, wav.
  * See: https://openrouter.ai/docs/features/multimodal/audio
- *
- * Class AudioFormatType
  */
 final readonly class AudioFormatType
 {

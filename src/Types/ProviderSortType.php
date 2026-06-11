@@ -7,8 +7,6 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
 /**
  * This class keeps provider sort types for sorting providers by attribute.
  * For more info: https://openrouter.ai/docs/guides/routing/provider-selection
- *
- * Class ProviderSortType
  */
 final readonly class ProviderSortType
 {

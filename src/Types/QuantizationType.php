@@ -7,8 +7,6 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
 /**
  * This class keeps quantization level types for provider filtering.
  * For more info: https://openrouter.ai/docs/guides/routing/provider-selection
- *
- * Class QuantizationType
  */
 final readonly class QuantizationType
 {

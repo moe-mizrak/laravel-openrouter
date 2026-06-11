@@ -7,8 +7,6 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
 /**
  * Reasoning effort level. Currently supported by the OpenAI o-series and Grok models.
  * See: https://openrouter.ai/docs/use-cases/reasoning-tokens
- *
- * Class EffortType
  */
 final readonly class EffortType
 {

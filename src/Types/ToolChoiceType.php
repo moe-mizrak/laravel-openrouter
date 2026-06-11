@@ -8,8 +8,6 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
  * This class keeps tool choice types.
  * Validation for the tool choice parameter is added in ChatData DTO class since it can only get:
  * none, auto or ToolCallData (in OpenAI it is set as 'required', it means the model must call one or more tools.)
- *
- * Class ToolChoiceType
  */
 final readonly class ToolChoiceType
 {
