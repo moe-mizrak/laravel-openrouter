@@ -8,25 +8,14 @@ use MoeMizrak\LaravelOpenrouter\Exceptions\OpenRouterValidationException;
 
 /**
  * Validator class for checking whether the value is in allowed value list.
- *
- * Class AllowedValues
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_PARAMETER)]
 final readonly class AllowedValues
 {
-    /**
-     * Constructor a new validation instance.
-     *
-     * @param array $acceptableValues
-     */
     public function __construct(protected array $acceptableValues = []) {}
 
     /**
      * Validates the allowed values.
-     *
-     * @param mixed $value
-     *
-     * @return void
      *
      * @throws OpenRouterValidationException
      */

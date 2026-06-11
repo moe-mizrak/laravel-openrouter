@@ -6,8 +6,6 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
  * DTO that represents a message delta i.e. any changed fields on a message during streaming.
- *
- * Class DeltaData
  */
 final class DeltaData extends DataTransferObject
 {
@@ -17,27 +15,16 @@ final class DeltaData extends DataTransferObject
     public function __construct(
         /**
          * The content of the message.
-         *
-         * @var string|null
          */
         public ?string $content = null,
 
         /**
          * The entity that produced the message.
          * Possible values are user, assistant, system, function, tool
-         *
-         * @var string|null
          */
         public ?string $role = null,
 
-        /**
-         * @var string|null
-         */
         public ?string $refusal = null,
-
-        /**
-         * @var string|null
-         */
         public ?string $reasoning = null,
 
         /**

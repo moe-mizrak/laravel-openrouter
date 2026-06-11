@@ -10,8 +10,6 @@ use MoeMizrak\LaravelOpenrouter\Types\EffortType;
 /**
  * ReasoningData is the DTO for the reasoning parameters of the API call.
  * For more info: https://openrouter.ai/docs/use-cases/reasoning-tokens
- *
- * Class ReasoningData
  */
 final class ReasoningData extends DataTransferObject
 {
@@ -21,8 +19,6 @@ final class ReasoningData extends DataTransferObject
     public function __construct(
         /**
          * OpenAI-style reasoning effort setting
-         *
-         * @var string|null
          */
         #[AllowedValues([EffortType::HIGH, EffortType::MEDIUM, EffortType::LOW, EffortType::MINIMAL, EffortType::NONE])]
         public ?string $effort = null,
@@ -30,32 +26,23 @@ final class ReasoningData extends DataTransferObject
         /**
          * Non-OpenAI-style reasoning effort setting.
          * Note: Cannot be used simultaneously with effort.
-         *
-         * @var int|null
          */
         public ?int $max_tokens = null,
 
         /**
          * Whether to exclude reasoning from the response
-         *
-         * @var bool|null
          */
         public ?bool $exclude = false,
 
         /**
          * Enable reasoning with the default parameters.
          * Default: inferred from `effort` or `max_tokens`
-         *
-         * @var bool|null
          */
         public ?bool $enabled = null,
     ) {
         parent::__construct(...func_get_args());
     }
 
-    /**
-     * @return array
-     */
     public function convertToArray(): array
     {
         return array_filter(

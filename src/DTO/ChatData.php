@@ -12,8 +12,6 @@ use MoeMizrak\LaravelOpenrouter\Types\ToolChoiceType;
 
 /**
  * DTO for the chat completion request.
- *
- * Class ChatData
  */
 final class ChatData extends DataTransferObject
 {
@@ -32,23 +30,17 @@ final class ChatData extends DataTransferObject
         /**
          * Prompt string data.
          * xor-gated with messages field
-         *
-         * @var string|null
          */
         public ?string $prompt = null,
 
         /**
          * Model name. If "model" is unspecified, uses the user's default.
          * For more info: https://openrouter.ai/docs#models
-         *
-         * @var string|null
          */
         public ?string $model = null,
 
         /**
          * The format of the output, e.g. json, text, srt, verbose_json ...
-         *
-         * @var ResponseFormatData|null
          */
         public ?ResponseFormatData $response_format = null,
 
@@ -57,22 +49,16 @@ final class ChatData extends DataTransferObject
          * This feature provides detailed information about token counts, costs, and caching status directly in your API responses
          * (Default value is false, enabling usage accounting will add a few hundred milliseconds to the last response as the API calculates token counts and costs)
          * See: https://openrouter.ai/docs/use-cases/usage-accounting
-         *
-         * @var bool
          */
         public bool $usage = false,
 
         /**
          * Stop generation immediately if the model encounters any token specified in the stop array|string.
-         *
-         * @var array|string|null
          */
         public array|string|null $stop = null,
 
         /**
          * Enable streaming.
-         *
-         * @var bool|null
          */
         public ?bool $stream = null,
 
@@ -91,8 +77,6 @@ final class ChatData extends DataTransferObject
         // Function-calling
         /**
          * Only natively supported by OpenAI models. For others, we submit a YAML-formatted string with these tools at the end of the prompt.
-         *
-         * @var string|array|null
          */
         #[AllowedValues([ToolChoiceType::AUTO, ToolChoiceType::NONE])]
         public string|array|null $tool_choice = null, // none|auto or ToolCallData as {"type": "function", "function": {"name": "my_function"}}
@@ -113,8 +97,6 @@ final class ChatData extends DataTransferObject
         // OpenRouter-only parameters
         /**
          * See "Prompt Transforms" section: https://openrouter.ai/docs#transforms
-         *
-         * @var array|null
          */
         public ?array $transforms = null,
 
@@ -129,37 +111,26 @@ final class ChatData extends DataTransferObject
          * Web search options for configuring native search behavior.
          * Only applies when using native search (OpenAI, Anthropic, Perplexity, xAI models).
          * For more info: https://openrouter.ai/docs/guides/features/web-search
-         *
-         * @var WebSearchOptionsData|null
          */
         public ?WebSearchOptionsData $web_search_options = null,
 
         /**
          * The models array, which lets you automatically try other models if the primary model's providers are down,
          * rate-limited, or refuse to reply due to content moderation required by all providers.
-         *
-         * @var array|null
          */
         public ?array $models = null,
 
-        /**
-         * @var string|null
-         */
         #[AllowedValues([RouteType::FALLBACK])]
         public ?string $route = null,
 
         /**
          * See "Provider Routing" section: https://openrouter.ai/docs#provider-routing
-         *
-         * @var ProviderPreferencesData|null
          */
         public ?ProviderPreferencesData $provider = null,
 
         /**
          * Enable think tokens.
          * Note: This parameter is the legacy parameter and will be removed in the future.
-         *
-         * @var bool|null
          *
          * @deprecated Use '$reasoning' parameter instead (it is backward compatible with the old parameter).
          */
@@ -168,8 +139,6 @@ final class ChatData extends DataTransferObject
         /**
          * For models that support it, the OpenRouter API can return Reasoning Tokens, also known as thinking tokens.
          * See: https://openrouter.ai/docs/use-cases/reasoning-tokens
-         *
-         * @var ReasoningData|null
          */
         public ?ReasoningData $reasoning = null,
 
@@ -177,16 +146,12 @@ final class ChatData extends DataTransferObject
          * Modalities for the completion request.
          * Specify both "image" and "text" to enable image generation.
          * Example: ["image", "text"]
-         *
-         * @var array|null
          */
         public ?array $modalities = null,
 
         /**
          * Configuration for image generation.
          * See: https://openrouter.ai/docs/docs/overview/multimodal/image-generation
-         *
-         * @var ImageConfigData|null
          */
         public ?ImageConfigData $image_config = null,
 
@@ -195,8 +160,6 @@ final class ChatData extends DataTransferObject
          * Can be passed at the top-level of the request (recommended for multi-turn conversations)
          * or as a breakpoint inside individual content blocks (see TextContentData).
          * See: https://openrouter.ai/docs/guides/best-practices/prompt-caching
-         *
-         * @var CacheControlData|null
          */
         public ?CacheControlData $cache_control = null,
 
@@ -205,8 +168,6 @@ final class ChatData extends DataTransferObject
          * This parameter is for debugging purposes and will not be sent to the model. It can be used to pass any additional information that you want to include in the request for debugging purposes.
          * Debug options for inspecting request transformations (streaming only)
          * See: https://openrouter.ai/docs/api/api-reference/chat/send-chat-completion-request#request.body.debug
-         *
-         * @var DebugData|null
          */
         public ?DebugData $debug = null,
 
@@ -214,8 +175,6 @@ final class ChatData extends DataTransferObject
          * Session ID.
          * A unique identifier for grouping related requests (e.g., a conversation or agent workflow) for observability. If provided in both the request body and the x-session-id header, the body value takes precedence. Maximum of 256 characters.
          * See: https://openrouter.ai/docs/api/api-reference/chat/send-chat-completion-request#request.body.session_id
-         *
-         * @var string|null
          */
         public ?string $session_id = null,
     ) {
@@ -233,11 +192,6 @@ final class ChatData extends DataTransferObject
     /**
      * Validate the XOR fields and throw an exception if not valid.
      *
-     * @param mixed $firstField
-     * @param mixed $secondField
-     *
-     * @return void
-     *
      * @throws OpenRouterValidationException
      */
     private function validateXorFields(mixed $firstField, mixed $secondField): void
@@ -252,9 +206,6 @@ final class ChatData extends DataTransferObject
         }
     }
 
-    /**
-     * @return array
-     */
     public function convertToArray(): array
     {
         return array_filter(

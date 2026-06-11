@@ -7,8 +7,6 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 /**
  * DTO for percentile cutoff values used in preferred_min_throughput and preferred_max_latency.
  * For more info: https://openrouter.ai/docs/guides/routing/provider-selection
- *
- * Class PercentileData
  */
 final class PercentileData extends DataTransferObject
 {
@@ -18,38 +16,27 @@ final class PercentileData extends DataTransferObject
     public function __construct(
         /**
          * 50th percentile cutoff value.
-         *
-         * @var float|null
          */
         public ?float $p50 = null,
 
         /**
          * 75th percentile cutoff value.
-         *
-         * @var float|null
          */
         public ?float $p75 = null,
 
         /**
          * 90th percentile cutoff value.
-         *
-         * @var float|null
          */
         public ?float $p90 = null,
 
         /**
          * 99th percentile cutoff value.
-         *
-         * @var float|null
          */
         public ?float $p99 = null,
     ) {
         parent::__construct(...func_get_args());
     }
 
-    /**
-     * @return array
-     */
     public function convertToArray(): array
     {
         return array_filter(

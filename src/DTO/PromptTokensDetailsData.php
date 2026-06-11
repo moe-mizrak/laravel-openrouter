@@ -6,8 +6,6 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
  * PromptTokensDetailsData is the DTO for the detailed breakdown of prompt tokens.
- *
- * Class PromptTokensDetailsData
  */
 final class PromptTokensDetailsData extends DataTransferObject
 {
@@ -17,29 +15,21 @@ final class PromptTokensDetailsData extends DataTransferObject
     public function __construct(
         /**
          * Number of cached tokens used in the prompt.
-         *
-         * @var int|null
          */
         public ?int $cached_tokens = null,
 
         /**
          * Number of tokens written to cache.
-         *
-         * @var int|null
          */
         public ?int $cache_write_tokens = null,
 
         /**
          * Number of audio tokens used in the prompt.
-         *
-         * @var int|null
          */
         public ?int $audio_tokens = null,
 
         /**
          * Number of video tokens used in the prompt.
-         *
-         * @var int|null
          */
         public ?int $video_tokens = null
     ) {

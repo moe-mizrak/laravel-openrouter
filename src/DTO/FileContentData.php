@@ -8,8 +8,6 @@ use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
 
 /**
  * DTO for file/document content in messages.
- *
- * Class FileContentData
  */
 final class FileContentData extends DataTransferObject
 {
@@ -24,25 +22,18 @@ final class FileContentData extends DataTransferObject
     public function __construct(
         /**
          * Type of the content. (i.e. file)
-         *
-         * @var string
          */
         #[AllowedValues([self::ALLOWED_TYPE])]
         public string $type = self::ALLOWED_TYPE,
 
         /**
          * File data object containing URL or base64 data.
-         *
-         * @var FileUrlData
          */
         public FileUrlData $file,
     ) {
         parent::__construct(...func_get_args());
     }
 
-    /**
-     * @return array
-     */
     public function convertToArray(): array
     {
         return array_filter(

@@ -115,9 +115,6 @@ class OpenRouterAPITest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
     private function mockReasoning(): array
     {
         return [
@@ -159,9 +156,6 @@ class OpenRouterAPITest extends TestCase
         ];
     }
 
-    /**
-     * @return array[]
-     */
     private function mockBasicCostBody(): array
     {
         return [
@@ -191,9 +185,6 @@ class OpenRouterAPITest extends TestCase
         ];
     }
 
-    /**
-     * @return array[]
-     */
     private function mockBasicLimitBody(): array
     {
         return [
@@ -211,11 +202,6 @@ class OpenRouterAPITest extends TestCase
         ];
     }
 
-    /**
-     * @param array $mockBody
-     *
-     * @return void
-     */
     private function mockOpenRouter(array $mockBody): void
     {
         $mockResponse = (new Response(200, [], json_encode($mockBody)));
@@ -228,9 +214,6 @@ class OpenRouterAPITest extends TestCase
 
     /**
      * General assertions required for testing instead of replicating the same code.
-     *
-     * @param $response
-     * @return void
      */
     private function generalTestAssertions($response): void
     {
@@ -294,6 +277,7 @@ class OpenRouterAPITest extends TestCase
 
         /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
+
         /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertNotNull(Arr::get($response->choices[0], 'message.reasoning'));
@@ -757,7 +741,6 @@ class OpenRouterAPITest extends TestCase
         $this->assertNotEmpty($images);
     }
 
-    // test for the audio content
     #[Test]
     public function it_successfully_sends_audio_in_content_in_messages_in_the_open_route_api_request()
     {

@@ -9,15 +9,11 @@ namespace MoeMizrak\LaravelOpenrouter\Types;
  * or refuse to reply due to content moderation required by all providers. So fallback comes handy for models that will be used if "route": "fallback".
  *
  * For more info: https://openrouter.ai/docs#model-routing
- *
- * Class RouteType
  */
 final readonly class RouteType
 {
     /**
      * Fallback model.
-     *
-     * @var string
      */
     const FALLBACK = 'fallback';
 }

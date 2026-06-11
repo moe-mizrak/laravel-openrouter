@@ -6,8 +6,6 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
  * DTO that represents a message i.e. any changed fields on a message.
- *
- * Class MessageData
  */
 final class MessageData extends DataTransferObject
 {
@@ -25,20 +23,13 @@ final class MessageData extends DataTransferObject
         /**
          * The entity that produced the message.
          * Possible values are user, assistant, system, function, tool
-         *
-         * @var string|null
          */
         public ?string $role = null,
 
-        /**
-         * @var string|null
-         */
         public ?string $refusal = null,
 
         /**
          * Reasoning for the message.
-         *
-         * @var string|null
          */
         public ?string $reasoning = null,
 
@@ -52,25 +43,18 @@ final class MessageData extends DataTransferObject
         /**
          * That is the identifier that connects the tool result back to the tool call the LLM requested.
          * Used to specify which tool to call when multiple tools are provided.
-         *
-         * @var string|null
          */
         public ?string $tool_call_id = null,
 
         /**
          * An optional name for the participant. Provides the model information to differentiate between participants of the same role.
          * e.g. name: "Moe"
-         *
-         * @var string|null
          */
         public ?string $name = null,
     ) {
         parent::__construct(...func_get_args());
     }
 
-    /**
-     * @return array
-     */
     public function convertToArray(): array
     {
         return array_filter(

@@ -8,16 +8,9 @@ use MoeMizrak\LaravelOpenrouter\Helpers\OpenRouterHelper;
 
 /**
  * This abstract class forms the response from OpenRouter
- *
- * Class OpenRouterAPI
  */
 abstract class OpenRouterAPI
 {
-    /**
-     * RekognitionAPI constructor.
-     *
-     * @param OpenRouterHelper $openRouterHelper
-     */
     public function __construct(
         protected OpenRouterHelper $openRouterHelper,
     ) {}

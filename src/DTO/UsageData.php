@@ -6,8 +6,6 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
  * UsageData is the DTO for the usage info of the api call.
- *
- * Class UsageData
  */
 final class UsageData extends DataTransferObject
 {
@@ -17,43 +15,31 @@ final class UsageData extends DataTransferObject
     public function __construct(
         /**
          * Equivalent to "native_tokens_completion" in the /generation API
-         *
-         * @var int|null
          */
         public ?int $prompt_tokens = null,
 
         /**
          * Equivalent to "native_tokens_prompt"
-         *
-         * @var int|null
          */
         public ?int $completion_tokens = null,
 
         /**
          * Sum of the above two fields ($prompt_tokens and $completion_tokens)
-         *
-         * @var int|null
          */
         public ?int $total_tokens = null,
 
         /**
          * Credit usage of the request
-         *
-         * @var float|null
          */
         public ?float $cost = null,
 
         /**
          * Detailed breakdown of prompt tokens (cached, audio, video)
-         *
-         * @var PromptTokensDetailsData|null
          */
         public ?PromptTokensDetailsData $prompt_tokens_details = null,
 
         /**
          * Detailed breakdown of completion tokens (reasoning, image)
-         *
-         * @var CompletionTokensDetailsData|null
          */
         public ?CompletionTokensDetailsData $completion_tokens_details = null
     ) {
