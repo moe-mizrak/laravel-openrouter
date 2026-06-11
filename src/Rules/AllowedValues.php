@@ -16,7 +16,7 @@ final readonly class AllowedValues
 
     /**
      * Validates the allowed values.
-     * 
+     *
      * @throws OpenRouterValidationException
      */
     public function handle(mixed $value): void

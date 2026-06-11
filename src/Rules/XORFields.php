@@ -17,7 +17,7 @@ final readonly class XORFields
 
     /**
      * Validate XOR condition for two fields.
-     * 
+     *
      * @throws \ReflectionException
      */
     public function validate(): ValidationResultData
@@ -31,7 +31,7 @@ final readonly class XORFields
             ['messages', 'prompt'], // messages and prompt fields are XOR gated
             ['model', 'models'], // model and models fields are XOR gated
         ];
-        
+
         $result = [];
         // e.g. "messages and prompt"
         foreach ($xorFields as $pair) {
