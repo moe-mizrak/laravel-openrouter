@@ -12,15 +12,11 @@ final readonly class AudioFormatType
 {
     /**
      * MP3 audio format
-     *
-     * @var string
      */
     const MP3 = 'mp3';
 
     /**
      * WAV audio format
-     *
-     * @var string
      */
     const WAV = 'wav';
 }

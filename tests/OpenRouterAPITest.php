@@ -239,6 +239,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_makes_a_basic_chat_completion_open_route_api_request()
     {
+        /* SETUP */
         $chatData = new ChatData(
             messages: [
                 $this->messageData,
@@ -248,8 +249,10 @@ class OpenRouterAPITest extends TestCase
         );
         $this->mockOpenRouter($this->mockBasicBody());
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
@@ -258,6 +261,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_makes_a_basic_chat_completion_open_route_api_request_with_reasoning_param()
     {
+        /* SETUP */
         $chatData = new ChatData(
             messages: [
                 $this->messageData,
@@ -271,8 +275,10 @@ class OpenRouterAPITest extends TestCase
         );
         $this->mockOpenRouter($this->mockReasoning());
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertNotNull(Arr::get($response->choices[0], 'message.reasoning'));
     }
@@ -280,6 +286,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_tests_chat_data_with_legacy_include_reasoning_param_if_mapping_to_reasoning()
     {
+        /* SETUP */
         // Legacy parameter `include_reasoning` is set to true, so it should be mapped to reasoning
         $firstChatData = new ChatData(
             messages: [
@@ -311,6 +318,7 @@ class OpenRouterAPITest extends TestCase
             ),
         );
 
+        /* ASSERT */
         $this->assertFalse($firstChatData->reasoning->exclude);
         $this->assertTrue($secondChatData->reasoning->exclude);
         $this->assertFalse($thirdChatData->reasoning->exclude);
@@ -319,6 +327,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_makes_a_basic_chat_completion_open_route_api_request_with_historical_data()
     {
+        /* SETUP */
         $firstMessage = new MessageData(
             content: 'My name is Moe, the AI necromancer.',
             role: RoleType::USER,
@@ -352,8 +361,10 @@ class OpenRouterAPITest extends TestCase
         $mockBody['choices'][0]['message.content'] = 'You are Moe the AI Necromancer, a friendly and knowledgeable assistant designed to help answer questions and engage in stimulating conversations. I specialize in a wide range of topics, including necromancy, AI, and many other subjects. How can I assist you today?';
         $this->mockOpenRouter($mockBody);
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $content = Arr::get($response->choices[0], 'message.content');
@@ -363,6 +374,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_makes_a_basic_chat_completion_stream_request()
     {
+        /* SETUP */
         $this->markTestSkipped('Test skipped until stream request is mocked');
         $chatData = new ChatData(
             messages: [
@@ -372,8 +384,10 @@ class OpenRouterAPITest extends TestCase
             max_tokens: $this->maxTokens,
         );
 
+        /* EXECUTE */
         $promise = $this->api->chatStreamRequest($chatData);
 
+        /* ASSERT */
         $stream = $promise->wait();
         $rawResponse = $stream->read(1024);
         $response = LaravelOpenRouter::filterStreamingResponse($rawResponse);
@@ -386,6 +400,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_responds_error_data_when_stream_request_is_made_to_chat_completion_function()
     {
+        /* SETUP */
         $chatData = new ChatData(
             messages: [
                 $this->messageData,
@@ -395,8 +410,10 @@ class OpenRouterAPITest extends TestCase
             max_tokens: $this->maxTokens,
         );
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
+        /* ASSERT */
         $this->assertEquals(400, $response->code);
         $this->assertEquals('For stream chat completion please use "chatStreamRequest" method instead!', $response->message);
     }
@@ -404,6 +421,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_makes_a_basic_prompt_chat_completion_open_route_api_request()
     {
+        /* SETUP */
         $chatData = new ChatData(
             prompt: $this->prompt,
             model: $this->model,
@@ -413,8 +431,10 @@ class OpenRouterAPITest extends TestCase
         $mockBody['choices'][0]['text'] = 'Some mocked text';
         $this->mockOpenRouter($mockBody);
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertNotNull(Arr::get($response->choices[0], 'text'));
     }
@@ -422,6 +442,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_tests_if_response_to_array_is_converting_dto_to_array_successfully()
     {
+        /* SETUP */
         $chatData = new ChatData(
             messages: [
                 $this->messageData,
@@ -431,8 +452,10 @@ class OpenRouterAPITest extends TestCase
         );
         $this->mockOpenRouter($this->mockBasicBody());
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $responseArray = $response->toArray();
         $this->assertArrayHasKey('id', $responseArray);
@@ -451,8 +474,10 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_throws_xor_validation_exception_when_both_message_and_prompt_empty_in_chat_data()
     {
+        /* SETUP */
         $this->expectException(OpenRouterValidationException::class);
 
+        /* EXECUTE */
         new ChatData(
             model: $this->model,
             max_tokens: $this->maxTokens,
@@ -462,8 +487,10 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_throws_xor_validation_exception_when_both_message_and_prompt_are_provided()
     {
+        /* SETUP */
         $this->expectException(OpenRouterValidationException::class);
 
+        /* EXECUTE */
         new ChatData(
             messages: [
                 $this->messageData,
@@ -477,6 +504,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_successfully_sends_text_content_in_messages_in_the_open_route_api_request()
     {
+        /* SETUP */
         $textContentData = new TextContentData(
             type: TextContentData::ALLOWED_TYPE, // it can only take text for text content
             text: $this->content,
@@ -496,10 +524,10 @@ class OpenRouterAPITest extends TestCase
         );
         $this->mockOpenRouter($this->mockBasicBody());
 
-        
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
-        
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
@@ -508,7 +536,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_successfully_sends_image_and_text_content_in_messages_in_the_open_route_api_request()
     {
-
+        /* SETUP */
         $imageUrlData = new ImageUrlData(
             url: 'https://www.thewowstyle.com/wp-content/uploads/2015/01/images-of-nature-4.jpg',
             detail: 'Nature'
@@ -537,10 +565,10 @@ class OpenRouterAPITest extends TestCase
         );
         $this->mockOpenRouter($this->mockBasicBody());
 
-        
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
-        
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
@@ -549,6 +577,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_successfully_makes_web_search_in_the_open_route_api_request()
     {
+        /* SETUP */
         $plugins = [
             new PluginData(
                 id: 'web',
@@ -578,8 +607,10 @@ class OpenRouterAPITest extends TestCase
         ];
         $this->mockOpenRouter($mockBody);
 
+        /* EXECUTE */
         $response = LaravelOpenRouter::chatRequest($chatData);
 
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertNotNull(Arr::get($response->choices[0], 'message.annotations'));
         $this->assertEquals('url_citation', Arr::get($response->choices[0], 'message.annotations.0.type'));
@@ -591,6 +622,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_successfully_makes_web_search_with_online_model_in_the_open_route_api_request()
     {
+        /* SETUP */
         $chatData = new ChatData(
             messages: [
                 new MessageData(
@@ -613,8 +645,10 @@ class OpenRouterAPITest extends TestCase
         ];
         $this->mockOpenRouter($mockBody);
 
+        /* EXECUTE */
         $response = LaravelOpenRouter::chatRequest($chatData);
 
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertNotNull(Arr::get($response->choices[0], 'message.annotations'));
         $this->assertEquals('url_citation', Arr::get($response->choices[0], 'message.annotations.0.type'));
@@ -626,6 +660,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_successfully_sends_file_content_in_messages_in_the_open_route_api_request()
     {
+        /* SETUP */
         $plugins = [
             new PluginData(
                 id: 'file-parser',
@@ -659,8 +694,10 @@ class OpenRouterAPITest extends TestCase
         );
         $this->mockOpenRouter($this->mockBasicBody());
 
+        /* EXECUTE */
         $response = LaravelOpenRouter::chatRequest($chatData);
 
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
@@ -669,6 +706,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_sends_image_aspect_ratio_for_image_generation_in_the_open_route_api_request()
     {
+        /* SETUP */
         $chatData = new ChatData(
             messages: [
                 new MessageData(
@@ -692,8 +730,10 @@ class OpenRouterAPITest extends TestCase
         ];
         $this->mockOpenRouter($mockBody);
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertNotNull(Arr::get($response->choices[0], 'message.images'));
         $images = Arr::get($response->choices[0], 'message.images');
@@ -704,6 +744,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_successfully_sends_audio_in_content_in_messages_in_the_open_route_api_request()
     {
+        /* SETUP */
         $data = base64_encode('fake-audio-data'); // Simulated base64 audio data
         $audioContentData = new AudioContentData(
             type: AudioContentData::ALLOWED_TYPE, // it can only take input_audio for audio content
@@ -727,8 +768,10 @@ class OpenRouterAPITest extends TestCase
         );
         $this->mockOpenRouter($this->mockBasicBody());
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
@@ -737,6 +780,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_successfully_sends_multiple_text_content_in_messages_in_the_open_route_api_request()
     {
+        /* SETUP */
         $textContentDataA = new TextContentData(
             type: TextContentData::ALLOWED_TYPE, // it can only take text for text content
             text: 'What is the result of 2+2?',
@@ -761,8 +805,10 @@ class OpenRouterAPITest extends TestCase
         );
         $this->mockOpenRouter($this->mockBasicBody());
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
@@ -774,6 +820,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_successfully_makes_a_basic_chat_completion_open_route_api_request_when_model_is_not_set()
     {
+        /* SETUP */
         $this->markTestSkipped('This test method is deprecated because if the default model is set to a non-free model,
          it might call a paid one. For the sake of compatibility, this method will not be removed.');
         // model is not set, so open router will use user default model
@@ -784,8 +831,10 @@ class OpenRouterAPITest extends TestCase
             max_tokens: $this->maxTokens,
         );
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
+        /* ASSERT */
         $this->assertInstanceOf(ResponseData::class, $response);
         $this->assertNotNull($response->id);
         $this->assertNotEquals($this->model, $response->model); // Not equal to defined model, instead uses some other model as default
@@ -797,6 +846,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_makes_a_basic_chat_completion_open_route_api_request_with_response_format_json_schema()
     {
+        /* SETUP */
         $responseFormatData = new ResponseFormatData(
             type: 'json_schema',
             json_schema: [
@@ -872,8 +922,10 @@ class OpenRouterAPITest extends TestCase
         );
         $this->mockOpenRouter($responseBody);
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
@@ -882,6 +934,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_makes_a_basic_chat_completion_open_route_api_request_with_response_format()
     {
+        /* SETUP */
         $responseFormatData = new ResponseFormatData(
             type: 'json_object'
         );
@@ -895,8 +948,10 @@ class OpenRouterAPITest extends TestCase
         );
         $this->mockOpenRouter($this->mockBasicBody());
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
@@ -905,6 +960,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_makes_a_basic_chat_completion_open_route_api_request_with_stop_parameter()
     {
+        /* SETUP */
         $stop = ['bugs'];
         $content = 'Repeat this sentence: Function junction, where parameters meet, variables mingle, and bugs retreat.';
         $messageData = new MessageData(
@@ -923,8 +979,10 @@ class OpenRouterAPITest extends TestCase
         $mockBody['choices'][0]['finish_reason'] = 'bugs';
         $this->mockOpenRouter($mockBody);
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
@@ -934,6 +992,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_makes_cost_request_with_generation_id()
     {
+        /* SETUP */
         $chatData = new ChatData(
             messages: [
                 $this->messageData,
@@ -947,8 +1006,10 @@ class OpenRouterAPITest extends TestCase
         sleep(3); // Pauses the script for 3 seconds just to make sure $generationId is generated
         $this->mockOpenRouter($this->mockBasicCostBody());
 
+        /* EXECUTE */
         $response = $this->api->costRequest($generationId);
 
+        /* ASSERT */
         $this->assertInstanceOf(CostResponseData::class, $response);
         $this->assertNotNull($response->id);
         $this->assertEquals($this->model, $response->model);
@@ -971,6 +1032,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_tests_if_to_array_for_cost_request_works_as_expected()
     {
+        /* SETUP */
         $chatData = new ChatData(
             messages: [
                 $this->messageData,
@@ -983,8 +1045,10 @@ class OpenRouterAPITest extends TestCase
         $generationId = $chatResponse->id;
         $this->mockOpenRouter($this->mockBasicCostBody());
 
+        /* EXECUTE */
         $response = $this->api->costRequest($generationId);
 
+        /* ASSERT */
         $this->assertInstanceOf(CostResponseData::class, $response);
         $responseArray = $response->toArray();
         $this->assertArrayHasKey('id', $responseArray);
@@ -1008,6 +1072,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_makes_chat_completion_api_request_with_llm_parameters()
     {
+        /* SETUP */
         $maxTokens = 250;
         $temperature = 1.2;
         $topP = 0.7;
@@ -1032,8 +1097,10 @@ class OpenRouterAPITest extends TestCase
         );
         $this->mockOpenRouter($this->mockBasicBody());
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
@@ -1042,6 +1109,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_makes_chat_completion_api_request_with_open_router_specific_parameters()
     {
+        /* SETUP */
         $modelOpenchat = 'openchat/openchat-7b:free';
         $modelGryphe = 'gryphe/mythomist-7b:free';
         $transforms = ['middle-out']; // default for all models
@@ -1064,8 +1132,10 @@ class OpenRouterAPITest extends TestCase
         );
         $this->mockOpenRouter($this->mockBasicBody());
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
+        /* ASSERT */
         $this->assertInstanceOf(ResponseData::class, $response);
         $this->assertNotNull($response->id);
         $this->assertEquals($this->model, $response->model); // Assert first model
@@ -1083,6 +1153,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_makes_chat_completion_api_request_with_fallback_to_second_model_if_first_one_fails()
     {
+        /* SETUP */
         $wrongModel = 'some/random/text:free';
         $modelGryphe = 'gryphe/mythomist-7b:free';
         $transforms = ['middle-out']; // default for all models
@@ -1107,8 +1178,10 @@ class OpenRouterAPITest extends TestCase
         $mockBody['model'] = $modelGryphe;
         $this->mockOpenRouter($mockBody);
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
+        /* ASSERT */
         $this->assertInstanceOf(ResponseData::class, $response);
         $this->assertNotNull($response->id);
         $this->assertEquals($modelGryphe, $response->model); // Assert second model when first model fails
@@ -1127,8 +1200,10 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_throws_xor_validation_exception_when_both_model_and_models_empty_in_chat_data()
     {
+        /* SETUP */
         $this->expectException(OpenRouterValidationException::class);
 
+        /* EXECUTE */
         new ChatData(
             messages: [
                 $this->messageData,
@@ -1140,10 +1215,12 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_throws_xor_validation_exception_when_both_model_and_models_are_provided()
     {
+        /* SETUP */
         $modelGryphe = 'gryphe/mythomist-7b:free';
         $models = [$modelGryphe, $this->model];
         $this->expectException(OpenRouterValidationException::class);
 
+        /* EXECUTE */
         new ChatData(
             messages: [
                 $this->messageData,
@@ -1157,9 +1234,11 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_throws_validation_exception_when_NOT_ALLOWED_value_is_sent_for_route()
     {
+        /* SETUP */
         $route = 'random'; // We have #[AllowedValues([RouteType::FALLBACK])]
         $this->expectException(OpenRouterValidationException::class);
 
+        /* EXECUTE */
         new ChatData(
             messages: [
                 $this->messageData,
@@ -1173,6 +1252,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_makes_chat_completion_with_tool_definition()
     {
+        /* SETUP */
         $tools = [
             new ToolCallData(
                 type: 'function',
@@ -1219,8 +1299,10 @@ class OpenRouterAPITest extends TestCase
         $mockBody['choices'][0]['finish_reason'] = 'tool_calls';
         $this->mockOpenRouter($mockBody);
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
 
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $this->assertNotNull(Arr::get($response->choices[0], 'message.tool_calls'));
@@ -1233,6 +1315,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_sends_tool_result_back_to_llm_and_gets_final_response()
     {
+        /* SETUP */
         $toolCallId = 'call_7F3kP9';
         $userMessage = new MessageData(
             content: 'What is the weather like in Tokyo?',
@@ -1274,8 +1357,10 @@ class OpenRouterAPITest extends TestCase
         $mockBody['choices'][0]['message']['content'] = 'The weather in Tokyo is currently 22°C and Sunny.';
         $this->mockOpenRouter($mockBody);
 
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
-        
+
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
@@ -1286,10 +1371,11 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_throws_validation_exception_when_NOT_ALLOWED_value_is_sent_for_tool_choice()
     {
+        /* SETUP */
         $toolChoice = 'random'; // We have #[AllowedValues([ToolChoiceType::AUTO, ToolChoiceType::NONE])]
         $this->expectException(OpenRouterValidationException::class);
 
-        
+        /* EXECUTE */
         new ChatData(
             messages: [
                 $this->messageData,
@@ -1303,12 +1389,13 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_makes_a_limit_open_route_api_request_and_gets_rate_limit_and_credit_left_on_api_key()
     {
+        /* SETUP */
         $this->mockOpenRouter($this->mockBasicLimitBody());
 
-        
+        /* EXECUTE */
         $response = $this->api->limitRequest();
 
-        
+        /* ASSERT */
         $this->assertInstanceOf(LimitResponseData::class, $response);
         $this->assertNotNull($response->label);
         $this->assertNotNull($response->usage);
@@ -1323,10 +1410,13 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_tests_if_to_array_for_limit_request_working_as_expected()
     {
+        /* SETUP */
         $this->mockOpenRouter($this->mockBasicLimitBody());
-        
+
+        /* EXECUTE */
         $response = $this->api->limitRequest();
-        
+
+        /* ASSERT */
         $this->assertInstanceOf(LimitResponseData::class, $response);
         $responseArray = $response->toArray();
         $this->assertIsArray($responseArray);
@@ -1342,6 +1432,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_makes_a_open_route_api_request_by_using_facade()
     {
+        /* SETUP */
         $chatData = new ChatData(
             messages: [
                 $this->messageData,
@@ -1350,15 +1441,18 @@ class OpenRouterAPITest extends TestCase
             max_tokens: $this->maxTokens,
         );
         $this->mockOpenRouter($this->mockBasicBody());
-        
+
+        /* EXECUTE */
         $response = LaravelOpenRouter::chatRequest($chatData);
-        
+
+        /* ASSERT */
         $this->generalTestAssertions($response);
     }
 
     #[Test]
     public function it_returns_error_data_when_response_is_null()
     {
+        /* SETUP */
         $chatData = new ChatData(
             messages: [
                 $this->messageData,
@@ -1372,9 +1466,11 @@ class OpenRouterAPITest extends TestCase
                 ->once()
                 ->andReturn($mockResponse);
         });
-        
+
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
-        
+
+        /* ASSERT */
         $this->assertInstanceOf(ErrorData::class, $response);
         $this->assertEquals(500, $response->code);
         $this->assertEquals('Empty response from OpenRouter API.', $response->message);
@@ -1383,6 +1479,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_returns_error_data_when_api_returns_error_response()
     {
+        /* SETUP */
         $chatData = new ChatData(
             messages: [
                 $this->messageData,
@@ -1402,9 +1499,11 @@ class OpenRouterAPITest extends TestCase
             'user_id' => 'user_32kXS7KA',
         ];
         $this->mockOpenRouter($errorBody);
-        
+
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
-        
+
+        /* ASSERT */
         $this->assertInstanceOf(ErrorData::class, $response);
         $this->assertEquals(502, $response->code);
         $this->assertEquals('Provider returned error', $response->message);
@@ -1418,6 +1517,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_creates_provider_preferences_with_all_extended_parameters()
     {
+        /* SETUP */
         $provider = new ProviderPreferencesData(
             allow_fallbacks: true,
             require_parameters: true,
@@ -1436,7 +1536,8 @@ class OpenRouterAPITest extends TestCase
                 completion: 0.002,
             ),
         );
-        
+
+        /* ASSERT */
         $array = $provider->convertToArray();
         $this->assertTrue($array['allow_fallbacks']);
         $this->assertTrue($array['require_parameters']);
@@ -1456,13 +1557,15 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_creates_provider_preferences_with_sort_object()
     {
+        /* SETUP */
         $provider = new ProviderPreferencesData(
             sort: new ProviderSortData(
                 by: ProviderSortType::THROUGHPUT,
                 partition: true,
             ),
         );
-        
+
+        /* ASSERT */
         $array = $provider->convertToArray();
         $this->assertEquals(['by' => 'throughput', 'partition' => true], $array['sort']);
     }
@@ -1470,6 +1573,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_creates_provider_preferences_with_percentile_throughput_and_latency()
     {
+        /* SETUP */
         $provider = new ProviderPreferencesData(
             preferred_min_throughput: new PercentileData(
                 p50: 100.0,
@@ -1482,7 +1586,8 @@ class OpenRouterAPITest extends TestCase
                 p99: 5.0,
             ),
         );
-        
+
+        /* ASSERT */
         $array = $provider->convertToArray();
         $this->assertEquals(['p50' => 100.0, 'p90' => 50.0], $array['preferred_min_throughput']);
         $this->assertEquals(['p50' => 1.0, 'p75' => 2.0, 'p90' => 3.0, 'p99' => 5.0], $array['preferred_max_latency']);
@@ -1491,11 +1596,13 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_creates_max_price_data_and_filters_null_values()
     {
+        /* SETUP */
         $maxPrice = new MaxPriceData(
             prompt: 0.001,
             image: 0.05,
         );
-        
+
+        /* ASSERT */
         $array = $maxPrice->convertToArray();
         $this->assertEquals(0.001, $array['prompt']);
         $this->assertEquals(0.05, $array['image']);
@@ -1506,8 +1613,10 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_throws_validation_exception_when_NOT_ALLOWED_value_is_sent_for_sort()
     {
+        /* SETUP */
         $this->expectException(OpenRouterValidationException::class);
-        
+
+        /* EXECUTE */
         new ProviderPreferencesData(
             sort: 'invalid_sort_value',
         );
@@ -1516,8 +1625,10 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_throws_validation_exception_when_NOT_ALLOWED_value_is_sent_for_data_collection()
     {
+        /* SETUP */
         $this->expectException(OpenRouterValidationException::class);
-        
+
+        /* EXECUTE */
         new ProviderPreferencesData(
             data_collection: 'invalid_value',
         );
@@ -1526,6 +1637,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_makes_chat_completion_with_extended_provider_preferences()
     {
+        /* SETUP */
         $provider = new ProviderPreferencesData(
             allow_fallbacks: true,
             require_parameters: true,
@@ -1548,9 +1660,11 @@ class OpenRouterAPITest extends TestCase
             provider: $provider,
         );
         $this->mockOpenRouter($this->mockBasicBody());
-        
+
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
-        
+
+        /* ASSERT */
         $this->generalTestAssertions($response);
         $this->assertEquals(RoleType::ASSISTANT, Arr::get($response->choices[0], 'message.role'));
         $this->assertNotNull(Arr::get($response->choices[0], 'message.content'));
@@ -1559,11 +1673,13 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_filters_null_values_in_provider_preferences_convert_to_array()
     {
+        /* SETUP */
         $provider = new ProviderPreferencesData(
             allow_fallbacks: true,
             zdr: true,
         );
-        
+
+        /* ASSERT */
         $array = $provider->convertToArray();
         $this->assertCount(2, $array);
         $this->assertArrayHasKey('allow_fallbacks', $array);
@@ -1584,6 +1700,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_sends_cache_control_in_request_body()
     {
+        /* SETUP */
         $chatData = new ChatData(
             messages: [
                 $this->messageData,
@@ -1599,9 +1716,11 @@ class OpenRouterAPITest extends TestCase
         $payload = $chatData->convertToArray();
 
         $this->mockOpenRouter($this->mockBasicBody());
-        
+
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
-        
+
+        /* ASSERT */
         $this->assertArrayHasKey('cache_control', $payload);
         $this->assertEquals(['type' => 'ephemeral', 'ttl' => '1h'], $payload['cache_control']);
         $this->generalTestAssertions($response);
@@ -1610,6 +1729,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_sends_session_id_in_request_body()
     {
+        /* SETUP */
         $chatData = new ChatData(
             messages: [
                 $this->messageData,
@@ -1622,9 +1742,11 @@ class OpenRouterAPITest extends TestCase
         $payload = $chatData->convertToArray();
 
         $this->mockOpenRouter($this->mockBasicBody());
-        
+
+        /* EXECUTE */
         $response = $this->api->chatRequest($chatData);
-        
+
+        /* ASSERT */
         $this->assertArrayHasKey('session_id', $payload);
         $this->assertEquals('test-session-id', $payload['session_id']);
         $this->generalTestAssertions($response);
@@ -1633,6 +1755,7 @@ class OpenRouterAPITest extends TestCase
     #[Test]
     public function it_serializes_debug_options_in_chat_data_payload()
     {
+        /* SETUP */
         $chatData = new ChatData(
             messages: [
                 $this->messageData,
@@ -1646,6 +1769,7 @@ class OpenRouterAPITest extends TestCase
 
         $payload = $chatData->convertToArray();
 
+        /* ASSERT */
         $this->assertArrayHasKey('debug', $payload);
         $this->assertEquals(['echo_upstream_body' => true], $payload['debug']);
     }

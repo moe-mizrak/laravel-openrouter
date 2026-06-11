@@ -10,19 +10,11 @@ use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 class TestCase extends OrchestraTestCase
 {
-    /**
-     * @return void
-     */
     public function setUp(): void
     {
         parent::setUp();
     }
 
-    /**
-     * @param $app
-     *
-     * @return string[]
-     */
     protected function getPackageProviders($app): array
     {
         return [
@@ -30,11 +22,6 @@ class TestCase extends OrchestraTestCase
         ];
     }
 
-    /**
-     * @param $app
-     *
-     * @return string[]
-     */
     protected function getPackageAliases($app): array
     {
         return [

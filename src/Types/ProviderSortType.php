@@ -12,22 +12,16 @@ final readonly class ProviderSortType
 {
     /**
      * Sort by price (ascending).
-     *
-     * @var string
      */
     const PRICE = 'price';
 
     /**
      * Sort by throughput (descending).
-     *
-     * @var string
      */
     const THROUGHPUT = 'throughput';
 
     /**
      * Sort by latency (ascending).
-     *
-     * @var string
      */
     const LATENCY = 'latency';
 }

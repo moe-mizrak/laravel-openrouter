@@ -12,8 +12,6 @@ use MoeMizrak\LaravelOpenrouter\Types\ProviderSortType;
 /**
  * DTO for the provider preferences.
  * For more info: https://openrouter.ai/docs/guides/routing/provider-selection
- *
- * Class ProviderPreferencesData
  */
 final class ProviderPreferencesData extends DataTransferObject
 {
@@ -25,16 +23,12 @@ final class ProviderPreferencesData extends DataTransferObject
          * Whether to allow backup providers to serve requests.
          * true: (default) when the primary provider is unavailable, use the next best provider.
          * false: use only the primary provider, and return the upstream error if it's unavailable.
-         *
-         * @var bool|null
          */
         public ?bool $allow_fallbacks = null,
 
         /**
          * Whether to filter providers to only those that support the parameters you've provided.
          * If this setting is omitted or set to false, then providers will receive only the parameters they support, and ignore the rest.
-         *
-         * @var bool|null
          */
         public ?bool $require_parameters = null,
 
@@ -42,8 +36,6 @@ final class ProviderPreferencesData extends DataTransferObject
          * Data collection setting. If no available model provider meets the requirement, your request will return an error.
          * allow: (default) allow providers which store user data non-transiently and may train on it.
          * deny: use only providers which do not collect user data.
-         *
-         * @var string|null
          */
         #[AllowedValues([DataCollectionType::ALLOW, DataCollectionType::DENY])]
         public ?string $data_collection = null,
@@ -52,71 +44,51 @@ final class ProviderPreferencesData extends DataTransferObject
          * An ordered list of provider names.
          * The router will attempt to use the first provider in the subset of this list that supports your requested model,
          * and fall back to the next if it is unavailable. If no providers are available, the request will fail with an error message.
-         *
-         * @var array|null
          */
         public ?array $order = null,
 
         /**
          * Restrict routing to only Zero Data Retention (ZDR) endpoints.
-         *
-         * @var bool|null
          */
         public ?bool $zdr = null,
 
         /**
          * Restrict routing to only models that allow text distillation.
-         *
-         * @var bool|null
          */
         public ?bool $enforce_distillable_text = null,
 
         /**
          * List of provider slugs to allow for this request.
-         *
-         * @var array|null
          */
         public ?array $only = null,
 
         /**
          * List of provider slugs to skip for this request.
-         *
-         * @var array|null
          */
         public ?array $ignore = null,
 
         /**
          * Filter providers by quantization levels.
-         *
-         * @var array|null
          */
         public ?array $quantizations = null,
 
         /**
          * Sort providers by attribute. Can be a string ("price", "throughput", "latency") or a ProviderSortData object.
-         *
-         * @var string|ProviderSortData|null
          */
         public string|ProviderSortData|null $sort = null,
 
         /**
          * Preferred minimum throughput (tokens/sec). Can be a number or a PercentileData object with percentile cutoffs.
-         *
-         * @var float|PercentileData|null
          */
         public float|PercentileData|null $preferred_min_throughput = null,
 
         /**
          * Preferred maximum latency (seconds). Can be a number or a PercentileData object with percentile cutoffs.
-         *
-         * @var float|PercentileData|null
          */
         public float|PercentileData|null $preferred_max_latency = null,
 
         /**
          * Maximum acceptable pricing per request.
-         *
-         * @var MaxPriceData|null
          */
         public ?MaxPriceData $max_price = null,
     ) {
@@ -130,9 +102,6 @@ final class ProviderPreferencesData extends DataTransferObject
         parent::__construct(...func_get_args());
     }
 
-    /**
-     * @return array
-     */
     public function convertToArray(): array
     {
         return array_filter(

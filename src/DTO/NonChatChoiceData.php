@@ -6,8 +6,6 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
  * NonChatChoiceData is the DTO choice type for non-chat responses
- *
- * Class NonChatChoiceData
  */
 final class NonChatChoiceData extends ChoiceData
 {

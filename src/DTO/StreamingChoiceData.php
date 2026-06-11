@@ -6,8 +6,6 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 /**
  * StreamingChoiceData is the DTO choice type for streaming responses
- *
- * Class StreamingChoiceData
  */
 final class StreamingChoiceData extends ChoiceData
 {
@@ -17,8 +15,6 @@ final class StreamingChoiceData extends ChoiceData
     public function __construct(
         /**
          * Any changed fields on a message during streaming.
-         *
-         * @var DeltaData
          */
         public DeltaData $delta
     ) {

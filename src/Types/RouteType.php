@@ -14,8 +14,6 @@ final readonly class RouteType
 {
     /**
      * Fallback model.
-     *
-     * @var string
      */
     const FALLBACK = 'fallback';
 }

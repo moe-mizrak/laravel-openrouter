@@ -13,15 +13,11 @@ final readonly class ToolChoiceType
 {
     /**
      * auto means the model can pick between generating a message or calling one or more tools.
-     *
-     * @var string
      */
     const AUTO = 'auto';
 
     /**
      * none means the model will not call any tool and instead generates a message
-     *
-     * @var string
      */
     const NONE = 'none';
 }

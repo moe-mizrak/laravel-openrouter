@@ -12,8 +12,6 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  *  - limit_remaining
  *  - is_free_tier
  *  - rate_limit (DTO object)
- *
- * Class LimitResponseData
  */
 final class LimitResponseData extends DataTransferObject
 {
@@ -23,41 +21,28 @@ final class LimitResponseData extends DataTransferObject
     public function __construct(
         /**
          * Label of the limit e.g. sk-or-v1-f35...ebd
-         *
-         * @var string|null
          */
         public ?string $label = null,
 
         /**
          * Number of credits used.
-         *
-         * @var float|null
          */
         public ?float $usage = null,
 
-        /**
-         * @var float|null
-         */
         public ?float $limit_remaining = null,
 
         /**
          * Credit limit for the key, or null if unlimited.
-         *
-         * @var int|null
          */
         public ?int $limit = null,
 
         /**
          * Whether the user has paid for credits before.
-         *
-         * @var bool|null
          */
         public ?bool $is_free_tier = null,
 
         /**
          * Rate limit DTO data.
-         *
-         * @var RateLimitData|null
          */
         public ?RateLimitData $rate_limit = null
     ) {

@@ -6,11 +6,6 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 
 use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
 
-/**
- * DTO for the contents.
- *
- * Class TextContentData
- */
 final class TextContentData extends DataTransferObject
 {
     /**
@@ -24,16 +19,12 @@ final class TextContentData extends DataTransferObject
     public function __construct(
         /**
          * Type of the content. (i.e. text)
-         *
-         * @var string
          */
         #[AllowedValues([self::ALLOWED_TYPE])]
         public string $type = self::ALLOWED_TYPE,
 
         /**
          * Text of the content.
-         *
-         * @var string
          */
         public string $text,
 
@@ -42,17 +33,12 @@ final class TextContentData extends DataTransferObject
          * Useful for explicit caching (e.g. caching a large reference text).
          *
          * Docs: https://openrouter.ai/docs/guides/best-practices/prompt-caching
-         *
-         * @var CacheControlData|null
          */
         public ?CacheControlData $cache_control = null,
     ) {
         parent::__construct(...func_get_args());
     }
 
-    /**
-     * @return array
-     */
     public function convertToArray(): array
     {
         return array_filter(

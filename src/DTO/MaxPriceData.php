@@ -7,8 +7,6 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
 /**
  * DTO for maximum acceptable pricing per request.
  * For more info: https://openrouter.ai/docs/guides/routing/provider-selection
- *
- * Class MaxPriceData
  */
 final class MaxPriceData extends DataTransferObject
 {
@@ -18,38 +16,27 @@ final class MaxPriceData extends DataTransferObject
     public function __construct(
         /**
          * Maximum price per prompt token (in USD).
-         *
-         * @var float|null
          */
         public ?float $prompt = null,
 
         /**
          * Maximum price per completion token (in USD).
-         *
-         * @var float|null
          */
         public ?float $completion = null,
 
         /**
          * Maximum price per request (in USD).
-         *
-         * @var float|null
          */
         public ?float $request = null,
 
         /**
          * Maximum price per image (in USD).
-         *
-         * @var float|null
          */
         public ?float $image = null,
     ) {
         parent::__construct(...func_get_args());
     }
 
-    /**
-     * @return array
-     */
     public function convertToArray(): array
     {
         return array_filter(

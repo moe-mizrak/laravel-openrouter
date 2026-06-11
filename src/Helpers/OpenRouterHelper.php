@@ -18,29 +18,20 @@ use ReflectionException;
 
 /**
  * OpenRouter helper class is responsible for providing helper methods such as forming responses, decoding JSON, filtering stream responses and so on.
- *
- * @class OpenRouterHelper
  */
 final class OpenRouterHelper
 {
-    // Buffer variable for incomplete streaming data.
     private static string $buffer = '';
 
     /**
      * Forms the response as ResponseData including id, model, object created, choices and usage if exits.
      *
-     * @param mixed|null $response
-     *
-     * @return ResponseData
-     *
      * @throws ReflectionException
      */
     public function formChatResponse(mixed $response = null): ResponseData
     {
-        // Map the usage data if it exists.
         $usageArray = Arr::get($response, 'usage');
 
-        // Map the prompt tokens details if it exists.
         $promptDetailsData = Arr::get($usageArray, 'prompt_tokens_details');
         $promptTokensDetails = $promptDetailsData
             ? new PromptTokensDetailsData(
@@ -51,7 +42,6 @@ final class OpenRouterHelper
             )
             : null;
 
-        // Map the completion tokens details if it exists.
         $completionDetailsData = Arr::get($usageArray, 'completion_tokens_details');
         $completionTokensDetails = $completionDetailsData
             ? new CompletionTokensDetailsData(
@@ -72,7 +62,6 @@ final class OpenRouterHelper
             completion_tokens_details: $completionTokensDetails,
         );
 
-        // Map the response data to ResponseData and return it.
         return new ResponseData(
             id: Arr::get($response, 'id'),
             model: Arr::get($response, 'model'),
@@ -89,10 +78,6 @@ final class OpenRouterHelper
      * Forms the cost response as CostResponseData.
      * First decodes the json response, then map it in CostResponseData to return the response.
      *
-     * @param ResponseInterface|null $response
-     *
-     * @return CostResponseData
-     *
      * @throws ReflectionException
      */
     public function formCostsResponse(?ResponseInterface $response = null): CostResponseData
@@ -100,7 +85,6 @@ final class OpenRouterHelper
         // Decode the json response
         $response = $this->jsonDecode($response);
 
-        // Map the response data to CostResponseData and return it.
         return new CostResponseData(
             id: Arr::get($response, 'data.id'),
             model: Arr::get($response, 'data.model'),
@@ -130,10 +114,6 @@ final class OpenRouterHelper
      * Forms the response as LimitResponseData
      * First decodes the json response and get the result, then map it in LimitResponseData to return the response.
      *
-     * @param ResponseInterface|null $response
-     *
-     * @return LimitResponseData
-     *
      * @throws ReflectionException
      */
     public function formLimitResponse(?ResponseInterface $response = null): LimitResponseData
@@ -159,25 +139,13 @@ final class OpenRouterHelper
         );
     }
 
-    /**
-     * Decodes response to json.
-     *
-     * @param ResponseInterface|null $response
-     *
-     * @return mixed|null
-     */
     public function jsonDecode(?ResponseInterface $response = null): mixed
     {
-        // Get the response body or return null.
         return $response ? json_decode((string) $response->getBody(), true) : null;
     }
 
     /**
      * It filters streaming response string so that response string is mapped into ResponseData.
-     *
-     * @param string $streamingResponse
-     *
-     * @return array
      *
      * @throws ReflectionException
      */
@@ -188,10 +156,8 @@ final class OpenRouterHelper
         // Clear buffer
         self::$buffer = '';
 
-        // Split the string by lines
         $lines = explode("\n", $streamingResponse);
 
-        // Filter out unnecessary lines and decode the JSON data
         $responseDataArray = [];
 
         // Flag to indicate if the first line is a complete JSON
@@ -203,7 +169,6 @@ final class OpenRouterHelper
                 $jsonData = substr($line, strlen('data: '));
 
                 try {
-                    // Attempt to decode the JSON data
                     $data = json_decode($jsonData, true, 512, JSON_THROW_ON_ERROR);
                     $responseDataArray[] = $this->formChatResponse($data);
                     $firstLineComplete = true;
@@ -216,7 +181,6 @@ final class OpenRouterHelper
             } elseif (trim($line) === '' && ! empty(self::$buffer)) {
                 // If the line is empty and there's something in the buffer, try to process the buffer
                 try {
-                    // Attempt to decode the JSON data
                     $data = json_decode(self::$buffer, true, 512, JSON_THROW_ON_ERROR);
                     $responseDataArray[] = $this->formChatResponse($data);
                     self::$buffer = ''; // Clear buffer after successful processing

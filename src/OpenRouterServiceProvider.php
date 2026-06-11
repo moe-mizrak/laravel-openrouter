@@ -17,15 +17,11 @@ final class OpenRouterServiceProvider extends ServiceProvider
 {
     /**
      * The default timeout for the Guzzle client.
-     *
-     * @var int
      */
     const DEFAULT_TIMEOUT = 20;
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public function boot(): void
     {
@@ -34,8 +30,6 @@ final class OpenRouterServiceProvider extends ServiceProvider
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -61,8 +55,6 @@ final class OpenRouterServiceProvider extends ServiceProvider
 
     /**
      * Get the services provided by the provider.
-     *
-     * @return array
      */
     public function provides(): array
     {
@@ -71,8 +63,6 @@ final class OpenRouterServiceProvider extends ServiceProvider
 
     /**
      * Setup the configuration.
-     *
-     * @return void
      */
     protected function configure(): void
     {
@@ -83,8 +73,6 @@ final class OpenRouterServiceProvider extends ServiceProvider
 
     /**
      * Register the package's publishable resources.
-     *
-     * @return void
      */
     protected function registerPublishing(): void
     {
@@ -97,8 +85,6 @@ final class OpenRouterServiceProvider extends ServiceProvider
 
     /**
      * Configure the Guzzle client.
-     *
-     * @return Client
      */
     private function configureClient(): Client
     {

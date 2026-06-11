@@ -10,8 +10,6 @@ use MoeMizrak\LaravelOpenrouter\Rules\AllowedValues;
  * DTO for the prompt caching control.
  *
  * Docs: https://openrouter.ai/docs/guides/best-practices/prompt-caching
- *
- * Class CacheControlData
  */
 final class CacheControlData extends DataTransferObject
 {
@@ -26,8 +24,6 @@ final class CacheControlData extends DataTransferObject
     public function __construct(
         /**
          * Cache control type. Currently OpenRouter documents "ephemeral".
-         *
-         * @var string
          */
         #[AllowedValues([self::ALLOWED_TYPE])]
         public string $type = self::ALLOWED_TYPE,
@@ -35,17 +31,12 @@ final class CacheControlData extends DataTransferObject
         /**
          * Optional TTL for cache entry.
          * Example: "1h"
-         *
-         * @var string|null
          */
         public ?string $ttl = null,
     ) {
         parent::__construct(...func_get_args());
     }
 
-    /**
-     * @return array
-     */
     public function convertToArray(): array
     {
         return array_filter(

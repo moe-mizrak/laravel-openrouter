@@ -9,8 +9,6 @@ namespace MoeMizrak\LaravelOpenrouter\DTO;
  *
  * Check https://openrouter.ai/docs/guides/features/web-search
  * Also check https://openrouter.ai/docs/guides/overview/multimodal/pdfs
- *
- * Class PluginData
  */
 final class PluginData extends DataTransferObject
 {
@@ -20,8 +18,6 @@ final class PluginData extends DataTransferObject
     public function __construct(
         /**
          * Unique identifier for the plugin e.g. 'web' for web search, 'file-parser' for file inputs
-         *
-         * @var string
          */
         public string $id,
 
@@ -29,16 +25,12 @@ final class PluginData extends DataTransferObject
          * Engine or method used by the plugin.
          * e.g. "native", "exa", or undefined
          * Check https://openrouter.ai/docs/guides/features/web-search
-         *
-         * @var string|null
          */
         public ?string $engine = null,
 
         /**
          * Maximum number of results to return.
          * Defaults to 5 if not specified.
-         *
-         * @var int|null
          */
         public ?int $max_results = null,
 
@@ -48,8 +40,6 @@ final class PluginData extends DataTransferObject
          * "A web search was conducted on `date`. Incorporate the following web search results into your response.
          * IMPORTANT: Cite them using markdown links named using the domain of the source.
          * Example: [nytimes.com](https://nytimes.com/some-page)."
-         *
-         * @var string|null
          */
         public ?string $search_prompt = null,
 
@@ -59,17 +49,12 @@ final class PluginData extends DataTransferObject
          * e.g. ['engine' => 'pdf-text']
          * OpenRouter provides several PDF processing engines: mistral-ocr, pdf-text, native
          * Check https://openrouter.ai/docs/guides/overview/multimodal/pdfs
-         *
-         * @var array|null
          */
         public ?array $pdf = null,
     ) {
         parent::__construct(...func_get_args());
     }
 
-    /**
-     * @return array
-     */
     public function convertToArray(): array
     {
         return array_filter(
