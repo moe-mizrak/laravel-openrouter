@@ -10,24 +10,14 @@ use MoeMizrak\LaravelOpenrouter\DTO\ValidationResultData;
  * Validator class for XOR-gate first and second fields.
  * If firstField exists and secondField NOT exist, or vice versa, the output is TRUE -> validated.
  * If both firstField and secondField exist, or both are NOT exist, the output is FALSE -> validation failed.
- *
- * Class XORFields
  */
 final readonly class XORFields
 {
-    /**
-     * Constructor a new validation instance.
-     *
-     * @param mixed $firstField
-     * @param mixed $secondField
-     */
     public function __construct(protected mixed $firstField, protected mixed $secondField) {}
 
     /**
      * Validate XOR condition for two fields.
-     *
-     * @return ValidationResultData
-     *
+     * 
      * @throws \ReflectionException
      */
     public function validate(): ValidationResultData
@@ -41,6 +31,8 @@ final readonly class XORFields
             ['messages', 'prompt'], // messages and prompt fields are XOR gated
             ['model', 'models'], // model and models fields are XOR gated
         ];
+        
+        $result = [];
         // e.g. "messages and prompt"
         foreach ($xorFields as $pair) {
             $result[] = implode(' and ', $pair);
