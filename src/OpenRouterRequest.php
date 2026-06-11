@@ -18,19 +18,12 @@ use ReflectionException;
 
 /**
  * OpenRouter request and formed response class.
- *
  * OpenRouter doc: https://openrouter.ai/docs
- *
- * Class OpenRouterRequest
  */
 final class OpenRouterRequest extends OpenRouterAPI
 {
     /**
      * Sends a model request for the given chat conversation.
-     *
-     * @param ChatData $chatData
-     *
-     * @return ErrorData|ResponseData
      *
      * @throws ReflectionException|GuzzleException
      */
@@ -55,14 +48,12 @@ final class OpenRouterRequest extends OpenRouterAPI
             'json' => $chatData,
         ];
 
-        // Send POST request to the OpenRouter API chat completion endpoint and get the response.
         $response = app(ClientInterface::class)->request(
             'POST',
             $chatCompletionPath,
             $options
         );
 
-        // Decode the json response
         $decoded = $this->openRouterHelper->jsonDecode($response);
 
         if ($decoded === null) {
@@ -85,10 +76,6 @@ final class OpenRouterRequest extends OpenRouterAPI
 
     /**
      * Sends a streaming request for the given chat conversation.
-     *
-     * @param ChatData $chatData
-     *
-     * @return PromiseInterface
      */
     public function chatStreamRequest(ChatData $chatData): PromiseInterface
     {
@@ -100,20 +87,17 @@ final class OpenRouterRequest extends OpenRouterAPI
         // Filter null values from the chatData object and return array.
         $chatData = $chatData->convertToArray();
 
-        // Add headers for streaming.
         $headers = [
             'Content-Type' => 'text/event-stream',
             'Cache-Control' => 'no-cache',
         ];
 
-        // Options for the Guzzle request
         $options = [
             'json' => $chatData,
             'headers' => $headers,
             'stream' => true,
         ];
 
-        // Send POST request to the OpenRouter API chat completion endpoint and get the streaming response.
         $promise = app(ClientInterface::class)->requestAsync(
             'POST',
             $chatCompletionPath,
@@ -133,10 +117,6 @@ final class OpenRouterRequest extends OpenRouterAPI
     /**
      * Sends a cost request for the given generation id.
      *
-     * @param string $generationId
-     *
-     * @return CostResponseData
-     *
      * @throws ReflectionException|GuzzleException
      */
     public function costRequest(string $generationId): CostResponseData
@@ -144,7 +124,6 @@ final class OpenRouterRequest extends OpenRouterAPI
         // The path for the cost and stats request. e.g. generation?id=$GENERATION_ID
         $costPath = 'generation?id=' . $generationId;
 
-        // Send GET request to the OpenRouter API generation endpoint and get the response.
         $response = app(ClientInterface::class)->request(
             'GET',
             $costPath
@@ -156,8 +135,6 @@ final class OpenRouterRequest extends OpenRouterAPI
     /**
      * Sends limit request for the rate limit or credits left on an API key.
      *
-     * @return LimitResponseData
-     *
      * @throws ReflectionException|GuzzleException
      */
     public function limitRequest(): LimitResponseData
@@ -165,7 +142,6 @@ final class OpenRouterRequest extends OpenRouterAPI
         // The path for the rate limit or credits left request.
         $limitPath = 'auth/key';
 
-        // Send GET request to the OpenRouter API limit endpoint and get the response.
         $response = app(ClientInterface::class)->request(
             'GET',
             $limitPath
@@ -176,10 +152,6 @@ final class OpenRouterRequest extends OpenRouterAPI
 
     /**
      * Filters streaming response string and maps it into an array of ResponseData.
-     *
-     * @param string $streamingResponse
-     *
-     * @return array
      */
     public function filterStreamingResponse(string $streamingResponse): array
     {
